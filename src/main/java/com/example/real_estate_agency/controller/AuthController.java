@@ -32,6 +32,7 @@ public class AuthController {
     @GetMapping("/")
     public String home(@AuthenticationPrincipal UserDetails userDetails,Model model) {
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+
         List<String> roles = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
