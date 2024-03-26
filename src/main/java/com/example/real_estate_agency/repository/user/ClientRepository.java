@@ -1,4 +1,4 @@
-package com.example.real_estate_agency.repository;
+package com.example.real_estate_agency.repository.user;
 
 import com.example.real_estate_agency.models.user.Client;
 import org.springframework.data.jpa.repository.JpaRepository;

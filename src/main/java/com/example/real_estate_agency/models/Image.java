@@ -13,7 +13,7 @@ public class Image {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "property_id", nullable = false)
+    @JoinColumn(name = "property_id")
     private Properties property;
 
     // Constructors, getters, setters và các phương thức khác
@@ -25,6 +25,30 @@ public class Image {
 
     public Image(String url) {
         this.url = url;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Properties getProperty() {
+        return property;
+    }
+
+    public void setProperty(Properties property) {
+        this.property = property;
     }
 
     // Getters và Setters

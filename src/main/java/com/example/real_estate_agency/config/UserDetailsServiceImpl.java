@@ -1,7 +1,7 @@
 package com.example.real_estate_agency.config;
 
 
-import com.example.real_estate_agency.repository.ClientRepository;
+import com.example.real_estate_agency.repository.user.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

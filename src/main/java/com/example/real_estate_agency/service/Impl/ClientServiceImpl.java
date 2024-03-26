@@ -1,15 +1,20 @@
 package com.example.real_estate_agency.service.Impl;
 
+import com.example.real_estate_agency.DTO.FeedBackDTO;
 import com.example.real_estate_agency.models.user.Client;
+import com.example.real_estate_agency.models.user.FeedBack;
 import com.example.real_estate_agency.models.user.Role;
-import com.example.real_estate_agency.repository.ClientRepository;
+import com.example.real_estate_agency.repository.user.ClientRepository;
 import com.example.real_estate_agency.repository.RoleRepository;
+import com.example.real_estate_agency.repository.user.FeedBackRepository;
 import com.example.real_estate_agency.service.ClientService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -20,6 +25,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private FeedBackRepository feedBackRepository;
 
 
     @Override
@@ -58,6 +66,34 @@ public class ClientServiceImpl implements ClientService {
     public Client getByUserName(String name) {
         return null;
     }
+
+    @Override
+    public FeedBack addFeedBack(Long id, FeedBack feedBack) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Client not found with id: " + id));
+
+        // Liên kết feedback với client
+        feedBack.setClient(client);
+
+        // Lưu feedback vào cơ sở dữ liệu
+        return feedBackRepository.save(feedBack);
+    }
+
+    @Override
+    public List<FeedBackDTO> getAllFeedBack() {
+        try {
+            List<FeedBackDTO> result = new ArrayList<>();
+            List<FeedBack> allFeed = feedBackRepository.findAll();
+            for (FeedBack feedBack: allFeed){
+                result.add(new FeedBackDTO(feedBack.getClient().getUsername(),feedBack.getContent()));
+            }
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private Role checkRoleExist() {
         Role role = new Role();
         role.setName("ROLE_USER");

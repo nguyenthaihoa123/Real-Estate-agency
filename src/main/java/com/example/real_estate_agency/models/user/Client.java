@@ -19,6 +19,8 @@ public class Client {
     private String username;
     private String password;
     private String email;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FeedBack> feedbacks = new HashSet<>();
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinTable(
             name="users_roles",
@@ -108,4 +110,13 @@ public class Client {
     // Đảm bảo rằng bạn đã tạo getters và setters cho tất cả các trường
 
     // Các phương thức khác nếu cần
+
+
+    public Set<FeedBack> getFeedbacks() {
+        return feedbacks;
+    }
+
+    public void setFeedbacks(Set<FeedBack> feedbacks) {
+        this.feedbacks = feedbacks;
+    }
 }

@@ -34,4 +34,36 @@ public class Statistical {
     // Đảm bảo rằng bạn đã tạo getters và setters cho tất cả các trường
 
     // Các phương thức khác nếu cần
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getTotalSave() {
+        return totalSave;
+    }
+
+    public void setTotalSave(int totalSave) {
+        this.totalSave = totalSave;
+    }
+
+    public int getTotalBooking() {
+        return totalBooking;
+    }
+
+    public void setTotalBooking(int totalBooking) {
+        this.totalBooking = totalBooking;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
 }

@@ -43,10 +43,10 @@ public class AuthController {
     public String admin() {
         return "admin";
     }
-    @GetMapping("/user")
-    public String userP() {
-        return "test/index";
-    }
+//    @GetMapping("/user")
+//    public String userP() {
+//        return "test/index";
+//    }
 
     @GetMapping("/login")
     public String showLoginForm() {
