@@ -26,6 +26,36 @@ public class SavePost {
         // Constructor mặc định
     }
 
+    public SavePost(Long id, Client client, Properties property) {
+        this.id = id;
+        this.client = client;
+        this.property = property;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Properties getProperty() {
+        return property;
+    }
+
+    public void setProperty(Properties property) {
+        this.property = property;
+    }
+
     // Getters và Setters
     // Đảm bảo rằng bạn đã tạo getters và setters cho trường id
 

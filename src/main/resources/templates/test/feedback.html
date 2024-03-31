@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Các thẻ meta và link khác -->
+
+    <!-- Link đến Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Các thẻ script khác -->
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2 class="text-center">FEED BACK</h2>
+            <form id="feedbackForm" class="needs-validation" novalidate action="/feedback" method="post">
+                <!-- Các trường nhập liệu đã cho -->
+                <div class="mb-3">
+                    <label for="title" class="form-label">Content</label>
+                    <input type="text" class="form-control" id="title" name="content" required>
+                    <div class="invalid-feedback">Please enter feedback content.</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    // Lắng nghe sự kiện submit của form
+    document.getElementById('feedbackForm').addEventListener('submit', function(event) {
+        // Lấy trường input
+        var input = document.getElementById('title');
+
+        // Nếu trường input không hợp lệ và không có giá trị
+        if (!input.value.trim()) {
+            // Hiển thị cảnh báo cho trường input
+            input.classList.add('is-invalid');
+            event.preventDefault(); // Ngăn chặn sự kiện submit mặc định
+        } else {
+            // Xóa cảnh báo nếu trường input đã được điền thông tin
+            input.classList.remove('is-invalid');
+        }
+    });
+</script>
+</body>
+</html>

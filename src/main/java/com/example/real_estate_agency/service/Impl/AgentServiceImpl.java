@@ -31,4 +31,15 @@ public class AgentServiceImpl implements AgentService {
             return null;
         }
     }
+
+    @Override
+    public Agent findByEmail(String email) {
+        try {
+            return agentRepository.findByEmail(email);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

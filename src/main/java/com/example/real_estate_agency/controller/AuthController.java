@@ -1,8 +1,10 @@
 package com.example.real_estate_agency.controller;
 
+import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.models.user.Role;
 import com.example.real_estate_agency.repository.RoleRepository;
+import com.example.real_estate_agency.service.AgentService;
 import com.example.real_estate_agency.service.ClientService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class AuthController {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private AgentService agentService;
+
     @GetMapping("/")
     public String home(@AuthenticationPrincipal UserDetails userDetails,Model model) {
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
@@ -53,6 +58,11 @@ public class AuthController {
         return "login";
     }
 
+    @GetMapping("/agent/login_agent")
+    public String showLoginForm_agent() {
+        return "login_agent";
+    }
+
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         List<Role> roles = roleRepository.findAll();
@@ -60,7 +70,6 @@ public class AuthController {
         model.addAttribute("user", new Client());
         return "register";
     }
-
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") Client user, RedirectAttributes redirectAttributes) {
         // Kiểm tra xem đã tồn tại tài khoản với địa chỉ email này chưa
@@ -80,4 +89,33 @@ public class AuthController {
             return "redirect:/register?error";
         }
     }
+
+    @GetMapping("/agent/register_agent")
+    public String showRegistrationForm_Agent(Model model) {
+        model.addAttribute("agent", new Agent());
+        return "register_agent";
+    }
+
+    @PostMapping("/agent/register_agent")
+    public String registerAgent(@ModelAttribute("agent") Agent agent, RedirectAttributes redirectAttributes) {
+        // Kiểm tra xem đã tồn tại tài khoản với địa chỉ email này chưa
+        Agent existing = agentService.findByEmail(agent.getEmail());
+        if (existing != null) {
+            // Nếu đã tồn tại tài khoản với địa chỉ email này, thêm thông báo lỗi vào RedirectAttributes
+            redirectAttributes.addFlashAttribute("error", "emailExists");
+            return "redirect:/agent/register_agent";
+        }
+
+        agent.setStatus("active");
+        // Lưu agent mới vào cơ sở dữ liệu
+        if (agentService.save(agent) != null) {
+            // Nếu đăng ký thành công, chuyển hướng đến trang đăng nhập agent với thông báo đăng ký thành công
+            return "redirect:/agent/login_agent?registered";
+        } else {
+            // Nếu có lỗi xảy ra trong quá trình đăng ký, chuyển hướng đến trang đăng ký agent với thông báo lỗi
+            return "redirect:/agent/register_agent?error";
+        }
+    }
+
+
 }

@@ -7,4 +7,6 @@ import java.util.List;
 public interface AgentService {
     Agent save(Agent agent);
     List<Agent> getAll();
+
+    Agent findByEmail(String email);
 }

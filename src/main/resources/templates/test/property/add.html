@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Property</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2 class="text-center">Add Property</h2>
+            <form  enctype="multipart/form-data" id="propertyForm">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="number" class="form-control" id="price" name="price" required>
+                </div>
+                <div class="mb-3">
+                    <label for="area" class="form-label">Area</label>
+                    <input type="number" class="form-control" id="area" name="area" required>
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="status" required>
+                        <option value="Available">Available</option>
+                        <option value="Sold">Sold</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" required>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Thumbnail</label>
+                    <input type="file" class="form-control" id="image" name="file" accept="image/*" required>
+                </div>
+                <div class="mb-3" id="thumbnailPreviewContainer" style="display: none;">
+                    <label class="form-label">Thumbnail Preview:</label>
+                    <div id="thumbnailPreview">
+                        <img id="thumbnailImg" class="img-thumbnail" style="max-width: 200px;">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" id="category" name="category" required>
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="transactionType" class="form-label">Transaction Type</label>
+                    <select class="form-select" id="transactionType" name="transactionType" required>
+                        <option th:each="type : ${transactionTypes}" th:value="${type.id}" th:text="${type.name}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="additionalImages" class="form-label">Additional Images</label>
+                    <input type="file" class="form-control" id="additionalImages" name="additionalImages" accept="image/*" multiple>
+                </div>
+                <div class="mb-3" id="imagesPreviewContainer">
+                    <label class="form-label">Additional Images Preview:</label>
+                    <div id="imagesPreview" class="row">
+                        <!-- Thẻ img sẽ được thêm vào đây -->
+                        <!-- Sử dụng Thymeleaf để lặp qua danh sách ảnh -->
+                        <th:block th:each="image : ${property.images}">
+                            <div class="col-md-3 mb-2">
+                                <img th:src="${image.url}" class="img-thumbnail" style="max-width: 100%;">
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+
+            </form>
+<!--            <img src="https://storage.googleapis.com/download/storage/v1/b/finaljavatechnology.appspot.com/o/2c5b9eba-a50c-4f3a-8859-13f7d446f21d.png?generation=1711615495205455&amp;alt=media" alt="Test Image">-->
+        </div>
+    </div>
+</div>
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.6.7/firebase-storage.js';
+    let uploadedFileUrl = '';
+    let additionalImageUrls = [];
+    const firebaseConfig = {
+        apiKey: "AIzaSyBqaKMCa0Q0eMNplqu-SkiNS1ETo3bBcIA",
+        authDomain: "finaljavatechnology.firebaseapp.com",
+        projectId: "finaljavatechnology",
+        storageBucket: "finaljavatechnology.appspot.com",
+        messagingSenderId: "384665167842",
+        appId: "1:384665167842:web:0ca24ba3098008064d7bbb",
+        measurementId: "G-K72ZWMS0VR"
+    };
+
+    // Initialize Firebase and Firebase Storage
+    const firebaseApp = initializeApp(firebaseConfig);
+    const storage = getStorage(firebaseApp);
+
+    // Listen for the file selection event
+    document.getElementById('image').addEventListener('change', handleFileSelect, false);
+    // Lắng nghe sự kiện chọn tệp
+    document.getElementById('additionalImages').addEventListener('change', handleAdditionalImagesSelect, false);
+
+    // Hàm xử lý khi có sự thay đổi trong input additionalImages
+    function handleAdditionalImagesSelect(event) {
+        const files = event.target.files;
+
+
+        // Upload và lấy URL cho từng hình ảnh
+        Promise.all(Array.from(files).map(image => {
+            const additionalImageRef = ref(storage, image.name);
+            return uploadBytes(additionalImageRef, image).then((snapshot) => {
+                return getDownloadURL(snapshot.ref);
+            });
+        })).then((urls) => {
+            additionalImageUrls.push(...urls);
+            console.log('Additional Image URLs:', additionalImageUrls);
+
+            // Ở đây bạn có thể làm bất cứ điều gì với additionalImageUrls, ví dụ: lưu vào cơ sở dữ liệu, hiển thị trước cho người dùng, v.v.
+            // Ví dụ:
+            // Lặp qua danh sách URL để hiển thị trước cho người dùng
+            const imagesPreview = document.getElementById('imagesPreview');
+            imagesPreview.innerHTML = ''; // Xóa bỏ các hình ảnh trước đó
+            additionalImageUrls.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.className = 'img-thumbnail';
+                img.style.maxWidth = '100%';
+                const col = document.createElement('div');
+                col.className = 'col-md-3 mb-2';
+                col.appendChild(img);
+                imagesPreview.appendChild(col);
+            });
+        }).catch((error) => {
+            console.error('Error uploading additional images:', error);
+            // Xử lý lỗi nếu có
+        });
+    }
+
+    // Lắng nghe sự kiện chọn tệp cho thumbnail
+    document.getElementById('image').addEventListener('change', handleThumbnailSelect, false);
+
+    function handleThumbnailSelect(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const thumbnailImg = document.getElementById('thumbnailImg');
+            thumbnailImg.src = e.target.result;
+            document.getElementById('thumbnailPreviewContainer').style.display = 'block';
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        const storageRef = ref(storage, file.name); // Reference the file without specifying a folder path
+
+        uploadBytes(storageRef, file).then((snapshot) => {
+            console.log('File uploaded successfully');
+            getDownloadURL(snapshot.ref).then((url) => {
+                console.log('Download URL:', url);
+                uploadedFileUrl = url;
+                // console.log('hehe:', uploadedFileUrl)
+                // Do something with the URL, e.g., display the image or save it to a database
+            });
+        }).catch((error) => {
+            console.error('Error uploading file:', error);
+        });
+    }
+    document.getElementById('propertyForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Ngăn chặn form submit mặc định
+
+        // Lấy thông tin từ form
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const price = document.getElementById('price').value;
+        const area = document.getElementById('area').value;
+        const status = document.getElementById('status').value;
+        const address = document.getElementById('address').value;
+        const category = document.getElementById('category').value;
+        const transactionType = document.getElementById('transactionType').value;
+
+
+
+        // Gửi dữ liệu và URL của file qua request POST
+        fetch('/agent/properties/add', {
+            method: 'POST',
+            body: JSON.stringify({
+                title: title,
+                description: description,
+                price: price,
+                area: area,
+                status: status,
+                address: address,
+                category: category,
+                transactionType: transactionType,
+                thumbnail: uploadedFileUrl,
+                images: additionalImageUrls// Sử dụng URL đã lưu
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            // Xử lý response sau khi gửi thành công
+            console.log('Property added successfully');
+            // Xóa hết thông tin trong các trường của form
+            document.getElementById('title').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('area').value = '';
+            document.getElementById('status').value = '';
+            document.getElementById('address').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('transactionType').value = '';
+
+            // Đặt thumbnail thành ảnh mặc định hoặc URL trống
+            document.getElementById('image').value = '';
+            document.getElementById('thumbnailImg').src = ''; // Ảnh mặc định hoặc URL trống
+            document.getElementById('thumbnailPreviewContainer').style.display = 'none'; // Ẩn phần thumbnail preview
+
+            // Thiết lập giá trị mặc định cho input file
+            document.getElementById('additionalImages').value = '';
+
+            // Làm rỗng danh sách hình ảnh bổ sung
+            document.getElementById('imagesPreview').innerHTML = '';
+            // Hiển thị thông báo thành công cho người dùng
+            alert('Property added successfully');
+
+            // Redirect hoặc hiển thị thông báo thành công tùy ý
+        }).catch(error => {
+            // Xử lý lỗi khi gửi request
+            console.error('Error adding property:', error);
+            // Hiển thị thông báo lỗi cho người dùng
+        });
+    });
+</script>
+</body>
+</html>

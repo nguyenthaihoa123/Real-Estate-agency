@@ -11,14 +11,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto">
-                <a href="index.html" class="nav-item nav-link active">Home</a>
-                <a href="about.html" class="nav-item nav-link">About</a>
+                <a th:href="@{/user}" class="nav-item nav-link" >Home</a>
+                <a th:href="@{/about}" class="nav-item nav-link">About</a>
                 <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Property</a>
+                    <a href="#" class="nav-link dropdown-toggle" id="propertyDropdown" data-bs-toggle="dropdown">Property</a>
                     <div class="dropdown-menu rounded-0 m-0">
-                        <a href="property-list.html" class="dropdown-item">Property List</a>
-                        <a href="property-type.html" class="dropdown-item">Property Type</a>
-                        <a href="property-agent.html" class="dropdown-item">Property Agent</a>
+                        <a th:href="@{/propertyList}" class="dropdown-item">Property List</a>
+                        <a th:href="@{/propertyType}" class="dropdown-item">Property Type</a>
+                        <a th:href="@{/propertyAgent}" class="dropdown-item">Property Agent</a>
                     </div>
                 </div>
                 <div class="nav-item dropdown">
@@ -28,9 +28,31 @@
                         <a href="404.html" class="dropdown-item">404 Error</a>
                     </div>
                 </div>
-                <a href="contact.html" class="nav-item nav-link">Contact</a>
+                <a th:href="@{/contact}" class="nav-item nav-link">Contact</a>
             </div>
             <a href="" class="btn btn-primary px-3 d-none d-lg-flex">Add Property</a>
         </div>
     </nav>
+    <script>
+        // Lấy đường dẫn URL hiện tại
+        const currentUrl = window.location.pathname;
+
+        // Lặp qua tất cả các liên kết trong navbar
+        document.querySelectorAll('.nav-item.nav-link').forEach(link => {
+            // So sánh đường dẫn URL của liên kết với đường dẫn URL hiện tại
+            if (link.getAttribute('href') === currentUrl) {
+                // Nếu trùng khớp, thêm lớp active vào liên kết
+                link.classList.add('active');
+            }
+        });
+        const propertyMenu = document.getElementById('propertyDropdown');
+
+        // Nếu đường dẫn URL hiện tại là một trong các đường dẫn của dropdown
+        if (currentUrl.includes('/propertyList') ||
+            currentUrl.includes('/propertyType') ||
+            currentUrl.includes('/propertyAgent')) {
+            // Thêm lớp active vào mục "Property"
+            propertyMenu.classList.add('active');
+        }
+    </script>
 </div>

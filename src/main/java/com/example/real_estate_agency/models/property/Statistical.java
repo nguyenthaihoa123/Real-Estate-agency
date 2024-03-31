@@ -66,4 +66,8 @@ public class Statistical {
     public void setProperties(Properties properties) {
         this.properties = properties;
     }
+
+    public void upSave(){
+        this.totalSave = this.totalSave +1;
+    }
 }
