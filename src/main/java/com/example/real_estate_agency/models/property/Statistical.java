@@ -70,4 +70,7 @@ public class Statistical {
     public void upSave(){
         this.totalSave = this.totalSave +1;
     }
+    public void upBook(){
+        this.totalBooking = this.totalBooking +1;
+    }
 }

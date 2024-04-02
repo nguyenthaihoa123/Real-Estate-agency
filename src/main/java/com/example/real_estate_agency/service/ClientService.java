@@ -1,8 +1,10 @@
 package com.example.real_estate_agency.service;
 
 import com.example.real_estate_agency.DTO.FeedBackDTO;
+import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.models.user.FeedBack;
+import com.example.real_estate_agency.models.property.Properties;
 
 import java.util.List;
 
@@ -19,4 +21,6 @@ public interface ClientService {
     FeedBack addFeedBack(Long id, FeedBack feedBack);
 
     List<FeedBackDTO> getAllFeedBack();
+
+    BookTour createBookTour(BookTour bookTour, Properties properties);
 }
