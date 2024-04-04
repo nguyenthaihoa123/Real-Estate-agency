@@ -1,9 +1,13 @@
 package com.example.real_estate_agency.service.Impl;
 
 import com.example.real_estate_agency.DTO.FeedBackDTO;
+import com.example.real_estate_agency.models.BookTour;
+import com.example.real_estate_agency.models.property.Statistical;
 import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.models.user.FeedBack;
 import com.example.real_estate_agency.models.user.Role;
+import com.example.real_estate_agency.repository.BookTourRepository;
+import com.example.real_estate_agency.repository.property.PropertyRepository;
 import com.example.real_estate_agency.repository.user.ClientRepository;
 import com.example.real_estate_agency.repository.RoleRepository;
 import com.example.real_estate_agency.repository.user.FeedBackRepository;
@@ -12,6 +16,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.example.real_estate_agency.models.property.Properties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private FeedBackRepository feedBackRepository;
+
+    @Autowired
+    private BookTourRepository bookTourRepository;
+
+    @Autowired
+    private PropertyRepository propertyRepository;
 
 
     @Override
@@ -59,7 +70,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client getByEmail(String email) {
-        return null;
+        return clientRepository.findByEmail(email);
     }
 
     @Override
@@ -88,6 +99,19 @@ public class ClientServiceImpl implements ClientService {
                 result.add(new FeedBackDTO(feedBack.getClient().getUsername(),feedBack.getContent()));
             }
             return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public BookTour createBookTour(BookTour bookTour, Properties properties) {
+        try{
+            Statistical statistical = properties.getStatistical();
+            statistical.upBook();
+            properties.setStatistical(statistical);
+            return bookTourRepository.save(bookTour);
         }catch (Exception e){
             e.printStackTrace();
             return null;

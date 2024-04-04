@@ -3,8 +3,13 @@ package com.example.real_estate_agency.api;
 import com.example.real_estate_agency.DTO.PropertiesApiDTO;
 import com.example.real_estate_agency.DTO.PropertiesHomeDTO;
 import com.example.real_estate_agency.models.Image;
+import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.payment.TransactionType;
+import com.example.real_estate_agency.models.property.Category;
 import com.example.real_estate_agency.models.property.Properties;
+import com.example.real_estate_agency.models.property.Statistical;
+import com.example.real_estate_agency.models.user.Client;
+import com.example.real_estate_agency.service.ClientService;
 import com.example.real_estate_agency.service.PropertyService;
 import com.example.real_estate_agency.service.TransactionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,6 +36,9 @@ public class PropertyAPI {
     private PropertyService propertyService;
     @Autowired
     private TransactionTypeService transactionTypeService;
+
+    @Autowired
+    private ClientService clientService;
 
     @PostMapping("/properties")
     public ResponseEntity<String> addProperty(@RequestBody PropertiesApiDTO propertiesDTO) {
@@ -60,10 +70,11 @@ public class PropertyAPI {
     public ResponseEntity<Map<String, Object>> getAllProperties(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String name) {
+            @RequestParam(required = false) String name,@RequestParam(required = false) String title,
+            @RequestParam(required = false) String category) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            Page<Properties> propertiesPage = propertyService.getAllForPage(pageable,name);
+            Page<Properties> propertiesPage = propertyService.getAllByTitleAndCategoryAndTransactionTypeName(pageable,title,category,name);
 
             List<PropertiesHomeDTO> propertiesHomeDTOS = propertiesPage.getContent().stream()
                     .map(properties -> {
@@ -96,6 +107,29 @@ public class PropertyAPI {
         }
     }
 
+    @GetMapping("/propertiesDetail/{id}")
+    public ResponseEntity<Map<String, Object>> getPropertyDetail(@PathVariable Long id) {
+        // Ở đây bạn thực hiện logic để lấy chi tiết của tài sản từ cơ sở dữ liệu
+        // Ví dụ: gọi service để lấy tài sản từ id
+        Properties properties = propertyService.getById(id);
+        int statistical = properties.getStatistical().getTotalBooking();
+        String category = properties.getCategory().getName();
+        List<String> imageList = new ArrayList<>();
+        for(Image image: properties.getImages()){
+            imageList.add(image.getUrl());
+        }
+
+        // Sau khi lấy chi tiết tài sản, bạn tạo một đối tượng Map chứa thông tin của tài sản
+        Map<String, Object> propertyDetail = new HashMap<>();
+        // Đặt thông tin của tài sản vào Map
+        propertyDetail.put("property",properties);
+        propertyDetail.put("statistical",statistical);
+        propertyDetail.put("category",category);
+        propertyDetail.put("imageList",imageList);
+        // Sau khi thiết lập thông tin tài sản vào Map, bạn trả về ResponseEntity chứa Map đó
+        return new ResponseEntity<>(propertyDetail, HttpStatus.OK);
+    }
+
     @PostMapping("/transaction-types")
     public ResponseEntity<TransactionType> addTransactionType(@RequestBody TransactionType transactionType) {
         try {
@@ -110,4 +144,8 @@ public class PropertyAPI {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
+
 }

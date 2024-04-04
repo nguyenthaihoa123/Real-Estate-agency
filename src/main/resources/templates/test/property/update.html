@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Property</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2 class="text-center">Update Property</h2>
+            <form enctype="multipart/form-data" id="propertyForm">
+                <input type="hidden" id="propertyId" name="propertyId" th:value="${property.id}">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required th:value="${property.title}">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" required th:text="${property.description}"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="number" class="form-control" id="price" name="price" required th:value="${property.price}">
+                </div>
+                <div class="mb-3">
+                    <label for="area" class="form-label">Area</label>
+                    <input type="number" class="form-control" id="area" name="area" required th:value="${property.area}">
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="status" required>
+                        <option th:value="Available" th:selected="${property.status == 'Available'}">Available</option>
+                        <option th:value="Sold" th:selected="${property.status == 'Sold'}">Sold</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" required th:value="${property.address}">
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Thumbnail</label>
+                    <input type="file" class="form-control" id="image" name="thumbnail" accept="image/*">
+                </div>
+                <!-- Hiển thị ảnh sau khi chọn -->
+                <div class="mb-3" id="thumbnailPreviewContainer" style="display: block;">
+                    <label class="form-label">Thumbnail Preview:</label>
+                    <div id="thumbnailPreview">
+                        <img th:src="${property.thumbnail}" class="img-thumbnail" style="max-width: 200px;">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" id="category" name="category" required>
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == property.category.id}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="transactionType" class="form-label">Transaction Type</label>
+                    <select class="form-select" id="transactionType" name="transactionType" required>
+                        <option th:each="type : ${transactionTypes}" th:value="${type.id}" th:text="${type.name}" th:selected="${type.id == property.transactionType.id}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="additionalImages" class="form-label">Additional Images</label>
+                    <input type="file" class="form-control" id="additionalImages" name="additionalImages" accept="image/*" multiple>
+                </div>
+                <div class="mb-3" id="imagesPreviewContainer">
+                    <label class="form-label">Additional Images Preview:</label>
+                    <div id="imagesPreview" class="row">
+                        <!-- Thẻ img sẽ được thêm vào đây -->
+                        <!-- Sử dụng Thymeleaf để lặp qua danh sách ảnh -->
+                        <th:block th:each="image : ${property.images}">
+                            <div class="col-md-3 mb-2">
+                                <img th:src="${image.url}" class="img-thumbnail" style="max-width: 100%;">
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.6.7/firebase-storage.js';
+
+    let thumbnailUrl = '';
+    let additionalImageUrls=[]
+    const firebaseConfig = {
+        // Thay đổi các thông tin cấu hình Firebase của bạn tại đây
+        apiKey: "AIzaSyBqaKMCa0Q0eMNplqu-SkiNS1ETo3bBcIA",
+        authDomain: "finaljavatechnology.firebaseapp.com",
+        projectId: "finaljavatechnology",
+        storageBucket: "finaljavatechnology.appspot.com",
+        messagingSenderId: "384665167842",
+        appId: "1:384665167842:web:0ca24ba3098008064d7bbb",
+        measurementId: "G-K72ZWMS0VR"
+    };
+
+    // Khởi tạo Firebase và Firebase Storage
+    const firebaseApp = initializeApp(firebaseConfig);
+    const storage = getStorage(firebaseApp);
+
+    // Lắng nghe sự kiện chọn tệp
+    document.getElementById('image').addEventListener('change', handleFileSelect, false);
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        const storageRef = ref(storage, file.name);
+
+        uploadBytes(storageRef, file).then((snapshot) => {
+            console.log('File uploaded successfully');
+            getDownloadURL(snapshot.ref).then((url) => {
+                console.log('Thumbnail URL:', url);
+                thumbnailUrl = url;
+            });
+        }).catch((error) => {
+            console.error('Error uploading file:', error);
+        });
+    }
+
+    // Tạo một hàm để xử lý upload hình ảnh cho additional images
+    function handleAdditionalImagesUpload() {
+        const additionalImagesInput = document.getElementById('additionalImages');
+        const additionalImages = additionalImagesInput.files;
+
+        if (additionalImages.length === 0) {
+            // Nếu không có ảnh được chọn, sử dụng danh sách URL mặc định từ thẻ <img>
+            const imagesPreview = document.getElementById('imagesPreview');
+            const imageElements = imagesPreview.getElementsByTagName('img');
+            for (let i = 0; i < imageElements.length; i++) {
+                additionalImageUrls.push(imageElements[i].src);
+            }
+        } else {
+            // Nếu có ảnh được chọn, upload và lưu URL mới
+            // Upload các hình ảnh bổ sung và lưu URL vào mảng
+            Promise.all(Array.from(additionalImages).map(image => {
+                const additionalImageRef = ref(storage, image.name);
+                return uploadBytes(additionalImageRef, image).then((snapshot) => {
+                    return getDownloadURL(snapshot.ref);
+                });
+            })).then((urls) => {
+                additionalImageUrls.push(...urls);
+                console.log('Additional Image URLs:', additionalImageUrls);
+
+                // Sau khi hoàn thành việc upload, gửi yêu cầu cập nhật property
+                // sendUpdateRequest(additionalImageUrls);
+            });
+        }
+    }
+
+    // Bắt sự kiện thay đổi của input additionalImages
+    document.getElementById('additionalImages').addEventListener('change', handleAdditionalImagesUpload);
+
+    document.getElementById('propertyForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const price = document.getElementById('price').value;
+        const area = document.getElementById('area').value;
+        const status = document.getElementById('status').value;
+        const address = document.getElementById('address').value;
+        const category = document.getElementById('category').value;
+        const transactionType = document.getElementById('transactionType').value;
+
+        const thumbnailInput = document.getElementById('image');
+        if (thumbnailInput.files.length === 0) {
+            // Nếu không có ảnh được chọn, sử dụng URL mặc định từ thẻ <img>
+            thumbnailUrl = document.getElementById('thumbnailPreview').getElementsByTagName('img')[0].src;
+        }
+        const propertyId = document.getElementById('propertyId').value;
+        const url = `http://localhost:8080/agent/properties/update/${propertyId}`;
+
+// Tạo đối tượng chứa dữ liệu JSON
+        const requestBody = {
+            title: title,
+            description: description,
+            price: price,
+            area: area,
+            status: status,
+            address: address,
+            category: category,
+            transactionType: transactionType,
+            thumbnail: thumbnailUrl,
+            images: additionalImageUrls
+        };
+
+        console.log('JSON data sent in the request:', requestBody); // Log dữ liệu JSON trước khi gửi
+
+// Gửi yêu cầu POST
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody) // Chuyển đổi đối tượng JSON thành chuỗi JSON
+        }).then(response => {
+            if (response.ok) {
+                console.log('Property updated successfully');
+                alert('Property updated successfully');
+            } else {
+                console.error('Error updating property:', response.status);
+                alert('Error updating property. Please try again later.');
+            }
+        }).catch(error => {
+            console.error('Error updating property:', error);
+            alert('Error updating property. Please try again later.');
+        });
+    });
+
+</script>
+</body>
+</html>

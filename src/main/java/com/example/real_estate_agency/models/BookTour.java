@@ -29,7 +29,46 @@ public class BookTour {
         // Constructor mặc định
     }
 
-// Getters và Setters
+    public BookTour(Long id, String message, Client client, Properties property) {
+        this.id = id;
+        this.message = message;
+        this.client = client;
+        this.property = property;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Properties getProperty() {
+        return property;
+    }
+
+    public void setProperty(Properties property) {
+        this.property = property;
+    }
+
+    // Getters và Setters
 // Đảm bảo rằng bạn đã tạo getters và setters cho trường id và message
 
 // Các phương thức khác

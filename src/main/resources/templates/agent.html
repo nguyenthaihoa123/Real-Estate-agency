@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Agent Page</title>
+</head>
+<body>
+<div>
+    <h2>Welcome, <span th:text="${userName.username}"></span>!</h2>
+    <p>Email: <span th:text="${userName.email}"></span></p>
+    <p>Phone: <span th:text="${userName.phone}"></span></p>
+    <p>Address: <span th:text="${userName.address}"></span></p>
+    <p>Company: <span th:text="${userName.company}"></span></p>
+    <!-- Add more fields as needed -->
+</div>
+<!-- Other content of the Agent Page -->
+</body>
+</html>

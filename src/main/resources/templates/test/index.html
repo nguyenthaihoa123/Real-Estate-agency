@@ -52,94 +52,28 @@
                     <p>Eirmod sed ipsum dolor sit rebum labore magna erat. Tempor ut dolore lorem kasd vero ipsum sit eirmod sit. Ipsum diam justo sed rebum vero dolor duo.</p>
                 </div>
                 <div class="row g-4">
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <a class="cat-item d-block bg-light text-center rounded p-3" href="">
+                    <div th:each="category : ${categories}" class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="${@java.lang.String@format('%1$.1f', #ids.index * 0.2 + 0.1)}s">
+                        <a th:href="'/category/' + ${category.id}" class="cat-item d-block bg-light text-center rounded p-3">
                             <div class="rounded p-4">
                                 <div class="icon mb-3">
-                                    <img class="img-fluid" src="img/icon-apartment.png" alt="Icon">
+                                    <img src="img/icon-luxury.png" class="img-fluid" alt="Icon">
                                 </div>
-                                <h6>Apartment</h6>
-                                <span>123 Properties</span>
+                                <h6 th:text="${category.name}">Category Name</h6>
+                                <span th:text="${category.numberOfProperties} + ' Properties'">123 Properties</span>
                             </div>
                         </a>
                     </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                        <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                            <div class="rounded p-4">
-                                <div class="icon mb-3">
-                                    <img class="img-fluid" src="img/icon-villa.png" alt="Icon">
-                                </div>
-                                <h6>Villa</h6>
-                                <span>123 Properties</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                        <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                            <div class="rounded p-4">
-                                <div class="icon mb-3">
-                                    <img class="img-fluid" src="img/icon-house.png" alt="Icon">
-                                </div>
-                                <h6>Home</h6>
-                                <span>123 Properties</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                        <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                            <div class="rounded p-4">
-                                <div class="icon mb-3">
-                                    <img class="img-fluid" src="img/icon-housing.png" alt="Icon">
-                                </div>
-                                <h6>Office</h6>
-                                <span>123 Properties</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                            <div class="rounded p-4">
-                                <div class="icon mb-3">
-                                    <img class="img-fluid" src="img/icon-building.png" alt="Icon">
-                                </div>
-                                <h6>Building</h6>
-                                <span>123 Properties</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                        <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                            <div class="rounded p-4">
-                                <div class="icon mb-3">
-                                    <img class="img-fluid" src="img/icon-neighborhood.png" alt="Icon">
-                                </div>
-                                <h6>Townhouse</h6>
-                                <span>123 Properties</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                        <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                            <div class="rounded p-4">
-                                <div class="icon mb-3">
-                                    <img class="img-fluid" src="img/icon-condominium.png" alt="Icon">
-                                </div>
-                                <h6>Shop</h6>
-                                <span>123 Properties</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                        <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                            <div class="rounded p-4">
-                                <div class="icon mb-3">
-                                    <img class="img-fluid" src="img/icon-luxury.png" alt="Icon">
-                                </div>
-                                <h6>Garage</h6>
-                                <span>123 Properties</span>
-                            </div>
-                        </a>
-                    </div>
+<!--                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">-->
+<!--                        <a class="cat-item d-block bg-light text-center rounded p-3" href="">-->
+<!--                            <div class="rounded p-4">-->
+<!--                                <div class="icon mb-3">-->
+<!--                                    <img class="img-fluid" src="img/icon-luxury.png" alt="Icon">-->
+<!--                                </div>-->
+<!--                                <h6>Garage</h6>-->
+<!--                                <span>123 Properties</span>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>
@@ -456,61 +390,7 @@
             </div>
         </div>
         <!-- Testimonial End -->
-        <script>
-            $(document).ready(function () {
-                // Fetch data from API
-                $.ajax({
-                    url: 'http://localhost:8080/api/feedback',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        // Loop through the feedback data and create HTML elements for each feedback item
-                        data.forEach(function (feedback) {
-                            var testimonialItem = $('<div class="testimonial-item bg-light rounded p-3">');
-                            var innerHtml = `
-                        <div class="bg-white border rounded p-4">
-                            <p>${feedback.content}</p>
-                            <div class="d-flex align-items-center">
-                                <img class="img-fluid flex-shrink-0 rounded" src="img/${feedback.nameUser}.jpg" style="width: 45px; height: 45px;">
-                                <div class="ps-3">
-                                    <h6 class="fw-bold mb-1">${feedback.nameUser}</h6>
-                                    <small>Profession</small>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                            testimonialItem.html(innerHtml);
-                            $('#testimonial-carousel').append(testimonialItem);
-                        });
 
-                        // Initialize Owl Carousel
-                        $('.testimonial-carousel').owlCarousel({
-                            loop: true,
-                            margin: 10,
-                            responsiveClass: true,
-                            responsive: {
-                                0: {
-                                    items: 1,
-                                    nav: false
-                                },
-                                600: {
-                                    items: 2,
-                                    nav: false
-                                },
-                                1000: {
-                                    items: 3,
-                                    nav: false,
-                                    loop: false
-                                }
-                            }
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error fetching feedback:', error);
-                    }
-                });
-            });
-        </script>
 
         <!-- Footer Start -->
         <div th:replace="layout/footer :: footer"></div>
