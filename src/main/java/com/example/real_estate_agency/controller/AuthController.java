@@ -5,7 +5,9 @@ import com.example.real_estate_agency.models.user.Role;
 import com.example.real_estate_agency.repository.RoleRepository;
 import com.example.real_estate_agency.service.ClientService;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Controller
 public class AuthController {
 
@@ -32,6 +35,7 @@ public class AuthController {
     @GetMapping("/")
     public String home(@AuthenticationPrincipal UserDetails userDetails,Model model) {
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+
         List<String> roles = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());

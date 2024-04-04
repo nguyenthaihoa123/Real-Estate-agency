@@ -3,6 +3,7 @@ package com.example.real_estate_agency.models.user;
 import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.SavePost;
 import jakarta.persistence.*;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "clients")
-public class Client {
+public class Client{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
