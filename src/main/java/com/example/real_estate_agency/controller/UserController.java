@@ -7,6 +7,7 @@ import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.models.user.FeedBack;
 import com.example.real_estate_agency.service.ClientService;
 import com.example.real_estate_agency.service.PropertyService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@AllArgsConstructor
 @Controller
+@RequestMapping("/client")
 public class UserController {
-
-    @Autowired
     private ClientService clientService;
 
-    @Autowired
     private PropertyService propertyService;
 
     @GetMapping("/feedback")
@@ -45,17 +45,7 @@ public class UserController {
 
         return "redirect:/feedback"; // Trả về thông điệp thành công
     }
-    @GetMapping("/testSaveP")
-    public String showTest(Model model) {
-        // Tìm kiếm thuộc tính theo ID
-        return "test/property/testSavePost";
-    }
 
-    @GetMapping("/testBooking")
-    public String showTestBooking(Model model) {
-        // Tìm kiếm thuộc tính theo ID
-        return "test/property/testBooking";
-    }
 
     @PostMapping("/savePost")
     public String saveProperty(@RequestParam("propertyIdInput") Long id,

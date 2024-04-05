@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Collection;
@@ -26,15 +27,13 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Controller
+@RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
     private ClientService clientService;
 
-    @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
     private AgentService agentService;
 
     @GetMapping("/")
@@ -52,17 +51,14 @@ public class AuthController {
     public String admin() {
         return "admin";
     }
-//    @GetMapping("/user")
-//    public String userP() {
-//        return "test/index";
-//    }
+
 
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
     }
 
-    @GetMapping("/agent/login_agent")
+    @GetMapping("/login/agent")
     public String showLoginForm_agent() {
         return "login_agent";
     }
@@ -94,13 +90,13 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/agent/register_agent")
+    @GetMapping("/register/agent")
     public String showRegistrationForm_Agent(Model model) {
         model.addAttribute("agent", new Agent());
         return "register_agent";
     }
 
-    @PostMapping("/agent/register_agent")
+    @PostMapping("/register/agent")
     public String registerAgent(@ModelAttribute("agent") Agent agent, RedirectAttributes redirectAttributes) {
         // Kiểm tra xem đã tồn tại tài khoản với địa chỉ email này chưa
         Agent existing = agentService.findByEmail(agent.getEmail());

@@ -5,9 +5,10 @@ import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.property.Properties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public interface PropertyService {
     Properties save(Properties properties);
     Image saveImage(Image image);

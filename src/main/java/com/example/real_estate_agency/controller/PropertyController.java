@@ -10,6 +10,7 @@ import com.example.real_estate_agency.service.AgentService;
 import com.example.real_estate_agency.service.CategoryService;
 import com.example.real_estate_agency.service.PropertyService;
 import com.example.real_estate_agency.service.TransactionTypeService;
+import lombok.AllArgsConstructor;
 import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,23 +25,17 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
 
+@AllArgsConstructor
 @Controller
-@RequestMapping("/agent")
+@RequestMapping("/property")
 public class PropertyController {
-    @Autowired
     private PropertyService propertyService;
-    @Autowired
     private CategoryService categoryService;
-    @Autowired
     private TransactionTypeService transactionTypeService;
-    @Autowired
     private AgentService agentService;
 
 
-
-//    @Autowired
-//    private
-    @GetMapping("/properties/add")
+    @GetMapping("/add")
     public String showAddPropertyForm(Model model) {
         List<CategoryDTO> categories = categoryService.getAll();
         List<TransactionType> transactionTypes = transactionTypeService.getAll();
@@ -50,7 +45,7 @@ public class PropertyController {
         return "test/property/add"; // Trả về tên của template HTML để hiển thị trang thêm property
     }
 
-    @GetMapping("/properties/update/{id}")
+    @GetMapping("/update/{id}")
     public String showUpdatePropertyForm(@PathVariable("id") Long id, Model model) {
         // Tìm kiếm thuộc tính theo ID
         Optional<Properties> propertyOptional = Optional.ofNullable(propertyService.getById(id));
@@ -73,7 +68,7 @@ public class PropertyController {
         }
     }
 
-    @PostMapping("/properties/update/{id}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<String> updateProperty(@PathVariable Long id, @RequestBody Map<String, Object> propertyJson) {
         Properties properties = propertyService.getById(id);
         if (properties == null) {
@@ -138,7 +133,7 @@ public class PropertyController {
     }
 
 
-    @PostMapping("/properties/add")
+    @PostMapping("/add")
     public String addProperty(@RequestBody Map<String, Object> propertyData,
                               @AuthenticationPrincipal UserDetails userDetails) {
 
