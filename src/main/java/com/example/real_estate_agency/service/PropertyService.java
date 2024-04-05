@@ -23,5 +23,6 @@ public interface PropertyService {
     void imageDeleteByProID(Long id);
 
     void savePost(SavePost savePost,Properties properties);
+    boolean getInfoSavePost(Long clientID, Long PropertyID);
 
 }

@@ -2,8 +2,10 @@ package com.example.real_estate_agency.controller;
 
 import com.example.real_estate_agency.DTO.CategoryDTO;
 import com.example.real_estate_agency.DTO.FeedBackDTO;
+import com.example.real_estate_agency.models.payment.TransactionType;
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.user.Agent;
+import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.service.AgentService;
 import com.example.real_estate_agency.service.CategoryService;
 import com.example.real_estate_agency.service.ClientService;
@@ -17,9 +19,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class HomeController {
@@ -31,6 +35,7 @@ public class HomeController {
     private CategoryService categoryService;
     @Autowired
     private AgentService agentService;
+
 
     @GetMapping("/user")
     public String Home_Client(Model model,@RequestParam(defaultValue = "0") int page) {
@@ -71,6 +76,30 @@ public class HomeController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", propertiesPage.getTotalPages());
         return "test/property-list"; // Trả về tên của file HTML (ở đây là "index.html")
+    }
+    @GetMapping("/properties/{id}")
+    public String showPropertyDetail(@PathVariable("id") Long id, Model model,@AuthenticationPrincipal UserDetails userDetails) {
+        // Tìm kiếm thuộc tính theo ID
+        Optional<Properties> propertyOptional = Optional.ofNullable(propertyService.getById(id));
+        Client client = clientService.getByEmail(userDetails.getUsername());
+        if (propertyOptional.isPresent()) {
+            Properties property = propertyOptional.get();
+            List<CategoryDTO> categories = categoryService.getAll();
+            boolean isSave = propertyService.getInfoSavePost(client.getId(),property.getId());
+//            List<TransactionType> transactionTypes = transactionTypeService.getAll();
+            System.out.println("isSave: " + isSave);
+            // Truyền thuộc tính và danh sách categories, transactionTypes vào model
+            model.addAttribute("property", property);
+            model.addAttribute("categories", categories);
+            model.addAttribute("isSave", isSave);
+//            model.addAttribute("transactionTypes", transactionTypes);
+
+            // Trả về tên của template HTML để hiển thị trang cập nhật property
+            return "test/property/detail";
+        } else {
+            // Trả về trang lỗi hoặc xử lý lỗi khác tùy thuộc vào yêu cầu
+            return "test/404"; // Ví dụ: trang lỗi 404
+        }
     }
 
     @GetMapping("/propertyType")
