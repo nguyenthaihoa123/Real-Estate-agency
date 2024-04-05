@@ -2,6 +2,7 @@ package com.example.real_estate_agency.service.Impl;
 
 import com.example.real_estate_agency.DTO.FeedBackDTO;
 import com.example.real_estate_agency.models.BookTour;
+import com.example.real_estate_agency.models.property.Post;
 import com.example.real_estate_agency.models.property.Statistical;
 import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.models.user.FeedBack;
@@ -116,6 +117,11 @@ public class ClientServiceImpl implements ClientService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public Post getAllPostSaveByClientId(Long id) {
+        return null;
     }
 
     private Role checkRoleExist() {
