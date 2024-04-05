@@ -113,11 +113,29 @@ public class PropertyServiceImpl implements PropertyService {
     public void savePost(SavePost savePost,Properties properties) {
         try {
             Statistical statistical = properties.getStatistical();
-            statistical.upSave();
+            SavePost savePost1 = savePostRepository.findByClientIdAndPropertyId(savePost.getClient().getId(),savePost.getProperty().getId());
+            if(savePost1!=null){
+                statistical.downSave();
+                savePostRepository.delete(savePost1);
+            }
+            else {
+                statistical.upSave();
+                savePostRepository.save(savePost);
+            }
             properties.setStatistical(statistical);
-            savePostRepository.save(savePost);
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean getInfoSavePost(Long clientID, Long PropertyID) {
+        try{
+            return savePostRepository.findByClientIdAndPropertyId(clientID, PropertyID) != null;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
         }
     }
 }

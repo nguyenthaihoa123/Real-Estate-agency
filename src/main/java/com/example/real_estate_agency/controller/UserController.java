@@ -45,6 +45,15 @@ public class UserController {
 
         return "redirect:/feedback"; // Trả về thông điệp thành công
     }
+
+    @GetMapping("/agentDetail/{id}")
+    public String showDetailAgent(@PathVariable("id") Long id, Model model) {
+        // Đưa ID của đại lý vào model
+        model.addAttribute("agentId", id);
+
+        // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
+        return "test/agent/detail";
+    }
     @GetMapping("/testSaveP")
     public String showTest(Model model) {
         // Tìm kiếm thuộc tính theo ID
@@ -55,48 +64,5 @@ public class UserController {
     public String showTestBooking(Model model) {
         // Tìm kiếm thuộc tính theo ID
         return "test/property/testBooking";
-    }
-
-    @PostMapping("/savePost")
-    public String saveProperty(@RequestParam("propertyIdInput") Long id,
-                               @AuthenticationPrincipal UserDetails userDetails) {
-        // Thực hiện logic để lấy chi tiết của tài sản từ cơ sở dữ liệu
-        // Ví dụ: gọi service để lấy tài sản từ id
-        Properties properties = propertyService.getById(id);
-        Client client = clientService.getByEmail(userDetails.getUsername());
-
-        SavePost savePost = new SavePost();
-        savePost.setClient(client);
-        savePost.setProperty(properties);
-
-        // Lưu thông tin vào cơ sở dữ liệu
-        propertyService.savePost(savePost, properties);
-
-        // Sau khi lưu thành công, bạn có thể thực hiện hành động khác tại đây (nếu cần)
-
-        // Sau khi xử lý, bạn có thể chuyển hướng đến trang khác hoặc render template khác
-        return "redirect:/testSaveP";
-    }
-
-    @PostMapping("/saveBooking")
-    public String saveBooking(@RequestParam("propertyIdInput") Long id,@RequestParam("messInput") String mess,
-                               @AuthenticationPrincipal UserDetails userDetails) {
-        // Thực hiện logic để lấy chi tiết của tài sản từ cơ sở dữ liệu
-        // Ví dụ: gọi service để lấy tài sản từ id
-        Properties properties = propertyService.getById(id);
-        Client client = clientService.getByEmail(userDetails.getUsername());
-
-        BookTour bookTour = new BookTour();
-        bookTour.setClient(client);
-        bookTour.setProperty(properties);
-        bookTour.setMessage(mess);
-
-        // Lưu thông tin vào cơ sở dữ liệu
-        clientService.createBookTour(bookTour,properties);
-
-        // Sau khi lưu thành công, bạn có thể thực hiện hành động khác tại đây (nếu cần)
-
-        // Sau khi xử lý, bạn có thể chuyển hướng đến trang khác hoặc render template khác
-        return "redirect:/testBooking";
     }
 }
