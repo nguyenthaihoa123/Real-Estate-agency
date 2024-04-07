@@ -34,6 +34,7 @@ public class AgentPropertyController {
     private AgentService agentService;
 
 
+
     @GetMapping("")
     public String Home_Agent(@AuthenticationPrincipal UserDetails userDetails, Model model){
         String name = userDetails.getUsername();
@@ -41,7 +42,18 @@ public class AgentPropertyController {
         model.addAttribute("userName", agent);
         return "agent";
     }
+    @GetMapping("/properties/owned")
+    public String showOwnedProperty(Model model) {
+
+        return "property/owned"; // Trả về tên của template HTML để hiển thị trang thêm property
+    }
+
     @GetMapping("/properties/add")
+    public String showAddProperty(Model model) {
+
+        return "property/add"; // Trả về tên của template HTML để hiển thị trang thêm property
+    }
+   // @GetMapping("/properties/add")
     public String showAddPropertyForm(Model model) {
         List<CategoryDTO> categories = categoryService.getAll();
         List<TransactionType> transactionTypes = transactionTypeService.getAll();
@@ -50,8 +62,11 @@ public class AgentPropertyController {
         model.addAttribute("property",new Properties());
         return "test/property/add"; // Trả về tên của template HTML để hiển thị trang thêm property
     }
-
     @GetMapping("/properties/update/{id}")
+    public String showUpdateProperty(@PathVariable("id") Long id, Model model) {
+        return "property/update";
+    }
+    //@GetMapping("/properties/update/{id}")
     public String showUpdatePropertyForm(@PathVariable("id") Long id, Model model) {
         // Tìm kiếm thuộc tính theo ID
         Optional<Properties> propertyOptional = Optional.ofNullable(propertyService.getById(id));

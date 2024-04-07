@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
+@RequestMapping("/user/profile")
 public class UserController {
 
     @Autowired
@@ -31,7 +32,14 @@ public class UserController {
     private PropertyService propertyService;
     @Autowired
     private AgentService agentService;
-
+    @GetMapping("/details")
+    public String showDetailsUser(){
+        return "user/details";
+    }
+    @GetMapping("/update")
+    public String updateUser(){
+        return "user/update";
+    }
     @GetMapping("/feedback")
     public String showUserForm() {
         return "test/feedback"; // Trả về tên của trang HTML mà bạn muốn hiển thị

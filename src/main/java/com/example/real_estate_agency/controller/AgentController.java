@@ -18,6 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/agent/profile")
 public class AgentController {
     private AgentService agentService;
+
+    @GetMapping("/details")
+    public String showDetailsCurrentAgen(){
+        return "agent/details";
+    }
     @GetMapping("/detail/{id}")
     public String showDetailAgent(@PathVariable("id") Long id, Model model) {
         // Đưa ID của đại lý vào model
@@ -27,13 +32,20 @@ public class AgentController {
         // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
         return "test/agent/detail";
     }
-
     @GetMapping("/update")
+    public String showUpdateAgent() {
+        return "agent/update";
+    }
+    @GetMapping("/change-password")
+    public String showChangePassword() {
+        return "agent/change-password";
+    }
+    //@GetMapping("/update")
     public String showUpdateProfileAgent(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         // Đưa ID của đại lý vào model
         Agent agent = agentService.findByEmail(userDetails.getUsername());
         model.addAttribute("agent",agent);
         // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
-        return "test/agent/update";
+        return "agent/update";
     }
 }

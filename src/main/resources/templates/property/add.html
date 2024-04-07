@@ -1,90 +1,122 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Add Property</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-</head>
+<head th:replace="layout/head :: head"></head>
 <body>
-<div class="container">
-    <div class="row">
-        <div class="col-md-6 offset-md-3">
-            <h2 class="text-center">Add Property</h2>
-            <form  enctype="multipart/form-data" id="propertyForm">
-                <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" required>
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" required></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="price" class="form-label">Price</label>
-                    <input type="number" class="form-control" id="price" name="price" required>
-                </div>
-                <div class="mb-3">
-                    <label for="area" class="form-label">Area</label>
-                    <input type="number" class="form-control" id="area" name="area" required>
-                </div>
-                <div class="mb-3 visually-hidden">
-                    <label for="status" class="form-label">Status</label>
-                    <select class="form-select" id="status" name="status" required>
-                        <option value="Available">Available</option>
-                        <option value="Sold">Sold</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="address" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" required>
-                </div>
-                <div class="mb-3">
-                    <label for="image" class="form-label">Thumbnail</label>
-                    <input type="file" class="form-control" id="image" name="file" accept="image/*" required>
-                </div>
-                <div class="mb-3" id="thumbnailPreviewContainer" style="display: none;">
-                    <label class="form-label">Thumbnail Preview:</label>
-                    <div id="thumbnailPreview">
-                        <img id="thumbnailImg" class="img-thumbnail" style="max-width: 200px;">
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="category" class="form-label">Category</label>
-                    <select class="form-select" id="category" name="category" required>
-                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="transactionType" class="form-label">Transaction Type</label>
-                    <select class="form-select" id="transactionType" name="transactionType" required>
-                        <option th:each="type : ${transactionTypes}" th:value="${type.id}" th:text="${type.name}"></option>
-                    </select>
-                </div>
+<!-- Navbar Start -->
+<div th:replace="layout/navbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-0">
 
-                <div class="mb-3">
-                    <label for="additionalImages" class="form-label">Additional Images</label>
-                    <input type="file" class="form-control" id="additionalImages" name="additionalImages" accept="image/*" multiple>
-                </div>
-                <div class="mb-3" id="imagesPreviewContainer">
-                    <label class="form-label">Additional Images Preview:</label>
-                    <div id="imagesPreview" class="row">
-                        <!-- Thẻ img sẽ được thêm vào đây -->
-                        <!-- Sử dụng Thymeleaf để lặp qua danh sách ảnh -->
-                        <th:block th:each="image : ${property.images}">
-                            <div class="col-md-3 mb-2">
-                                <img th:src="${image.url}" class="img-thumbnail" style="max-width: 100%;">
+    <!-- Contact Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+                <h1 class="mb-3">Add new property</h1>
+            </div>
+            <div class="">
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <form enctype="multipart/form-data" id="propertyForm"  method="post">
+<!--                        View thumbnail-->
+                        <div class="mb-3" id="thumbnailPreviewContainer" style="display: block;">
+                            <label class="form-label">Images:</label>
+                            <div id="thumbnailPreview">
+                                <img src="/img/default-agent.jpg" id="thumbnailImg" class="img-thumbnail" style="max-width: 200px;">
                             </div>
-                        </th:block>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                        <div class="row g-3">
+<!--                            Thumbnail-->
+                            <div class="col-md-6">
+                                <label for="image" class="form-label">Thumbnail</label>
+                                <input type="file" class="form-control" id="image" name="file" accept="image/*" required>
+                            </div>
+<!--                            Status-->
+                            <div class="col-md-6">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="status" required>
+                                    <option value="Available">Available</option>
+                                    <option value="Sold">Sold</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input  type="text" class="form-control" id="title" name="title"   required>
+                                    <label for="title">Title</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="email" class="form-control" id="description" name="description"  required>
+                                    <label for="description" class="form-label">Description</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" id="price" name="price"  required>
+                                    <label for="price">Price</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input  type="number" class="form-control" id="area" name="area" required>
+                                    <label for="area">Area</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="address" name="address" required>
+                                    <label for="address">Address</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
 
-            </form>
-<!--            <img src="https://storage.googleapis.com/download/storage/v1/b/finaljavatechnology.appspot.com/o/2c5b9eba-a50c-4f3a-8859-13f7d446f21d.png?generation=1711615495205455&amp;alt=media" alt="Test Image">-->
+                            </div>
+                            <div class="col-md-6">
+                                <label for="category" class="form-label">Category</label>
+                                    <select class="form-select" id="category" name="category" required>
+                                        <option >category</option>
+                                    </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="transactionType" class="form-label">Transaction Type</label>
+                                    <select class="form-select" id="transactionType" name="transactionType" required>
+                                        <option >Transaction Type</option>
+                                    </select>
+                            </div>
+<!--                            Additional Images -->
+                            <div class="col-md-12">
+                                    <label for="additionalImages" class="form-label">Additional Images</label>
+                                    <input type="file" class="form-control" id="additionalImages" name="additionalImages" accept="image/*" multiple>
+                                </div>
+                            <div class="col-12 align-content-center">
+                                <div class="mb-3" id="imagesPreviewContainer">
+                                    <label class="form-label">Additional Images Preview:</label>
+                                    <div id="imagesPreview" class="row">
+                                        <!-- Thẻ img sẽ được thêm vào đây -->
+                                        <!-- Sử dụng Thymeleaf để lặp qua danh sách ảnh -->
+<!--                                        <th:block th:each="image : ${property.images}">-->
+                                            <div class="col-md-3 mb-2">
+                                                <img src="/img/default-agent.jpg" class="img-thumbnail" style="max-width: 100%;">
+                                            </div>
+<!--                                        </th:block>-->
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary w-100 py-3" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<!-- Contact End -->
+
+</div>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+<div th:replace="layout/lib :: lib"></div>
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js';
     import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.6.7/firebase-storage.js';
@@ -246,4 +278,5 @@
     });
 </script>
 </body>
+
 </html>

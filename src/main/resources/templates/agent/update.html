@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/navbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-0">
+
+    <!-- Contact Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+                <h1 class="mb-3">Change Agent Information </h1>
+            </div>
+            <div class="">
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <form id="agentForm" th:action="@{/agent/update}"  method="post">
+                        <div class="mb-3" id="thumbnailPreviewContainer" style="display: block;">
+                            <label class="form-label">Avatar:</label>
+                            <div id="thumbnailPreview">
+                                <img src="/img/default-agent.jpg" class="img-thumbnail" style="max-width: 200px;">
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Additional Images</label>
+                                <input type="file" class="form-control" id="image" name="additionalImages" accept="image/*" multiple>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="username" name="username"   required>
+                                    <label for="username">Your FullName</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="email" class="form-control" id="email" name="email"  required>
+                                    <label for="email">Your Email</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="phone" name="phone"  required>
+                                    <label for="email">Your Phone Number</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="company" name="company"  required>
+                                    <label for="email">Your Company</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="address" name="address" required>
+                                    <label for="email">Your Address</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-primary w-100 py-3" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Contact End -->
+
+</div>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.6.7/firebase-storage.js';
+
+    let avtlUrl = '';
+    const firebaseConfig = {
+        // Thay đổi các thông tin cấu hình Firebase của bạn tại đây
+        apiKey: "AIzaSyBqaKMCa0Q0eMNplqu-SkiNS1ETo3bBcIA",
+        authDomain: "finaljavatechnology.firebaseapp.com",
+        projectId: "finaljavatechnology",
+        storageBucket: "finaljavatechnology.appspot.com",
+        messagingSenderId: "384665167842",
+        appId: "1:384665167842:web:0ca24ba3098008064d7bbb",
+        measurementId: "G-K72ZWMS0VR"
+    };
+    // Khởi tạo Firebase và Firebase Storage
+    const firebaseApp = initializeApp(firebaseConfig);
+    const storage = getStorage(firebaseApp);
+
+    // Lắng nghe sự kiện chọn tệp
+    document.getElementById('image').addEventListener('change', handleFileSelect, false);
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        const storageRef = ref(storage, file.name);
+
+        uploadBytes(storageRef, file).then((snapshot) => {
+            console.log('File uploaded successfully');
+            getDownloadURL(snapshot.ref).then((url) => {
+                console.log('Thumbnail URL:', url);
+                avtlUrl = url;
+                const thumbnailPreview = document.getElementById('thumbnailPreview');
+                thumbnailPreview.innerHTML = `<img src="${url}" class="img-thumbnail" style="max-width: 200px;">`;
+            });
+        }).catch((error) => {
+            console.error('Error uploading file:', error);
+        });
+    }
+
+    document.getElementById('agentForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const address = document.getElementById('address').value;
+        const company = document.getElementById('company').value;
+        const agentId = document.getElementById('agentId').value;
+
+        const avtInput = document.getElementById('image');
+        if (avtInput.files.length === 0) {
+            // Nếu không có ảnh được chọn, sử dụng URL mặc định từ thẻ <img>
+            avtlUrl = document.getElementById('thumbnailPreview').getElementsByTagName('img')[0].src;
+        }
+
+        // Tạo đối tượng chứa dữ liệu JSON
+        const requestBody = {
+            username: username,
+            email: email,
+            phone: phone,
+            address: address,
+            company: company,
+            id: agentId,
+            avatar: avtlUrl
+        };
+
+        // Hiển thị dữ liệu JSON trong console
+        fetch('http://localhost:8080/api/agents/update', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Agent profile updated successfully');
+                    // Hiển thị thông báo hoặc thực hiện các hành động khác sau khi cập nhật thành công
+                } else {
+                    console.error('Error updating agent profile:', response.status);
+                    // Hiển thị thông báo hoặc thực hiện các hành động khác nếu có lỗi xảy ra
+                }
+            })
+            .catch(error => {
+                console.error('Error updating agent profile:', error);
+                // Hiển thị thông báo hoặc thực hiện các hành động khác nếu có lỗi xảy ra
+            });
+
+        // Sau khi hiển thị JSON, bạn có thể gửi yêu cầu POST bằng cách sử dụng fetch API hoặc AJAX nếu cần.
+    });
+</script>
+</body>
+
+</html>
