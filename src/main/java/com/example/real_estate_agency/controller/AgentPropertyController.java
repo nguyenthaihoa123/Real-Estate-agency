@@ -10,7 +10,6 @@ import com.example.real_estate_agency.service.AgentService;
 import com.example.real_estate_agency.service.CategoryService;
 import com.example.real_estate_agency.service.PropertyService;
 import com.example.real_estate_agency.service.TransactionTypeService;
-import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +18,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
 
 @Controller
 @RequestMapping("/agent")
-public class PropertyController {
+public class AgentPropertyController {
     @Autowired
     private PropertyService propertyService;
     @Autowired
@@ -37,9 +34,13 @@ public class PropertyController {
     private AgentService agentService;
 
 
-
-//    @Autowired
-//    private
+    @GetMapping("")
+    public String Home_Agent(@AuthenticationPrincipal UserDetails userDetails, Model model){
+        String name = userDetails.getUsername();
+        Agent agent = agentService.findByEmail(name);
+        model.addAttribute("userName", agent);
+        return "agent";
+    }
     @GetMapping("/properties/add")
     public String showAddPropertyForm(Model model) {
         List<CategoryDTO> categories = categoryService.getAll();
@@ -168,9 +169,9 @@ public class PropertyController {
                 case "area":
                     property.setArea(Double.parseDouble((String) value));
                     break;
-                case "status":
-                    property.setStatus((String) value);
-                    break;
+//                case "status":
+//                    property.setStatus((String) value);
+//                    break;
                 case "address":
                     property.setAddress((String) value);
                     break;
@@ -215,6 +216,7 @@ public class PropertyController {
             }
         });
 //        System.out.println(property.getTransactionType().getName());
+        property.setStatus("UnAvailable");
         propertyService.save(property);
         return "redirect:/agent/properties/add";
     }

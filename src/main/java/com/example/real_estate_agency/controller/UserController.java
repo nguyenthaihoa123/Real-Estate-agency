@@ -3,8 +3,10 @@ package com.example.real_estate_agency.controller;
 import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.property.Properties;
+import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.models.user.FeedBack;
+import com.example.real_estate_agency.service.AgentService;
 import com.example.real_estate_agency.service.ClientService;
 import com.example.real_estate_agency.service.PropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class UserController {
 
     @Autowired
     private PropertyService propertyService;
+    @Autowired
+    private AgentService agentService;
 
     @GetMapping("/feedback")
     public String showUserForm() {
@@ -46,23 +50,16 @@ public class UserController {
         return "redirect:/feedback"; // Trả về thông điệp thành công
     }
 
-    @GetMapping("/agentDetail/{id}")
-    public String showDetailAgent(@PathVariable("id") Long id, Model model) {
-        // Đưa ID của đại lý vào model
-        model.addAttribute("agentId", id);
 
-        // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
-        return "test/agent/detail";
-    }
-    @GetMapping("/testSaveP")
-    public String showTest(Model model) {
-        // Tìm kiếm thuộc tính theo ID
-        return "test/property/testSavePost";
-    }
-
-    @GetMapping("/testBooking")
-    public String showTestBooking(Model model) {
-        // Tìm kiếm thuộc tính theo ID
-        return "test/property/testBooking";
-    }
+//    @GetMapping("/testSaveP")
+//    public String showTest(Model model) {
+//        // Tìm kiếm thuộc tính theo ID
+//        return "test/property/testSavePost";
+//    }
+//
+//    @GetMapping("/testBooking")
+//    public String showTestBooking(Model model) {
+//        // Tìm kiếm thuộc tính theo ID
+//        return "test/property/testBooking";
+//    }
 }

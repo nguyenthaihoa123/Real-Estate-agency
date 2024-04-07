@@ -29,7 +29,7 @@
                     </nav>
                 </div>
                 <div class="col-md-6 animated fadeIn">
-                    <img class="img-fluid" src="img/header.jpg" alt="">
+                    <img class="img-fluid" src="/img/header.jpg" alt="">
                 </div>
             </div>
         </div>
@@ -195,15 +195,15 @@
                                                 propertyItem.innerHTML = `
                                                         <div class="property-item rounded overflow-hidden">
                                                             <div class="position-relative overflow-hidden">
-                                                                <a href="/properties/${property.id}">
-                                                                    <img class="img-fluid" src="https://files.fullstack.edu.vn/f8-prod/courses/3.png" alt="${property.title}" />
+                                                                <a href="/home/properties/${property.id}">
+                                                                    <img class="img-fluid" src="${property.thumbnail}" alt="${property.title}" />
                                                                 </a>
                                                                 <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">${property.transactionType}</div>
                                                                 <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">${property.category}</div>
                                                             </div>
                                                             <div class="p-4 pb-0">
                                                                 <h5 class="text-primary mb-3">$${property.price}</h5>
-                                                                <a class="d-block h5 mb-2" href="/properties/${property.id}">${property.title}</a>
+                                                                <a class="d-block h5 mb-2" href="/home/properties/${property.id}">${property.title}</a>
                                                                 <p>
                                                                     <i class="fa fa-map-marker-alt text-primary me-2"></i>
                                                                     <span>${property.address}</span>
@@ -255,7 +255,7 @@
                     <div class="bg-white rounded p-4" style="border: 1px dashed rgba(0, 185, 142, .3)">
                         <div class="row g-5 align-items-center">
                             <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
-                                <img class="img-fluid rounded w-100" src="img/call-to-action.jpg" alt="">
+                                <img class="img-fluid rounded w-100" src="/img/call-to-action.jpg" alt="">
                             </div>
                             <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
                                 <div class="mb-4">
@@ -301,22 +301,22 @@
                         <h5 class="text-white mb-4">Photo Gallery</h5>
                         <div class="row g-2 pt-2">
                             <div class="col-4">
-                                <img class="img-fluid rounded bg-light p-1" src="img/property-1.jpg" alt="">
+                                <img class="img-fluid rounded bg-light p-1" src="/img/property-1.jpg" alt="">
                             </div>
                             <div class="col-4">
-                                <img class="img-fluid rounded bg-light p-1" src="img/property-2.jpg" alt="">
+                                <img class="img-fluid rounded bg-light p-1" src="/img/property-2.jpg" alt="">
                             </div>
                             <div class="col-4">
-                                <img class="img-fluid rounded bg-light p-1" src="img/property-3.jpg" alt="">
+                                <img class="img-fluid rounded bg-light p-1" src="/img/property-3.jpg" alt="">
                             </div>
                             <div class="col-4">
-                                <img class="img-fluid rounded bg-light p-1" src="img/property-4.jpg" alt="">
+                                <img class="img-fluid rounded bg-light p-1" src="/img/property-4.jpg" alt="">
                             </div>
                             <div class="col-4">
-                                <img class="img-fluid rounded bg-light p-1" src="img/property-5.jpg" alt="">
+                                <img class="img-fluid rounded bg-light p-1" src="/img/property-5.jpg" alt="">
                             </div>
                             <div class="col-4">
-                                <img class="img-fluid rounded bg-light p-1" src="img/property-6.jpg" alt="">
+                                <img class="img-fluid rounded bg-light p-1" src="/img/property-6.jpg" alt="">
                             </div>
                         </div>
                     </div>
@@ -359,15 +359,7 @@
     </div>
 
     <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <div th:replace="layout/lib :: lib"></div>
 </body>
 
 </html>

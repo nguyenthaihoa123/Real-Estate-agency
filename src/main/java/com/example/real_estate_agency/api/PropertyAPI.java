@@ -76,7 +76,12 @@ public class PropertyAPI {
             Pageable pageable = PageRequest.of(page, size);
             Page<Properties> propertiesPage = propertyService.getAllByTitleAndCategoryAndTransactionTypeName(pageable,title,category,name);
 
-            List<PropertiesHomeDTO> propertiesHomeDTOS = propertiesPage.getContent().stream()
+            // Lọc ra chỉ các thuộc tính có trạng thái là "available"
+            List<Properties> availableProperties = propertiesPage.getContent().stream()
+                    .filter(property -> "Available".equalsIgnoreCase(property.getStatus()))
+                    .collect(Collectors.toList());
+
+            List<PropertiesHomeDTO> propertiesHomeDTOS = availableProperties.stream()
                     .map(properties -> {
                         PropertiesHomeDTO tmp = new PropertiesHomeDTO();
                         tmp.setId(String.valueOf(properties.getId()));

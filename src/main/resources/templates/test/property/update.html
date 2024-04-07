@@ -29,7 +29,7 @@
                     <label for="area" class="form-label">Area</label>
                     <input type="number" class="form-control" id="area" name="area" required th:value="${property.area}">
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 visually-hidden">
                     <label for="status" class="form-label">Status</label>
                     <select class="form-select" id="status" name="status" required>
                         <option th:value="Available" th:selected="${property.status == 'Available'}">Available</option>

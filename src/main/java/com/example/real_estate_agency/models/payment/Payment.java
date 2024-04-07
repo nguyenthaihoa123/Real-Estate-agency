@@ -31,6 +31,38 @@ public class Payment {
         this.status = status;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public PackagePosting getPackagePosting() {
+        return packagePosting;
+    }
+
+    public void setPackagePosting(PackagePosting packagePosting) {
+        this.packagePosting = packagePosting;
+    }
+
+    public Agent getAgent() {
+        return agent;
+    }
+
+    public void setAgent(Agent agent) {
+        this.agent = agent;
+    }
+
     // Getters và Setters
     // Đảm bảo rằng bạn đã tạo getters và setters cho tất cả các trường
 

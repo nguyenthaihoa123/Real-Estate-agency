@@ -24,7 +24,9 @@ public class Agent {
     private String status;
 
     private String avatar;
+    private int numOfPost;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "agent")
     private List<Payment> payments;
     @JsonIgnore
@@ -150,5 +152,13 @@ public class Agent {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public int getNumOfPost() {
+        return numOfPost;
+    }
+
+    public void setNumOfPost(int numOfPost) {
+        this.numOfPost = numOfPost;
     }
 }
