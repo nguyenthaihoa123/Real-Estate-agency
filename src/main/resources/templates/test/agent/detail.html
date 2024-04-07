@@ -1,10 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Detail Agent</title>
+
 </head>
 <body>
-
+<h1>Agent Detail</h1>
+<div>
+    <p>ID: <span th:text="${agent.id}"></span></p>
+    <p>Username: <span th:text="${agent.username}"></span></p>
+    <p>Email: <span th:text="${agent.email}"></span></p>
+    <p>Phone: <span th:text="${agent.phone}"></span></p>
+    <p>Address: <span th:text="${agent.address}"></span></p>
+    <p>Company: <span th:text="${agent.company}"></span></p>
+    <p>Status: <span th:text="${agent.status}"></span></p>
+    <p>Avatar: <img th:src="${agent.avatar}" alt="Avatar"></p>
+</div>
 </body>
 </html>

@@ -20,12 +20,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/home")
 public class HomeController {
     @Autowired
     private PropertyService propertyService;
@@ -37,7 +39,7 @@ public class HomeController {
     private AgentService agentService;
 
 
-    @GetMapping("/user")
+    @GetMapping("/")
     public String Home_Client(Model model,@RequestParam(defaultValue = "0") int page) {
         int pageSize = 6; // Số lượng phần tử trên mỗi trang
         Pageable pageable = PageRequest.of(page, pageSize);
@@ -119,13 +121,7 @@ public class HomeController {
     public String Contact_Page_Client() {
         return "test/contact"; // Trả về tên của file HTML (ở đây là "index.html")
     }
-    @GetMapping("/agent")
-    public String Home_Agent(@AuthenticationPrincipal UserDetails userDetails, Model model){
-        String name = userDetails.getUsername();
-        Agent agent = agentService.findByEmail(name);
-        model.addAttribute("userName", agent);
-        return "agent";
-    }
+
 
 
 

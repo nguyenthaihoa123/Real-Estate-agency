@@ -61,6 +61,35 @@ public class UserAPI {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping("/agents/update")
+    public ResponseEntity<Agent> updateAgentProfile(@RequestBody Agent agentDetails, @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            // Tìm đại lý cần cập nhật thông tin trong cơ sở dữ liệu
+            Agent agentToUpdate = agentService.findByEmail(userDetails.getUsername());
+
+            // Kiểm tra xem đại lý có tồn tại hay không
+            if (agentToUpdate == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Trả về mã lỗi 404 nếu không tìm thấy đại lý
+            }
+
+            // Cập nhật thông tin của đại lý với thông tin mới từ agentDetails
+            agentToUpdate.setUsername(agentDetails.getUsername());
+            agentToUpdate.setEmail(agentDetails.getEmail());
+            agentToUpdate.setPhone(agentDetails.getPhone());
+            agentToUpdate.setAddress(agentDetails.getAddress());
+            agentToUpdate.setCompany(agentDetails.getCompany());
+            agentToUpdate.setAvatar(agentDetails.getAvatar());
+
+            // Lưu thông tin đã cập nhật vào cơ sở dữ liệu
+            Agent updatedAgent = agentService.save(agentToUpdate);
+
+            return new ResponseEntity<>(updatedAgent, HttpStatus.OK); // Trả về mã 200 OK cùng với thông tin của đại lý đã cập nhật
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Trả về mã lỗi 500 nếu có lỗi xảy ra
+        }
+    }
     @PostMapping("/feedback/clients/{clientId}")
     public ResponseEntity<FeedBack> addFeedBack(@PathVariable Long clientId, @RequestBody FeedBack feedBack) {
         FeedBack savedFeedBack = clientService.addFeedBack(clientId, feedBack);

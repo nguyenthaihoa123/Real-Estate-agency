@@ -34,24 +34,13 @@ public class AuthController {
     @Autowired
     private AgentService agentService;
 
-    @GetMapping("/")
-    public String home(@AuthenticationPrincipal UserDetails userDetails,Model model) {
-        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-        List<String> roles = authorities.stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        model.addAttribute("roles", roles);
-        return "home";
-    }
+
 
     @GetMapping("/admin")
     public String admin() {
         return "admin";
     }
-//    @GetMapping("/user")
-//    public String userP() {
-//        return "test/index";
-//    }
+
 
     @GetMapping("/login")
     public String showLoginForm() {
@@ -107,6 +96,7 @@ public class AuthController {
         }
 
         agent.setStatus("active");
+        agent.setNumOfPost(0);
         // Lưu agent mới vào cơ sở dữ liệu
         if (agentService.save(agent) != null) {
             // Nếu đăng ký thành công, chuyển hướng đến trang đăng nhập agent với thông báo đăng ký thành công
