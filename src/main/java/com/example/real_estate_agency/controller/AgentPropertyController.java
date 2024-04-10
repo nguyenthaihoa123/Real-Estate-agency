@@ -155,85 +155,92 @@ public class AgentPropertyController {
 
 
     @PostMapping("/properties/add")
-    public String addProperty(@RequestBody Map<String, Object> propertyData,
+    public ResponseEntity<String> addProperty(@RequestBody Map<String, Object> propertyData,
                               @AuthenticationPrincipal UserDetails userDetails) {
 
         // Xử lý logic để lưu property vào cơ sở dữ liệu
         String agentEmail = userDetails.getUsername();
         Agent agent = agentService.findByEmail(agentEmail);
         Date currentDate = new Date();
+        if(agent.getNumOfPost() > 0){
+            agent.setNumOfPost(agent.getNumOfPost() - 1);
+            Properties property = new Properties();
 
-        Properties property = new Properties();
+            property.setCreatedAt(currentDate);
+            property.setUpdatedAt(currentDate);
+            property.setAgent(agent);
 
-        property.setCreatedAt(currentDate);
-        property.setUpdatedAt(currentDate);
-        property.setAgent(agent);
-
-        // Đặt các trường từ dữ liệu JSON
-        propertyData.forEach((key, value) -> {
-            switch (key) {
-                case "title":
-                    property.setTitle((String) value);
-                    break;
-                case "description":
-                    property.setDescription((String) value);
-                    break;
-                case "price":
-                    property.setPrice(Double.parseDouble((String) value));
-                    break;
-                case "area":
-                    property.setArea(Double.parseDouble((String) value));
-                    break;
+            // Đặt các trường từ dữ liệu JSON
+            propertyData.forEach((key, value) -> {
+                switch (key) {
+                    case "title":
+                        property.setTitle((String) value);
+                        break;
+                    case "description":
+                        property.setDescription((String) value);
+                        break;
+                    case "price":
+                        property.setPrice(Double.parseDouble((String) value));
+                        break;
+                    case "area":
+                        property.setArea(Double.parseDouble((String) value));
+                        break;
 //                case "status":
 //                    property.setStatus((String) value);
 //                    break;
-                case "address":
-                    property.setAddress((String) value);
-                    break;
-                case "category":
-                    // Xử lý logic để lấy đối tượng Category từ giá trị id và gán cho property
-                    Category category = categoryService.findById(Long.parseLong((String) value));
-                    property.setCategory(category);
-                    break;
-                case "transactionType":
-                    // Xử lý logic tương tự để lấy đối tượng TransactionType và gán cho property
-                    TransactionType transactionType = transactionTypeService.findById(Long.parseLong((String) value));
-                    property.setTransactionType(transactionType);
-                    break;
-                case "thumbnail":
-                    property.setThumbnail((String) value);
-                    break;
-                case "images":
-                    // Xử lý danh sách các URL của các hình ảnh bổ sung
+                    case "address":
+                        property.setAddress((String) value);
+                        break;
+                    case "category":
+                        // Xử lý logic để lấy đối tượng Category từ giá trị id và gán cho property
+                        Category category = categoryService.findById(Long.parseLong((String) value));
+                        property.setCategory(category);
+                        break;
+                    case "transactionType":
+                        // Xử lý logic tương tự để lấy đối tượng TransactionType và gán cho property
+                        TransactionType transactionType = transactionTypeService.findById(Long.parseLong((String) value));
+                        property.setTransactionType(transactionType);
+                        break;
+                    case "thumbnail":
+                        property.setThumbnail((String) value);
+                        break;
+                    case "images":
+                        // Xử lý danh sách các URL của các hình ảnh bổ sung
 //                    property.getImages().clear();
-                    List<String> imageUrls = (List<String>) value;
-                    List<Image> imageList = new ArrayList<>();
-                    // Lưu các URL vào danh sách các hình ảnh bổ sung của property
-                    // Kiểm tra xem danh sách hình ảnh hiện tại có rỗng không
-                    if (imageUrls != null && !imageUrls.isEmpty()) {
-                        // Duyệt qua mỗi URL hình ảnh và tạo đối tượng Image tương ứng
-                        for (String imageUrl : imageUrls) {
-                            Image image = new Image();
-                            image.setUrl(imageUrl);
-                            image.setProperty(property); // Gán thuộc tính property cho mỗi hình ảnh
-                            imageList.add(image); // Thêm hình ảnh vào danh sách
+                        List<String> imageUrls = (List<String>) value;
+                        List<Image> imageList = new ArrayList<>();
+                        // Lưu các URL vào danh sách các hình ảnh bổ sung của property
+                        // Kiểm tra xem danh sách hình ảnh hiện tại có rỗng không
+                        if (imageUrls != null && !imageUrls.isEmpty()) {
+                            // Duyệt qua mỗi URL hình ảnh và tạo đối tượng Image tương ứng
+                            for (String imageUrl : imageUrls) {
+                                Image image = new Image();
+                                image.setUrl(imageUrl);
+                                image.setProperty(property); // Gán thuộc tính property cho mỗi hình ảnh
+                                imageList.add(image); // Thêm hình ảnh vào danh sách
+                            }
                         }
-                    }
 
-                    // Nếu danh sách hình ảnh mới không rỗng, thay thế danh sách hình ảnh hiện tại bằng danh sách mới
-                    if (!imageList.isEmpty()) {
-                        propertyService.imageDeleteByProID(agent.getId());
-                        property.setImages(imageList);
-                    }
-                    break;
-                default:
-                    // Xử lý các trường khác nếu cần
-            }
-        });
+                        // Nếu danh sách hình ảnh mới không rỗng, thay thế danh sách hình ảnh hiện tại bằng danh sách mới
+                        if (!imageList.isEmpty()) {
+                            propertyService.imageDeleteByProID(agent.getId());
+                            property.setImages(imageList);
+                        }
+                        break;
+                    default:
+                        // Xử lý các trường khác nếu cần
+                }
+            });
 //        System.out.println(property.getTransactionType().getName());
-        property.setStatus("UnAvailable");
-        propertyService.save(property);
-        return "redirect:/agent/properties/add";
+            property.setStatus("UnAvailable");
+            agent.setNumOfProperty(agent.getNumOfProperty() + 1);
+            agentService.save(agent);
+            propertyService.save(property);
+            return ResponseEntity.ok("Property added successfully");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not enough posts remaining. Please purchase additional package.");
+        }
     }
 
 

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="searchForm">
+    <div>
+        <h2>Transaction Type</h2>
+        <select id="transactionTypeSelect" name="transactionType">
+            <option value="">-- Select Transaction Type --</option>
+            <!-- Duyệt qua danh sách transactionTypes và tạo các option trong dropdown -->
+            <option th:each="transaction : ${transactionTypes}" th:value="${transaction.id}" th:text="${transaction.name}"></option>
+        </select>
+    </div>
+    <div>
+        <h2>Categories</h2>
+        <select id="categorySelect" name="category">
+            <option value="">-- Select Category --</option>
+            <!-- Duyệt qua danh sách categories và tạo các option trong dropdown -->
+            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+        </select>
+    </div>
+    <button type="submit">Search</button>
+</form>
+
+<div id="propertyList">
+    <!-- Dữ liệu sẽ được hiển thị ở đây -->
+</div>
+<script>
+    window.addEventListener('load', (event) => {
+        // Lấy giá trị của transactionType và category từ các select box
+        const transactionType = document.getElementById("transactionTypeSelect").value;
+        const category = document.getElementById("categorySelect").value;
+        fetchData(transactionType, category);
+    });
+    document.getElementById("searchForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Ngăn chặn form submit mặc định
+        let transactionType = "";
+        let category = "";
+        // Lấy giá trị của transactionType và category từ các select box
+        transactionType = document.getElementById("transactionTypeSelect").value;
+        category = document.getElementById("categorySelect").value;
+        fetchData(transactionType, category);
+    });
+    // Fetch API để lấy dữ liệu từ endpoint
+
+    function fetchData(transactionType, category) {
+        // Tạo query string từ các giá trị truyền vào
+        console.log(transactionType +" "+category)
+        const queryString = `?categoryId=${category}&transactionId=${transactionType}`;
+
+        fetch(`/api/agent/list-property${queryString}`)
+            .then(response => response.json()) // Chuyển đổi dữ liệu nhận được thành JSON
+            .then(data => {
+                // Xử lý dữ liệu nhận được
+                const properties = data.properties;
+
+                // Hiển thị dữ liệu lên giao diện
+                const propertyListDiv = document.getElementById("propertyList");
+                propertyListDiv.innerHTML = ""; // Xóa nội dung cũ
+
+                // Tạo danh sách các property
+                const ul = document.createElement("ul");
+                properties.forEach(property => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                    <a href="/agent/properties/update/${property.id}">
+                        <h3>${property.title}</h3>
+                    </a>
+                    <p>${property.description}</p>
+                    <p>Price: <span>${property.price}</span></p>
+                    <p>Area: <span>${property.area}</span></p>
+                    <p>Status: <span>${property.status}</span></p>
+                    <p>Address: <span>${property.address}</span></p>
+                    <a href="/agent/properties/update/${property.id}">
+                        <img src="${property.thumbnail}" alt="Thumbnail" style="width: 200px; height: 150px; object-fit: cover;">
+                    </a>
+                `;
+                    ul.appendChild(li);
+                });
+
+                propertyListDiv.appendChild(ul);
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+                // Xử lý lỗi nếu cần
+            });
+    }
+
+</script>
+
+
+</body>
+</html>

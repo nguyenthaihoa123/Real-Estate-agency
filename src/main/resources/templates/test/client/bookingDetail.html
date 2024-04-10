@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Detail</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+<h1>Booking Detail</h1>
+<div th:if="${not #lists.isEmpty(booktours)}">
+    <table>
+        <thead>
+        <tr>
+            <th>Property Title</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Area</th>
+            <th>Status</th>
+            <th>Address</th>
+            <th>Thumbnail</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="booktour : ${booktours}">
+            <td th:text="${booktour.getProperty().getTitle()}"></td>
+            <td th:text="${booktour.getProperty().getDescription()}"></td>
+            <td th:text="${booktour.getProperty().getPrice()}"></td>
+            <td th:text="${booktour.getProperty().getArea()}"></td>
+            <td th:text="${booktour.getProperty().getStatus()}"></td>
+            <td th:text="${booktour.getProperty().getAddress()}"></td>
+            <td>
+                <img th:src="${booktour.getProperty().getThumbnail()}" width="100" height="100" alt="Thumbnail">
+            </td>
+            <td>
+                <input type="hidden" id="propertyID" th:value="${booktour.getProperty().id}">
+                <button th:if="${not booktour.isCancel}" th:onclick="'cancelBooking('+${booktour.getProperty().id}+')'">Cancel</button>
+                <button th:if="${booktour.isCancel}" disabled>Cancelled</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <input type="hidden" id="clientID" th:value="${client.id}">
+</div>
+<div th:if="${#lists.isEmpty(booktours)}">
+    <p>No bookings found.</p>
+</div>
+<script>
+    function cancelBooking(propertyId) {
+        // var propertyId = document.getElementById('propertyID').value;
+        var clientId = document.getElementById('clientID').value;
+
+        fetch('/api/updateBooking?clientId=' + clientId + '&propertyId=' + propertyId, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        }).then(function(response) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        }).then(function(data) {
+            console.log(data); // Log the response
+            // You can perform further actions here, such as updating UI
+            alert('Booking cancelled successfully.');
+            // Change button to "Cancelled"
+            var cancelButton = document.querySelector('button[onclick="cancelBooking(' + propertyId + ')"]');
+            cancelButton.setAttribute('disabled', true);
+            var cancelledButton = document.createElement('button');
+            cancelledButton.setAttribute('disabled', true);
+            cancelledButton.textContent = 'Cancelled';
+            cancelButton.parentNode.replaceChild(cancelledButton, cancelButton);
+        }).catch(function(error) {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+    }
+</script>
+</body>
+</html>

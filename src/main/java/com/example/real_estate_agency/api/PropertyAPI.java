@@ -1,5 +1,6 @@
 package com.example.real_estate_agency.api;
 
+import com.example.real_estate_agency.DTO.CategoryDTO;
 import com.example.real_estate_agency.DTO.PropertiesApiDTO;
 import com.example.real_estate_agency.DTO.PropertiesHomeDTO;
 import com.example.real_estate_agency.models.Image;
@@ -8,10 +9,9 @@ import com.example.real_estate_agency.models.payment.TransactionType;
 import com.example.real_estate_agency.models.property.Category;
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.property.Statistical;
+import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.models.user.Client;
-import com.example.real_estate_agency.service.ClientService;
-import com.example.real_estate_agency.service.PropertyService;
-import com.example.real_estate_agency.service.TransactionTypeService;
+import com.example.real_estate_agency.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +39,11 @@ public class PropertyAPI {
 
     @Autowired
     private ClientService clientService;
+
+    @Autowired
+    private AgentService agentService;
+    @Autowired
+    private CategoryService categoryService;
 
     @PostMapping("/properties")
     public ResponseEntity<String> addProperty(@RequestBody PropertiesApiDTO propertiesDTO) {
@@ -147,6 +152,39 @@ public class PropertyAPI {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/agent/list-property")
+    public ResponseEntity<?> showListPropertyJson(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long transactionId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            System.out.println(categoryId);
+            System.out.println(transactionId);
+            Agent agent = agentService.findByEmail(userDetails.getUsername());
+            List<Properties> properties = propertyService.getAllByAgent(agent);
+            List<CategoryDTO> categories = categoryService.getAll();
+
+            // Lọc danh sách Properties dựa trên categoryId và transactionId
+            List<Properties> filteredProperties = properties.stream()
+                    .filter(property -> {
+                        boolean matchCategory = categoryId == null || categoryId.equals(property.getCategory().getId());
+                        boolean matchTransaction = transactionId == null || transactionId.equals(property.getTransactionType().getId());
+                        return matchCategory && matchTransaction;
+                    })
+                    .collect(Collectors.toList());
+
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("agent", agent);
+            responseData.put("properties", filteredProperties);
+            responseData.put("categories", categories);
+
+            return ResponseEntity.ok(responseData);
+        } catch (Exception e) {
+            // Xử lý các trường hợp ngoại lệ và trả về lỗi nếu cần
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
         }
     }
 

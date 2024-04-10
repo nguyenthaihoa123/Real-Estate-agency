@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Save Post Page</title>
+</head>
+<body>
+<h1>Welcome to the save property page <span th:text="${client.username}"></span>!</h1>
+<h2>Your Saved Properties:</h2>
+<ul>
+    <li th:each="property : ${saveList}">
+        <h3 th:text="${property.getProperties().title}"></h3>
+        <p th:text="${property.getProperties().description}"></p>
+        <p>Price: <span th:text="${property.getProperties().price}"></span></p>
+        <p>Area: <span th:text="${property.getProperties().area}"></span></p>
+        <p>Status: <span th:text="${property.getProperties().status}"></span></p>
+        <p>Address: <span th:text="${property.getProperties().address}"></span></p>
+        <img th:src="${property.getProperties().thumbnail}" alt="Thumbnail">
+
+        <!-- Input hidden lưu trạng thái save của property -->
+        <input type="hidden" id="savePost" th:value="${property.isSave()}">
+
+        <!-- Nút Save/Unsave -->
+        <button th:id="'saveButton' + ${property.getProperties().id}" th:onclick="'toggleSaveProperty(' + ${property.getProperties().id} + ')'" th:text="${property.isSave() ? 'Unsave' : 'Save'}" style="font-size: 18px; padding: 10px 20px;">Save</button>
+
+        <div>====================================</div>
+    </li>
+</ul>
+
+<script>
+    // Function để thực hiện lưu hoặc bỏ lưu property
+    function toggleSaveProperty(propertyId) {
+        var xhr = new XMLHttpRequest();
+        var isSave = document.getElementById("savePost").value === 'true';
+        var action = "save";
+
+        xhr.open("POST", "/api/" + action + "Post?propertyIdInput=" + propertyId, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                alert('Property ' + action + 'd successfully');
+                document.getElementById("savePost").value = isSave ? 'false' : 'true';
+                var button = document.getElementById('saveButton' + propertyId);
+                button.innerText = isSave ? 'Save' : 'Unsave';
+            } else {
+                alert('Failed to ' + action + ' property');
+            }
+        };
+        xhr.send();
+    }
+</script>
+</body>
+</html>

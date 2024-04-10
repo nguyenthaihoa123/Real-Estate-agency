@@ -64,6 +64,10 @@ public class Properties {
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookTour> bookedTours = new HashSet<>();
 
+    // Mối quan hệ 1-1 với PropertyRentManagement
+    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private InfoRentProperty infoRentProperty;
+
     // Constructors, getters, setters và các phương thức khác
 
     // Constructors
@@ -229,5 +233,13 @@ public class Properties {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public InfoRentProperty getInfoRentProperty() {
+        return infoRentProperty;
+    }
+
+    public void setInfoRentProperty(InfoRentProperty infoRentProperty) {
+        this.infoRentProperty = infoRentProperty;
     }
 }

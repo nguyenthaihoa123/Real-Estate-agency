@@ -2,6 +2,7 @@ package com.example.real_estate_agency.models;
 
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.user.Client;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,10 +15,15 @@ public class BookTour {
     @Column(nullable = false)
     private String message;
 
+    @Column
+    private boolean isCancel;
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "property_id", nullable = false)
     private Properties property;
@@ -66,6 +72,14 @@ public class BookTour {
 
     public void setProperty(Properties property) {
         this.property = property;
+    }
+
+    public boolean isCancel() {
+        return isCancel;
+    }
+
+    public void setCancel(boolean cancel) {
+        isCancel = cancel;
     }
 
     // Getters và Setters

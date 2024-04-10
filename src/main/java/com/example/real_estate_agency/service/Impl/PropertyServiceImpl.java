@@ -5,9 +5,11 @@ import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.payment.TransactionType;
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.property.Statistical;
+import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.repository.ImageRepository;
 import com.example.real_estate_agency.repository.payment.TransactionTypeRepository;
 import com.example.real_estate_agency.repository.property.PropertyRepository;
+import com.example.real_estate_agency.repository.property.RentPropertyRepository;
 import com.example.real_estate_agency.repository.property.SavePostRepository;
 import com.example.real_estate_agency.repository.property.StatisticalRepository;
 import com.example.real_estate_agency.service.PropertyService;
@@ -30,6 +32,9 @@ public class PropertyServiceImpl implements PropertyService {
     private TransactionTypeRepository transactionTypeRepository;
     @Autowired
     private SavePostRepository savePostRepository;
+
+    @Autowired
+    private RentPropertyRepository rentPropertyRepository;
     @Override
     public Properties save(Properties property) {
         try {
@@ -56,6 +61,17 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public List<Properties> getAll() {
         return propertyRepository.findAll();
+    }
+
+    @Override
+    public List<Properties> getAllByAgent(Agent agent) {
+        try {
+            return propertyRepository.findByAgent(agent);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -134,6 +150,27 @@ public class PropertyServiceImpl implements PropertyService {
             return savePostRepository.findByClientIdAndPropertyId(clientID, PropertyID) != null;
         }
         catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public List<Properties> getAllPropertyRent(Agent agent) {
+        try {
+            TransactionType transactionType = transactionTypeRepository.findByName("Rent");
+            return propertyRepository.findByAgentAndTransactionType(agent,transactionType);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean checkInfoRent(Properties properties) {
+        try {
+            return rentPropertyRepository.findByProperty(properties) != null;
+        }catch (Exception e){
             e.printStackTrace();
             return false;
         }

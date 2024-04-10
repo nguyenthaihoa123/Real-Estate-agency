@@ -213,29 +213,38 @@
             }
         }).then(response => {
             // Xử lý response sau khi gửi thành công
-            console.log('Property added successfully');
-            // Xóa hết thông tin trong các trường của form
-            document.getElementById('title').value = '';
-            document.getElementById('description').value = '';
-            document.getElementById('price').value = '';
-            document.getElementById('area').value = '';
-            document.getElementById('status').value = '';
-            document.getElementById('address').value = '';
-            document.getElementById('category').value = '';
-            document.getElementById('transactionType').value = '';
+            if(response.ok){
+                console.log('Property added successfully');
+                // Xóa hết thông tin trong các trường của form
+                document.getElementById('title').value = '';
+                document.getElementById('description').value = '';
+                document.getElementById('price').value = '';
+                document.getElementById('area').value = '';
+                document.getElementById('status').value = '';
+                document.getElementById('address').value = '';
+                document.getElementById('category').value = '';
+                document.getElementById('transactionType').value = '';
 
-            // Đặt thumbnail thành ảnh mặc định hoặc URL trống
-            document.getElementById('image').value = '';
-            document.getElementById('thumbnailImg').src = ''; // Ảnh mặc định hoặc URL trống
-            document.getElementById('thumbnailPreviewContainer').style.display = 'none'; // Ẩn phần thumbnail preview
+                // Đặt thumbnail thành ảnh mặc định hoặc URL trống
+                document.getElementById('image').value = '';
+                document.getElementById('thumbnailImg').src = ''; // Ảnh mặc định hoặc URL trống
+                document.getElementById('thumbnailPreviewContainer').style.display = 'none'; // Ẩn phần thumbnail preview
 
-            // Thiết lập giá trị mặc định cho input file
-            document.getElementById('additionalImages').value = '';
+                // Thiết lập giá trị mặc định cho input file
+                document.getElementById('additionalImages').value = '';
 
-            // Làm rỗng danh sách hình ảnh bổ sung
-            document.getElementById('imagesPreview').innerHTML = '';
-            // Hiển thị thông báo thành công cho người dùng
-            alert('Property added successfully');
+                // Làm rỗng danh sách hình ảnh bổ sung
+                document.getElementById('imagesPreview').innerHTML = '';
+                // Hiển thị thông báo thành công cho người dùng
+                alert('Property added successfully');
+            } else if (response.status === 403) {
+                // Nếu không đủ numOfPost, hiển thị thông báo
+                alert('Not enough posts remaining. Please purchase additional package.');
+            } else {
+                console.error('Error adding property');
+                alert('Failed to add property');
+            }
+
 
             // Redirect hoặc hiển thị thông báo thành công tùy ý
         }).catch(error => {
