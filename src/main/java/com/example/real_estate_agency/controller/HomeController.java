@@ -89,7 +89,7 @@ public class HomeController {
             List<CategoryDTO> categories = categoryService.getAll();
             boolean isSave = propertyService.getInfoSavePost(client.getId(),property.getId());
 //            List<TransactionType> transactionTypes = transactionTypeService.getAll();
-            System.out.println("isSave: " + isSave);
+//            System.out.println("isSave: " + isSave);
             // Truyền thuộc tính và danh sách categories, transactionTypes vào model
             model.addAttribute("property", property);
             model.addAttribute("categories", categories);
@@ -122,7 +122,13 @@ public class HomeController {
         return "test/contact"; // Trả về tên của file HTML (ở đây là "index.html")
     }
 
-
+    @GetMapping("/agentDetail/{agentId}")
+    public String detailAgent(@PathVariable Long agentId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        // Tìm kiếm thuộc tính theo email
+        Agent agent = agentService.findById(agentId);
+        model.addAttribute("agent", agent);
+        return "test/client/infoAgent";
+    }
 
 
 }

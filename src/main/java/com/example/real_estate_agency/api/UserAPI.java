@@ -2,6 +2,7 @@ package com.example.real_estate_agency.api;
 
 
 import com.example.real_estate_agency.DTO.FeedBackDTO;
+import com.example.real_estate_agency.DTO.UpdatePasswordRequest;
 import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.property.Properties;
@@ -16,9 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -32,6 +37,9 @@ public class UserAPI {
 
     @Autowired
     private PropertyService propertyService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @GetMapping("/agents")
     public ResponseEntity<List<Agent>> getAllAgents() {
         try {
@@ -133,21 +141,83 @@ public class UserAPI {
             Properties properties = propertyService.getById(id);
             Client client = clientService.getByEmail(userDetails.getUsername());
 
-            // Tạo đối tượng BookTour với thông tin tài sản, khách hàng và tin nhắn
-            BookTour bookTour = new BookTour();
-            bookTour.setClient(client);
-            bookTour.setProperty(properties);
-            bookTour.setMessage(mess);
+            BookTour existingBooking = clientService.getInfoBooking(client.getId(), properties.getId());
 
-            // Lưu thông tin đặt tour vào cơ sở dữ liệu
-            clientService.createBookTour(bookTour, properties);
+            if (existingBooking != null) {
+                // Cập nhật thông tin của đặt tour hiện có
+                existingBooking.setMessage(mess);
+                clientService.updateBookTour(existingBooking);
+                return new ResponseEntity<>("Booking updated successfully", HttpStatus.OK);
+            } else {
+                // Tạo một đặt tour mới nếu không có đặt tour tồn tại
+                BookTour bookTour = new BookTour();
+                bookTour.setClient(client);
+                bookTour.setProperty(properties);
+                bookTour.setMessage(mess);
+                bookTour.setCancel(false);
 
-            // Trả về response với HTTP status code 200 OK và một thông điệp
-            return new ResponseEntity<>("Booking saved successfully", HttpStatus.OK);
+                // Lưu thông tin đặt tour vào cơ sở dữ liệu
+                clientService.createBookTour(bookTour, properties);
+                return new ResponseEntity<>("Booking saved successfully", HttpStatus.OK);
+            }
         } catch (Exception e) {
             // Trả về response với HTTP status code 500 Internal Server Error nếu có lỗi xảy ra
             e.printStackTrace();
             return new ResponseEntity<>("Failed to save booking", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PutMapping("/updateBooking")
+    public ResponseEntity<String> updateBooking(@RequestParam("clientId") Long clientId,
+                                                @RequestParam("propertyId") Long propertyId,
+                                                @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            // Tìm kiếm và cập nhật thông tin đặt tour
+            BookTour existingBooking = clientService.getInfoBooking(clientId, propertyId);
+            if (existingBooking !=null) {
+                existingBooking.setCancel(true);
+                clientService.updateBookTour(existingBooking);
+                return new ResponseEntity<>("Booking updated successfully", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Booking not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            // Trả về response với HTTP status code 500 Internal Server Error nếu có lỗi xảy ra
+            e.printStackTrace();
+            return new ResponseEntity<>("Failed to update booking", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/updatePass")
+    public ResponseEntity<String> updatePass(@RequestBody UpdatePasswordRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            Client client = clientService.getByEmail(userDetails.getUsername());
+            // So sánh mật khẩu hiện tại
+            if (!passwordEncoder.matches(request.getCurrentPassword(), client.getPassword())) {
+                // Mật khẩu hiện tại không khớp
+                // Xử lý lỗi hoặc trả về thông báo lỗi
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect");
+            }
+
+            // Kiểm tra mật khẩu mới và mật khẩu xác nhận
+            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+                // Mật khẩu mới và mật khẩu xác nhận không khớp
+                // Xử lý lỗi hoặc trả về thông báo lỗi
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New password and confirm password do not match");
+            }
+
+            // Mã hóa mật khẩu mới trước khi lưu vào DB
+
+            // Lưu mật khẩu mới vào cơ sở dữ liệu
+            client.setPassword(request.getNewPassword());
+            clientService.save(client);
+
+            // Xử lý thành công, ví dụ: chuyển hướng đến trang thành công
+            return ResponseEntity.ok("Password reset successfully");
+        } catch (Exception e) {
+            // Trả về response với HTTP status code 500 Internal Server Error nếu có lỗi xảy ra
+            e.printStackTrace();
+            return new ResponseEntity<>("Failed to update booking", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

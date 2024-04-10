@@ -2,13 +2,14 @@ package com.example.real_estate_agency.service.Impl;
 
 import com.example.real_estate_agency.DTO.FeedBackDTO;
 import com.example.real_estate_agency.models.BookTour;
-import com.example.real_estate_agency.models.property.Post;
+import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.property.Statistical;
 import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.models.user.FeedBack;
 import com.example.real_estate_agency.models.user.Role;
 import com.example.real_estate_agency.repository.BookTourRepository;
 import com.example.real_estate_agency.repository.property.PropertyRepository;
+import com.example.real_estate_agency.repository.property.SavePostRepository;
 import com.example.real_estate_agency.repository.user.ClientRepository;
 import com.example.real_estate_agency.repository.RoleRepository;
 import com.example.real_estate_agency.repository.user.FeedBackRepository;
@@ -37,6 +38,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private BookTourRepository bookTourRepository;
+    @Autowired
+    private SavePostRepository savePostRepository;
 
     @Autowired
     private PropertyRepository propertyRepository;
@@ -120,8 +123,45 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Post getAllPostSaveByClientId(Long id) {
-        return null;
+    public BookTour updateBookTour(BookTour bookTour) {
+        try {
+            return bookTourRepository.save(bookTour);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<SavePost> getAllSavePost(Client client) {
+        try {
+            return savePostRepository.findByClient(client);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<BookTour> getAllBookTour(Client client) {
+        try {
+            return bookTourRepository.findByClient(client);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public BookTour getInfoBooking(Long clientID, Long propertyID) {
+        try {
+            return bookTourRepository.findByClient_IdAndProperty_Id(clientID,propertyID);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private Role checkRoleExist() {

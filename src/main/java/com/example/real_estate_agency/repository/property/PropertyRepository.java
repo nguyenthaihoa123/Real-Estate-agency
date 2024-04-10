@@ -1,7 +1,9 @@
 package com.example.real_estate_agency.repository.property;
 
 import com.example.real_estate_agency.models.payment.TransactionType;
+import com.example.real_estate_agency.models.property.Category;
 import com.example.real_estate_agency.models.property.Properties;
+import com.example.real_estate_agency.models.user.Agent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +22,11 @@ public interface PropertyRepository extends JpaRepository<Properties,Long> {
     Page<Properties> findByTitleContaining(Pageable pageable, String title);
     Page<Properties> findByCategoryNameContaining(Pageable pageable, String category);
     Page<Properties> findByTransactionTypeNameContaining(Pageable pageable, String transactionTypeName);
+//    ============================================
+    List<Properties> findByAgent(Agent agent);
+    List<Properties> findByAgentAndCategory(Agent agent, Category category);
+    List<Properties> findByAgentAndTransactionType(Agent agent, TransactionType transactionType);
+
+
+
 }

@@ -1,8 +1,15 @@
 package com.example.real_estate_agency.controller;
 
 
+import com.example.real_estate_agency.DTO.CategoryDTO;
+import com.example.real_estate_agency.models.payment.TransactionType;
+import com.example.real_estate_agency.models.property.Category;
+import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.service.AgentService;
+import com.example.real_estate_agency.service.CategoryService;
+import com.example.real_estate_agency.service.PropertyService;
+import com.example.real_estate_agency.service.TransactionTypeService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,16 +20,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @AllArgsConstructor
 @RequestMapping("/agent/profile")
 public class AgentController {
     private AgentService agentService;
-    @GetMapping("/detail/{id}")
-    public String showDetailAgent(@PathVariable("id") Long id, Model model) {
+    private PropertyService propertyService;
+    private CategoryService categoryService;
+    private TransactionTypeService transactionTypeService;
+    @GetMapping("/detail")
+    public String showDetailAgent(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         // Đưa ID của đại lý vào model
 //        model.addAttribute("agentId", id);
-        Agent agent = agentService.findById(id);
+        Agent agent = agentService.findByEmail(userDetails.getUsername());
         model.addAttribute("agent",agent);
         // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
         return "test/agent/detail";
@@ -36,4 +48,40 @@ public class AgentController {
         // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
         return "test/agent/update";
     }
+    @GetMapping("/list-property")
+    public String showListProperty( Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        // Đưa ID của đại lý vào model
+
+        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        List<Properties> properties = propertyService.getAllByAgent(agent);
+        List<CategoryDTO> categories = categoryService.getAll();
+        List<TransactionType> transactionTypes = transactionTypeService.getAll();
+
+        model.addAttribute("transactionTypes",transactionTypes);
+        model.addAttribute("categories",categories);
+        model.addAttribute("agent",agent);
+        model.addAttribute("properties", properties);
+
+        // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
+        return "test/agent/list-property";
+    }
+
+    @GetMapping("/list-rent-property")
+    public String showListRentProperty( Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        // Đưa ID của đại lý vào model
+
+        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        List<Properties> properties = propertyService.getAllByAgent(agent);
+        List<CategoryDTO> categories = categoryService.getAll();
+        List<TransactionType> transactionTypes = transactionTypeService.getAll();
+
+        model.addAttribute("transactionTypes",transactionTypes);
+        model.addAttribute("categories",categories);
+        model.addAttribute("agent",agent);
+        model.addAttribute("properties", properties);
+
+        // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
+        return "test/agent/list-rent-property";
+    }
+
 }
