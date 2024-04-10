@@ -1,10 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Personal Page</title>
 </head>
 <body>
+<h1>Welcome, <span th:text="${client.username}"></span>!</h1>
 
+<h2>Saved Posts:</h2>
+<ul>
+    <li th:each="property : ${saveList}" >
+        <a th:href="@{/home/properties/{id}(id=${property.id})}">
+            <h3  th:text="${property.title}" ></h3>
+        </a>
+
+        <p th:text="${property.description}"></p>
+        <p>Price: <span th:text="${property.price}"></span></p>
+        <p>Area: <span th:text="${property.area}"></span></p>
+        <p>Status: <span th:text="${property.status}"></span></p>
+        <p>Address: <span th:text="${property.address}"></span></p>
+        <a th:href="@{/home/properties/{id}(id=${property.id})}" >
+            <img th:src="${property.thumbnail}"  alt="Thumbnail">
+        </a>
+    </li>
+</ul>
+
+<h2>Booked Tours:</h2>
+<ul>
+    <li th:each="bookTour : ${bookList}">
+        <h3>Message:</h3>
+        <h3 th:text="${bookTour.message}" style="color: red;"></h3>
+        <h3 th:text="${bookTour.property.title}"></h3>
+        <p th:text="${bookTour.property.description}"></p>
+        <p>Price: <span th:text="${bookTour.property.price}"></span></p>
+        <p>Area: <span th:text="${bookTour.property.area}"></span></p>
+        <p>Status: <span th:text="${bookTour.property.status}"></span></p>
+        <p>Address: <span th:text="${bookTour.property.address}"></span></p>
+        <a th:href="@{/home/properties/{id}(id=${bookTour.property.id})}">
+            <img th:src="${bookTour.property.thumbnail}" alt="Thumbnail">
+        </a>
+
+    </li>
+</ul>
 </body>
 </html>

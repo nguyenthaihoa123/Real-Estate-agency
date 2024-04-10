@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Agent Detail</title>
+</head>
+<body>
+<h1>Agent Detail</h1>
+<div th:if="${agent != null}">
+    <p>Username: <span th:text="${agent.getUsername()}"></span></p>
+    <p>Email: <span th:text="${agent.getEmail()}"></span></p>
+    <p>Phone: <span th:text="${agent.getPhone()}"></span></p>
+    <p>Address: <span th:text="${agent.getAddress()}"></span></p>
+    <p>Company: <span th:text="${agent.getCompany()}"></span></p>
+    <p>Avatar: <img th:src="${agent.getAvatar()}" width="100" height="100" alt="Avatar"></p>
+    <p>Number of Properties: <span th:text="${agent.getNumOfProperty()}"></span></p>
+</div>
+<div th:if="${agent == null}">
+    <p>No agent found.</p>
+</div>
+</body>
+</html>

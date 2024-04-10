@@ -1,5 +1,8 @@
 package com.example.real_estate_agency.models.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,6 +17,8 @@ public class Role {
     @Column(nullable=false, unique=true)
     private String name;
 
+//    @JsonIgnoreProperties("roles")
+//    @JsonBackReference
     @ManyToMany(mappedBy="roles")
     private List<Client> users;
 

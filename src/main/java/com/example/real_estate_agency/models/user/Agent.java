@@ -26,6 +26,8 @@ public class Agent {
     private String avatar;
     private int numOfPost;
 
+    private int numOfProperty;
+
     @JsonIgnore
     @OneToMany(mappedBy = "agent")
     private List<Payment> payments;
@@ -160,5 +162,13 @@ public class Agent {
 
     public void setNumOfPost(int numOfPost) {
         this.numOfPost = numOfPost;
+    }
+
+    public int getNumOfProperty() {
+        return numOfProperty;
+    }
+
+    public void setNumOfProperty(int numOfProperty) {
+        this.numOfProperty = numOfProperty;
     }
 }
