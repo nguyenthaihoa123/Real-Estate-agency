@@ -36,6 +36,8 @@
             <img th:src="${image.url}" alt="Image" class="additional-image">
         </div>
     </div>
+
+
     <input type="hidden" id="propertyId" th:value="${property.id}">
     <input type="hidden" id="savePost" th:value="${isSave}">
     <button onclick="saveProperty()" style="margin-top: 10px;" id="saveButton">Save Property</button>
@@ -45,7 +47,6 @@
         <label for="bookingContentInput">Booking Content:</label><br>
         <input type="text" id="bookingContentInput" placeholder="Enter booking content">
     </div>
-
     <!-- Thêm nút booking -->
     <button onclick="bookTour()" style="margin-top: 10px;">Book Tour</button>
 </div>

@@ -79,28 +79,28 @@ public class HomeController {
         model.addAttribute("totalPages", propertiesPage.getTotalPages());
         return "test/property-list"; // Trả về tên của file HTML (ở đây là "index.html")
     }
+
     @GetMapping("/properties/{id}")
     public String showPropertyDetail(@PathVariable("id") Long id, Model model,@AuthenticationPrincipal UserDetails userDetails) {
-        // Tìm kiếm thuộc tính theo ID
+
         Optional<Properties> propertyOptional = Optional.ofNullable(propertyService.getById(id));
         Client client = clientService.getByEmail(userDetails.getUsername());
         if (propertyOptional.isPresent()) {
+            Agent agent = agentService.findById(propertyOptional.get().getAgent().getId());
             Properties property = propertyOptional.get();
             List<CategoryDTO> categories = categoryService.getAll();
             boolean isSave = propertyService.getInfoSavePost(client.getId(),property.getId());
-//            List<TransactionType> transactionTypes = transactionTypeService.getAll();
-//            System.out.println("isSave: " + isSave);
-            // Truyền thuộc tính và danh sách categories, transactionTypes vào model
+
             model.addAttribute("property", property);
             model.addAttribute("categories", categories);
             model.addAttribute("isSave", isSave);
-//            model.addAttribute("transactionTypes", transactionTypes);
+            model.addAttribute("agent", agent);
 
-            // Trả về tên của template HTML để hiển thị trang cập nhật property
-            return "test/property/detail";
+
+
+            return "property/detail";
         } else {
-            // Trả về trang lỗi hoặc xử lý lỗi khác tùy thuộc vào yêu cầu
-            return "test/404"; // Ví dụ: trang lỗi 404
+            return "test/404";
         }
     }
 
@@ -127,7 +127,9 @@ public class HomeController {
         // Tìm kiếm thuộc tính theo email
         Agent agent = agentService.findById(agentId);
         model.addAttribute("agent", agent);
-        return "test/client/infoAgent";
+        model.addAttribute("isEdit",false);
+        //return "test/client/infoAgent";
+        return "agent/detail";
     }
 
 

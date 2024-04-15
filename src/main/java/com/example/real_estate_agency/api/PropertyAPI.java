@@ -106,6 +106,7 @@ public class PropertyAPI {
             Map<String, Object> response = new HashMap<>();
             response.put("totalElements", totalElements);
             response.put("properties", propertiesHomeDTOS);
+
             if (!propertiesPage.isEmpty()) {
                 return ResponseEntity.ok(response);
             } else {

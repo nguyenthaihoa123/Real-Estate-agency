@@ -30,29 +30,34 @@ public class AgentController {
     private PropertyService propertyService;
     private CategoryService categoryService;
     private TransactionTypeService transactionTypeService;
+
+    private Agent getCurrAngent(@AuthenticationPrincipal UserDetails userDetails){
+        return  agentService.findByEmail(userDetails.getUsername());
+    }
+
     @GetMapping("/detail")
     public String showDetailAgent(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         // Đưa ID của đại lý vào model
-//        model.addAttribute("agentId", id);
-        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Agent agent = getCurrAngent(userDetails);
+        if(agent.getAvatar().isEmpty()){
+            agent.setAvatar("/img/default-agent.jpg");
+        }
         model.addAttribute("agent",agent);
-        // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
-        return "test/agent/detail";
+        model.addAttribute("isEdit",true);
+        return "agent/detail";
     }
 
     @GetMapping("/update")
     public String showUpdateProfileAgent(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         // Đưa ID của đại lý vào model
-        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Agent agent = getCurrAngent(userDetails);
         model.addAttribute("agent",agent);
-        // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
-        return "test/agent/update";
+        return "agent/update";
     }
     @GetMapping("/list-property")
     public String showListProperty( Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        // Đưa ID của đại lý vào model
 
-        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Agent agent = getCurrAngent(userDetails);
         List<Properties> properties = propertyService.getAllByAgent(agent);
         List<CategoryDTO> categories = categoryService.getAll();
         List<TransactionType> transactionTypes = transactionTypeService.getAll();
@@ -63,14 +68,13 @@ public class AgentController {
         model.addAttribute("properties", properties);
 
         // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
-        return "test/agent/list-property";
+        return "agent/list-property";
     }
 
     @GetMapping("/list-rent-property")
     public String showListRentProperty( Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        // Đưa ID của đại lý vào model
 
-        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Agent agent = getCurrAngent(userDetails);
         List<Properties> properties = propertyService.getAllByAgent(agent);
         List<CategoryDTO> categories = categoryService.getAll();
         List<TransactionType> transactionTypes = transactionTypeService.getAll();

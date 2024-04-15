@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/navbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-0">
+
+    <!-- Header Start -->
+    <div class="container-fluid header bg-white p-0 mt-4">
+        <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
+            <div class="col-md-6 p-5 mt-lg-5">
+                <h1 class="display-5 animated fadeIn mb-4"><span th:text="${property.title}"></span></h1>
+                <p class="animated fadeIn mb-4 pb-2"><span th:text="${property.description}"></span></p>
+                <h2 class="text-primary">Price: <span th:text="${property.price}"></span></h2>
+                <h3 class="col-md-12">Area: <span th:text="${property.area}">  </span> m³</h3>
+                <h4 class="col-md-12">Address: <span th:text="${property.address}"></span></h4>
+                <p>Status: <span th:text="${property.status}"></span></p>
+                <input type="hidden" id="propertyId" th:value="${property.id}">
+                <input type="hidden" id="savePost" th:value="${isSave}">
+                <button onclick="saveProperty()" class="btn btn-primary py-3 px-5 me-3 animated fadeIn" id="saveButton">Save Property</button>
+
+            </div>
+<!--            Thumbnail-->
+            <div class="col-md-6 animated fadeIn ">
+                <div  class="owl-carousel header-carousel">
+                    <div class="owl-carousel-item">
+                        <img class="img-fluid " th:src="${property.thumbnail}" alt="Thumbnail" >
+                    </div>
+                </div>
+            </div>
+            <!--            slide-->
+            <div class="col-md-12 animated fadeIn">
+                <div th:if="${property.images}" class="owl-carousel header-carousel">
+                    <div th:each="image : ${property.images}" class="owl-carousel-item">
+                        <img class="img-fluid" th:src="${image.url}" alt="Image" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- booking -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="bg-light rounded p-3">
+                <div class="bg-white rounded p-4" style="border: 1px dashed rgba(0, 185, 142, .3)">
+                    <div class="row g-5 align-items-center">
+                        <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                            <div class="team-item rounded overflow-hidden">
+                                <div class="position-relative">
+                                    <img class="img-fluid" style="object-fit: contain; width: 100%" th:src="${agent.avatar}"  alt="avatar_agent">
+                                    <div class="position-absolute start-50 top-100 translate-middle d-flex align-items-center">
+                                        <a th:href="@{/home/agentDetail/{agentId}(agentId=${agent.id})}">
+                                            <button  class="btn btn-primary py-3 px-4 me-2">Get details</button>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="text-center p-4 mt-3">
+                                    <h5 class="fw-bold mb-0"><span th:text="${agent.username}"></span></h5>
+                                    <small><span th:text="${agent.email}"></span></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+                            <div class="mb-4">
+                                <h1 class="mb-3">Contact With Agent Now !</h1>
+                                <p></p>
+                            </div>
+                            <h5 >Booking Content:</h5>
+<!--                            <label for="bookingContentInput" ></label><br>-->
+                            <input type="text" id="bookingContentInput" placeholder="Enter booking content" class="form-control bg-transparent w-100 py-3 ps-4 pe-5 mb-4">
+                            <button onclick="bookTour()" class="btn btn-primary py-3 px-4 me-2"><i class="fa fa-phone-alt me-2"></i> Book Tour</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- booking End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+<script>
+    var saveButton = document.getElementById('saveButton');
+
+    // Hàm để thay đổi nội dung của nút lưu
+    function toggleSaveButtonText(isSave) {
+        if (isSave) {
+            saveButton.innerText = 'Unsave Property';
+        } else {
+            saveButton.innerText = 'Save Property';
+        }
+    }
+
+    // Khi trang được tải, cập nhật nội dung của nút lưu
+    window.onload = function() {
+        var isSave = document.getElementById("savePost").value === 'true';
+        toggleSaveButtonText(isSave);
+    };
+
+    // Hàm xử lý khi người dùng nhấn nút lưu
+    function saveProperty() {
+        // Lấy ID của property từ Thymeleaf model
+        var propertyId = document.getElementById("propertyId").value;
+
+        // Lấy giá trị cũ của isSave
+        var isSave = document.getElementById("savePost").value === 'true';
+
+        // Đảo ngược giá trị của isSave
+        isSave = !isSave;
+
+        // Cập nhật giá trị của input hidden savePost
+        document.getElementById("savePost").value = isSave.toString();
+
+        // Gọi hàm để cập nhật nội dung của nút lưu
+        toggleSaveButtonText(isSave);
+
+        // Tạo request
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/savePost?propertyIdInput=" + propertyId, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        // Xử lý response
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                alert('Property saved successfully');
+            } else {
+                alert('Failed to save property');
+            }
+        };
+
+        // Gửi request
+        xhr.send();
+    }
+    function bookTour() {
+        // Lấy ID của tài sản từ Thymeleaf model
+        var propertyId = document.getElementById("propertyId").value;
+
+        // Lấy thông điệp từ input
+        var messInput = document.getElementById("bookingContentInput").value;
+
+        // Tạo request
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/saveBooking?propertyIdInput=" + propertyId + "&messInput=" + messInput, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        // Xử lý response
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                alert('Booking saved successfully');
+            } else {
+                alert('Failed to save booking');
+            }
+        };
+
+        // Gửi request
+        xhr.send();
+    }
+</script>
+
+</body>
+</html>

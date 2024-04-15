@@ -48,12 +48,13 @@ public class AgentPropertyController {
         return "property/owned"; // Trả về tên của template HTML để hiển thị trang thêm property
     }
 
-    @GetMapping("/properties/add")
+    //@GetMapping("/properties/add")
     public String showAddProperty(Model model) {
-
+        List<CategoryDTO> categories = categoryService.getAll();
+        //model.addAttribute("categories", categories);
         return "property/add"; // Trả về tên của template HTML để hiển thị trang thêm property
     }
-   // @GetMapping("/properties/add")
+   @GetMapping("/properties/add")
     public String showAddPropertyForm(Model model) {
         List<CategoryDTO> categories = categoryService.getAll();
         List<TransactionType> transactionTypes = transactionTypeService.getAll();
@@ -185,9 +186,6 @@ public class AgentPropertyController {
                     case "area":
                         property.setArea(Double.parseDouble((String) value));
                         break;
-//                case "status":
-//                    property.setStatus((String) value);
-//                    break;
                     case "address":
                         property.setAddress((String) value);
                         break;

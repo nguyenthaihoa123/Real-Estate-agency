@@ -15,46 +15,46 @@
             </div>
             <div class="">
                 <div class="wow fadeInUp" data-wow-delay="0.5s">
-                    <form id="agentForm" th:action="@{/agent/update}"  method="post">
+                    <form id="agentForm" th:action="@{/agent/update}" th:object="${agent}" method="post">
                         <div class="mb-3" id="thumbnailPreviewContainer" style="display: block;">
                             <label class="form-label">Avatar:</label>
                             <div id="thumbnailPreview">
-                                <img src="/img/default-agent.jpg" class="img-thumbnail" style="max-width: 200px;">
+                                <img th:src="${agent.avatar}" class="img-thumbnail" style="max-width: 200px;">
                             </div>
                         </div>
                         <div class="row g-3">
                             <div class="mb-3">
-                                <label for="image" class="form-label">Additional Images</label>
                                 <input type="file" class="form-control" id="image" name="additionalImages" accept="image/*" multiple>
+                                <label for="image" class="form-label">Additional Images</label>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="username" name="username"   required>
+                                    <input type="text" class="form-control" id="username" name="username" th:value="*{username}" required>
                                     <label for="username">Your FullName</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="email" class="form-control" id="email" name="email"  required>
+                                    <input type="email" class="form-control" id="email" name="email" th:value="*{email}" required>
                                     <label for="email">Your Email</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="phone" name="phone"  required>
-                                    <label for="email">Your Phone Number</label>
+                                    <input type="text" class="form-control" id="phone" name="phone" th:value="*{phone}" required>
+                                    <label for="phone">Your Phone Number</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="company" name="company"  required>
-                                    <label for="email">Your Company</label>
+                                    <input type="text" class="form-control" id="company" name="company" th:value="*{company}" required>
+                                    <label for="company">Your Company</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="address" name="address" required>
-                                    <label for="email">Your Address</label>
+                                    <input type="text" class="form-control" id="address" name="address" th:value="*{address}" required>
+                                    <label for="address">Your Address</label>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -167,6 +167,7 @@
         // Sau khi hiển thị JSON, bạn có thể gửi yêu cầu POST bằng cách sử dụng fetch API hoặc AJAX nếu cần.
     });
 </script>
+
 </body>
 
 </html>

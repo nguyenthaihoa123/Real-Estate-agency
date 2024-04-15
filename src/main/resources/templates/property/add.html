@@ -72,8 +72,8 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="category" class="form-label">Category</label>
-                                    <select class="form-select" id="category" name="category" required>
-                                        <option >category</option>
+                                    <select class="form-select" id="category" name="category" th:field="*{category}" required>
+                                        <option  th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" >category</option>
                                     </select>
                             </div>
                             <div class="col-md-6">
