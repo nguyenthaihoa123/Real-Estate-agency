@@ -64,13 +64,25 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client getById(Long id) {
-        return null;
+        try {
+            return clientRepository.findById(id).get();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public boolean deleteById(Long id) {
-        return false;
+        try {
+            clientRepository.deleteById(id);
+            return true; // Trả về true nếu không có lỗi xảy ra khi xóa
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Trả về false nếu có lỗi xảy ra khi xóa
+        }
     }
+
 
     @Override
     public Client getByEmail(String email) {
@@ -158,6 +170,16 @@ public class ClientServiceImpl implements ClientService {
     public BookTour getInfoBooking(Long clientID, Long propertyID) {
         try {
             return bookTourRepository.findByClient_IdAndProperty_Id(clientID,propertyID);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<Client> getAllClient() {
+        try {
+            return clientRepository.findByRolesName("ROLE_USER");
         }catch (Exception e){
             e.printStackTrace();
             return null;

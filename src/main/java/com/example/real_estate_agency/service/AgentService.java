@@ -1,5 +1,6 @@
 package com.example.real_estate_agency.service;
 
+import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.payment.PackagePosting;
 import com.example.real_estate_agency.models.payment.Payment;
 import com.example.real_estate_agency.models.user.Agent;
@@ -16,5 +17,11 @@ public interface AgentService {
 
     PackagePosting findPackageByPrice(double price);
 
-    Payment savePaymet(Payment payment);
+    void savePaymet(Payment payment);
+
+    List<Payment> getAllPayment();
+
+    void deleteById(Long id);
+
+    List<BookTour> getAllBookTour(Agent agent);
 }

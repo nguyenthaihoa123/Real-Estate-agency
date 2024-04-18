@@ -25,7 +25,7 @@
                 <h2 class="text-center">Agent Registration</h2>
             </div>
             <div class="card-body">
-                <form method="post" role="form" th:action="@{/agent/register_agent}" th:object="${agent}">
+                <form method="post" role="form" th:action="@{/register_agent}" th:object="${agent}" id="formRegisterAgent">
                     <div class="form-group mb-3">
                         <label class="form-label">Username</label>
                         <input class="form-control"
@@ -86,24 +86,67 @@
                                type="text"
                         />
                     </div>
+                    <input type="hidden" id="avatarUrl" name="avatar" th:value="${agent.avatar}" />
+
                     <div class="form-group mb-3">
                         <label class="form-label">Avatar</label>
                         <input class="form-control"
                                id="avatar"
-                               name="avatar"
                                placeholder="Enter avatar URL"
-                               th:field="*{avatar}"
-                               type="text"
+                               type="file"
                         />
                     </div>
                     <div class="form-group mb-3">
+                        <label class="form-label">Avatar Preview:</label>
+                        <img id="avatarPreview" src="#" alt="Avatar Preview" class="img-thumbnail" style="display: none; max-width: 200px; max-height: 200px;">
+                    </div>
+                    <div class="form-group mb-3">
                         <button class="btn btn-primary" type="submit">Register</button>
-                        <span>Already registered? <a href="/login_agent" th:href="@{/login_agent}">Login here</a></span>
+                        <span>Already registered? <a th:href="@{/agent/login_agent}">Login here</a></span>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.6.7/firebase-storage.js';
+    let uploadedFileUrl = '';
+    let additionalImageUrls = [];
+    const firebaseConfig = {
+        apiKey: "AIzaSyBqaKMCa0Q0eMNplqu-SkiNS1ETo3bBcIA",
+        authDomain: "finaljavatechnology.firebaseapp.com",
+        projectId: "finaljavatechnology",
+        storageBucket: "finaljavatechnology.appspot.com",
+        messagingSenderId: "384665167842",
+        appId: "1:384665167842:web:0ca24ba3098008064d7bbb",
+        measurementId: "G-K72ZWMS0VR"
+    };
+
+    // Initialize Firebase and Firebase Storage
+    const firebaseApp = initializeApp(firebaseConfig);
+    const storage = getStorage(firebaseApp);
+
+    const avatarInput = document.getElementById('avatar');
+    const avatarPreview = document.getElementById('avatarPreview');
+
+    avatarInput.addEventListener('change', handleAvatarUpload);
+
+    async function handleAvatarUpload(event) {
+        const file = event.target.files[0];
+        const storageRef = ref(storage, `avatars/${file.name}`);
+        await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(storageRef);
+        uploadedFileUrl = downloadURL;
+        avatarPreview.src = downloadURL;
+        avatarPreview.style.display = 'block';
+
+        // Lưu URL của hình ảnh vào trường ẩn
+        document.getElementById('avatarUrl').value = uploadedFileUrl;
+    }
+
+    // You can use 'uploadedFileUrl' in your form submission logic
+</script>
 </body>
 </html>

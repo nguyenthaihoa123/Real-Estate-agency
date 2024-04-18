@@ -3,6 +3,7 @@ package com.example.real_estate_agency.api;
 import com.example.real_estate_agency.DTO.CategoryDTO;
 import com.example.real_estate_agency.DTO.PropertiesApiDTO;
 import com.example.real_estate_agency.DTO.PropertiesHomeDTO;
+import com.example.real_estate_agency.config.email.EmailSenderService;
 import com.example.real_estate_agency.models.Image;
 import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.payment.TransactionType;
@@ -12,6 +13,8 @@ import com.example.real_estate_agency.models.property.Statistical;
 import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.service.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +48,9 @@ public class PropertyAPI {
     private AgentService agentService;
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private EmailSenderService senderService;
 
     @PostMapping("/properties")
     public ResponseEntity<String> addProperty(@RequestBody PropertiesApiDTO propertiesDTO) {
@@ -162,8 +169,9 @@ public class PropertyAPI {
             @RequestParam(required = false) Long transactionId,
             @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            System.out.println(categoryId);
-            System.out.println(transactionId);
+//            System.out.println(categoryId);
+//            System.out.println(transactionId);
+            System.out.println("Properties JSON: ");
             Agent agent = agentService.findByEmail(userDetails.getUsername());
             List<Properties> properties = propertyService.getAllByAgent(agent);
             List<CategoryDTO> categories = categoryService.getAll();
@@ -182,6 +190,7 @@ public class PropertyAPI {
             responseData.put("properties", filteredProperties);
             responseData.put("categories", categories);
 
+
             return ResponseEntity.ok(responseData);
         } catch (Exception e) {
             // Xử lý các trường hợp ngoại lệ và trả về lỗi nếu cần
@@ -190,6 +199,95 @@ public class PropertyAPI {
     }
 
 
+    @PostMapping("/send_email")
+    public ResponseEntity<String> sendEmail(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String tenantName = request.get("tenantName");
+        String propertyTitle = request.get("propertyTitle");
+        String propertyAddress = request.get("propertyAddress");
+
+        Context context = new Context();
+        context.setVariable("tenantName", tenantName);
+        context.setVariable("propertyTitle", propertyTitle);
+        context.setVariable("propertyAddress", propertyAddress);
+
+        try {
+            // Gửi email bằng dịch vụ gửi email đã được cấu hình
+            senderService.sendEmailWithHtmlTemplate(email,
+                    "Information about money for rent property",
+                    "test/property/email/index",context);
+
+            return ResponseEntity.ok("Email sent successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send email");
+        }
+    }
+
+    @PostMapping("/send_email_sale")
+    public ResponseEntity<String> sendEmail_ThanksSale(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String BuyerName = request.get("BuyerName");
+
+        Context context = new Context();
+        context.setVariable("BuyerName", BuyerName);
+
+        System.out.println(email);
+
+        try {
+            // Gửi email bằng dịch vụ gửi email đã được cấu hình
+            senderService.sendEmailWithHtmlTemplate(email,
+                    "Information about contract sale property",
+                    "test/property/email/saleThanks",context);
+
+            return ResponseEntity.ok("Email sent successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send email");
+        }
+    }
+
+    @PostMapping("/property-update/{id}")
+    public ResponseEntity<String> processRequest(@PathVariable Long id) {
+        try {
+            // Xử lý yêu cầu tại đây với id và body được nhận từ client
+            System.out.println("Received ID: " + id);
+            Properties properties = propertyService.getById(id);
+            properties.setStatus("Available");
+            propertyService.save(properties);
 
 
+            Context context = new Context();
+            String email = properties.getAgent().getEmail();
+            String title = properties.getTitle();
+            context.setVariable("title", title);
+            try {
+                senderService.sendEmailWithHtmlTemplate(email, "Announcement about your property",
+                        "test/property/email/ApprovedProperty",context);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            // Trả về phản hồi thành công nếu quá trình xử lý thành công
+            return ResponseEntity.ok("Request processed successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về phản hồi lỗi nếu có lỗi xảy ra trong quá trình xử lý
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing the request");
+        }
+    }
+
+    @DeleteMapping("/property-delete/{id}")
+    public ResponseEntity<String> deleteProperty_Admin(@PathVariable Long id) {
+        try {
+            // Xử lý yêu cầu tại đây với id và body được nhận từ client
+            System.out.println("Received ID: " + id);
+            propertyService.deletePropetty(id);
+            // Trả về phản hồi thành công nếu quá trình xử lý thành công
+            return ResponseEntity.ok("Request processed successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về phản hồi lỗi nếu có lỗi xảy ra trong quá trình xử lý
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing the request");
+        }
+    }
 }

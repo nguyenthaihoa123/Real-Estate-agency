@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
+
 @Controller
 @RequestMapping("/agent/payPackage")
 public class VnPayController {
@@ -63,6 +65,8 @@ public class VnPayController {
         payment.setAgent(agent);
         payment.setPackagePosting(packagePosting);
         payment.setStatus("accept");
+        Date currentTime = new Date();
+        payment.setCreatedAt(currentTime);
 //        Luu payment
         if(paymentStatus ==1 ){
             int curNum = agent.getNumOfPost() + packagePosting.getQuantity();

@@ -77,7 +77,7 @@ public class UserController {
 //        System.out.println(content);
         clientService.addFeedBack(client.getId(),feedBack);
 
-        return "redirect:/feedback"; // Trả về thông điệp thành công
+        return "redirect:/user/feedback"; // Trả về thông điệp thành công
     }
 
     @GetMapping("/save")
@@ -119,15 +119,5 @@ public class UserController {
     }
 
 
-//    @GetMapping("/testSaveP")
-//    public String showTest(Model model) {
-//        // Tìm kiếm thuộc tính theo ID
-//        return "test/property/testSavePost";
-//    }
-//
-//    @GetMapping("/testBooking")
-//    public String showTestBooking(Model model) {
-//        // Tìm kiếm thuộc tính theo ID
-//        return "test/property/testBooking";
-//    }
+
 }

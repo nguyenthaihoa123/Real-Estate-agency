@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chart Statistics</title>
+</head>
+<body>
+<h1>Chart Statistics</h1>
+
+<!-- Hiển thị dữ liệu theo ngày -->
+<h2>Total Amount by Day</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Day</th>
+        <th>Total Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="entry : ${byDay}">
+        <td th:text="${entry.key}">Day</td>
+        <td th:text="${entry.value}">Total Amount</td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Hiển thị dữ liệu theo quý -->
+<h2>Total Amount by Quarter</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Quarter</th>
+        <th>Total Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="entry : ${byQuarter}">
+        <td th:text="${entry.key}">Quarter</td>
+        <td th:text="${entry.value}">Total Amount</td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Hiển thị dữ liệu theo năm -->
+<h2>Total Amount by Year</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Year</th>
+        <th>Total Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="entry : ${byYear}">
+        <td th:text="${entry.key}">Year</td>
+        <td th:text="${entry.value}">Total Amount</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

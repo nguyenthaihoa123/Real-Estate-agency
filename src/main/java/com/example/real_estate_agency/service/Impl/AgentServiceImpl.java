@@ -1,13 +1,14 @@
 package com.example.real_estate_agency.service.Impl;
 
+import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.payment.PackagePosting;
 import com.example.real_estate_agency.models.payment.Payment;
 import com.example.real_estate_agency.models.user.Agent;
+import com.example.real_estate_agency.repository.BookTourRepository;
 import com.example.real_estate_agency.repository.payment.PackagePostingRepository;
 import com.example.real_estate_agency.repository.payment.PaymentRepository;
 import com.example.real_estate_agency.repository.user.AgentRepository;
 import com.example.real_estate_agency.service.AgentService;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ public class AgentServiceImpl implements AgentService {
     private PackagePostingRepository packagePostingRepository;
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private BookTourRepository bookTourRepository;
     @Override
     public Agent save(Agent agent) {
         try {
@@ -74,11 +77,39 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    public Payment savePaymet(Payment payment) {
+    public void savePaymet(Payment payment) {
         try {
-            return paymentRepository.save(payment);
+            paymentRepository.save(payment);
         }
         catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Payment> getAllPayment() {
+        try {
+            return paymentRepository.findAll();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        try {
+            agentRepository.deleteById(id);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<BookTour> getAllBookTour(Agent agent) {
+        try {
+            return bookTourRepository.findByProperty_Agent(agent);
+        }catch (Exception e){
             e.printStackTrace();
             return null;
         }

@@ -3,15 +3,14 @@ package com.example.real_estate_agency.service.Impl;
 import com.example.real_estate_agency.models.Image;
 import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.payment.TransactionType;
+import com.example.real_estate_agency.models.property.InfoRentProperty;
+import com.example.real_estate_agency.models.property.InfoSaleProperty;
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.property.Statistical;
 import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.repository.ImageRepository;
 import com.example.real_estate_agency.repository.payment.TransactionTypeRepository;
-import com.example.real_estate_agency.repository.property.PropertyRepository;
-import com.example.real_estate_agency.repository.property.RentPropertyRepository;
-import com.example.real_estate_agency.repository.property.SavePostRepository;
-import com.example.real_estate_agency.repository.property.StatisticalRepository;
+import com.example.real_estate_agency.repository.property.*;
 import com.example.real_estate_agency.service.PropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +31,8 @@ public class PropertyServiceImpl implements PropertyService {
     private TransactionTypeRepository transactionTypeRepository;
     @Autowired
     private SavePostRepository savePostRepository;
+    @Autowired
+    private SalePropertyRepository salePropertyRepository;
 
     @Autowired
     private RentPropertyRepository rentPropertyRepository;
@@ -50,6 +51,15 @@ public class PropertyServiceImpl implements PropertyService {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @Override
+    public void deletePropetty(Long id) {
+        try {
+            propertyRepository.deleteById(id);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -167,9 +177,82 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
+    public List<Properties> getAllPropertySale(Agent agent) {
+        try {
+            TransactionType transactionType = transactionTypeRepository.findByName("Sale");
+            return propertyRepository.findByAgentAndTransactionType(agent,transactionType);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public boolean checkInfoRent(Properties properties) {
         try {
             return rentPropertyRepository.findByProperty(properties) != null;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean checkInfoSale(Properties properties) {
+        try {
+            return salePropertyRepository.findByProperty(properties) != null;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public InfoRentProperty saveContractRent(InfoRentProperty infoRentProperty) {
+        try {
+            return rentPropertyRepository.save(infoRentProperty);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public void saveContractSale(InfoSaleProperty infoSaleProperty) {
+        try {
+            salePropertyRepository.save(infoSaleProperty);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public InfoRentProperty getInforRent(Properties properties) {
+        try {
+            return rentPropertyRepository.findByProperty(properties);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public InfoSaleProperty getInforSale(Properties properties) {
+        try {
+            return salePropertyRepository.findByProperty(properties);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean deleteRentContract(Long id) {
+        try {
+            InfoRentProperty infoRentProperty = rentPropertyRepository.findById(id).get();
+            rentPropertyRepository.delete(infoRentProperty);
+            return true;
         }catch (Exception e){
             e.printStackTrace();
             return false;

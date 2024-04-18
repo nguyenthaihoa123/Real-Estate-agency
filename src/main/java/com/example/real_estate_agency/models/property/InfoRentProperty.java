@@ -22,6 +22,8 @@ public class InfoRentProperty {
     private Date tenantDOB; // Ngày sinh người thuê
     private String tenantPhone; // Số điện thoại người thuê
 
+    private String tenantEmail;
+
     // Thông tin hợp đồng thuê
     private double unitPrice; // Đơn giá
     private double compensationLevel; // Mức bồi thường
@@ -146,5 +148,13 @@ public class InfoRentProperty {
 
     public void setProperty(Properties property) {
         this.property = property;
+    }
+
+    public String getTenantEmail() {
+        return tenantEmail;
+    }
+
+    public void setTenantEmail(String tenantEmail) {
+        this.tenantEmail = tenantEmail;
     }
 }

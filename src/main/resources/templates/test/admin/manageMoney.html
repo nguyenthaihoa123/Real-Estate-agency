@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+<body>
+<h2>Manage Money</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Package Posting ID</th>
+        <th>Agent ID</th>
+        <th>Agent Name</th>
+        <th>Created At</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Sử dụng th:each để lặp qua danh sách các thanh toán -->
+    <tr th:each="payment : ${payments}">
+        <!-- Hiển thị thông tin của mỗi thanh toán trong từng cột của bảng -->
+        <td th:text="${payment.id}">ID</td>
+        <td th:text="${payment.packagePosting.id}">Package Posting ID</td>
+        <td th:text="${payment.agent.id}">Agent ID</td>
+        <td th:text="${payment.agent.username}">Agent Name</td>
+        <td th:text="${#dates.format(payment.createdAt, 'dd-MM-yyyy HH:mm:ss')}">Created At</td>
+        <td>
+            <button th:class="${payment.status == 'accept' ? 'btn btn-primary' : 'btn btn-secondary'}" th:text="${payment.status}">Status</button>
+        </td>
+
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

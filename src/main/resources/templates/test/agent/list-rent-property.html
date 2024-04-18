@@ -1,10 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>List of Rental Properties</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
+<h2>List of Rental Properties</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Area</th>
+        <th>Address</th>
+        <th>IsRent</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Duyệt qua danh sách các property và hiển thị thông tin trong bảng -->
+    <tr th:each="propertyDTO : ${propertiesDTO}">
+        <td th:text="${propertyDTO.getProperties().title}"></td>
+        <td th:text="${propertyDTO.getProperties().description}"></td>
+        <td th:text="${propertyDTO.getProperties().price}"></td>
+        <td th:text="${propertyDTO.getProperties().area}"></td>
+        <td th:text="${propertyDTO.getProperties().address}"></td>
+        <td>
+            <a th:if="${!propertyDTO.isRent()}"
+                    class="btn btn-primary"
+                    th:href="@{/agent/property/rentContract/{id}(id=${propertyDTO.getProperties().id})}"
+                    >
+                Create Contract
+            </a>
+            <a th:if="${propertyDTO.isRent()}"
+               class="btn btn-primary"
+               th:href="@{/agent/property/update-rentContract/{id}(id=${propertyDTO.getProperties().id})}"
+            >
+                Edit Contract
+            </a>
+            <span th:if="${propertyDTO.isRent()}" style="color: red;">
+                This property is already rented, only
+                <span th:text="${propertyDTO.dayLefts}"></span> days left in the contract.
+            </span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<script>
 
+</script>
 </body>
 </html>
