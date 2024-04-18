@@ -20,10 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -98,6 +95,49 @@ public class UserAPI {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Trả về mã lỗi 500 nếu có lỗi xảy ra
         }
     }
+
+    @PutMapping("/agents/update-admin")
+    public ResponseEntity<Agent> updateAgentProfile_Admin(@RequestBody Agent agentDetails) {
+        try {
+            // Tìm đại lý cần cập nhật thông tin trong cơ sở dữ liệu
+            Agent agentToUpdate = agentService.findById(agentDetails.getId());
+
+            // Kiểm tra xem đại lý có tồn tại hay không
+            if (agentToUpdate == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Trả về mã lỗi 404 nếu không tìm thấy đại lý
+            }
+
+            // Cập nhật thông tin của đại lý với thông tin mới từ agentDetails
+
+            agentToUpdate.setStatus(agentDetails.getStatus());
+//            System.out.println(agentDetails.getId());
+            // Lưu thông tin đã cập nhật vào cơ sở dữ liệu
+            Agent updatedAgent = agentService.save(agentToUpdate);
+
+            return new ResponseEntity<>(updatedAgent, HttpStatus.OK); // Trả về mã 200 OK cùng với thông tin của đại lý đã cập nhật
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Trả về mã lỗi 500 nếu có lỗi xảy ra
+        }
+    }
+    @DeleteMapping("/agents/{id}")
+    public ResponseEntity<String> deleteAgentById(@PathVariable Long id) {
+        try {
+            // Kiểm tra xem đại lý có tồn tại hay không
+            if (agentService.findById(id) == null) {
+                return new ResponseEntity<>("Agent with ID " + id + " not found.", HttpStatus.NOT_FOUND);
+            }
+//            System.out.println(id);
+            // Xóa đại lý từ cơ sở dữ liệu
+            agentService.deleteById(id);
+
+            return new ResponseEntity<>("Agent with ID " + id + " deleted successfully.", HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Failed to delete agent with ID " + id, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/feedback/clients/{clientId}")
     public ResponseEntity<FeedBack> addFeedBack(@PathVariable Long clientId, @RequestBody FeedBack feedBack) {
         FeedBack savedFeedBack = clientService.addFeedBack(clientId, feedBack);
@@ -155,6 +195,9 @@ public class UserAPI {
                 bookTour.setProperty(properties);
                 bookTour.setMessage(mess);
                 bookTour.setCancel(false);
+                // Lấy thời điểm hiện tại
+                Date currentDate = new Date();
+                bookTour.setCreatedAt(currentDate);
 
                 // Lưu thông tin đặt tour vào cơ sở dữ liệu
                 clientService.createBookTour(bookTour, properties);
@@ -217,6 +260,96 @@ public class UserAPI {
             // Trả về response với HTTP status code 500 Internal Server Error nếu có lỗi xảy ra
             e.printStackTrace();
             return new ResponseEntity<>("Failed to update booking", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/updatePass/{id}")
+    public ResponseEntity<String> updatePassClient_Admin(@PathVariable Long id, @RequestBody UpdatePasswordRequest request) {
+        try {
+            // Sử dụng id để lấy thông tin của client từ service hoặc repository
+            Client client = clientService.getById(id);
+
+            // Kiểm tra xem client có tồn tại không
+            if (client == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found");
+            }
+
+            // So sánh mật khẩu hiện tại
+            if (!passwordEncoder.matches(request.getCurrentPassword(), client.getPassword())) {
+                // Mật khẩu hiện tại không khớp
+                // Xử lý lỗi hoặc trả về thông báo lỗi
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect");
+            }
+
+            // Kiểm tra mật khẩu mới và mật khẩu xác nhận
+            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+                // Mật khẩu mới và mật khẩu xác nhận không khớp
+                // Xử lý lỗi hoặc trả về thông báo lỗi
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New password and confirm password do not match");
+            }
+
+            // Mã hóa mật khẩu mới trước khi lưu vào DB
+
+            // Lưu mật khẩu mới vào cơ sở dữ liệu
+            client.setPassword(request.getNewPassword());
+            clientService.save(client);
+
+            // Xử lý thành công, ví dụ: chuyển hướng đến trang thành công
+            return ResponseEntity.ok("Password reset successfully");
+        } catch (Exception e) {
+            // Trả về response với HTTP status code 500 Internal Server Error nếu có lỗi xảy ra
+            e.printStackTrace();
+            return new ResponseEntity<>("Failed to update booking", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/updatePass-agent/{id}")
+    public ResponseEntity<String> updatePassAgent_Admin(@PathVariable Long id, @RequestBody UpdatePasswordRequest request) {
+        try {
+            // Sử dụng id để lấy thông tin của client từ service hoặc repository
+            Agent agent = agentService.findById(id);
+
+            // Kiểm tra xem client có tồn tại không
+            if (agent == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found");
+            }
+
+            // So sánh mật khẩu hiện tại
+//            if (!passwordEncoder.matches(request.getCurrentPassword(), agent.getPassword())) {
+            if (request.getNewPassword().equals(agent.getPassword())) {
+                // Mật khẩu hiện tại không khớp
+                // Xử lý lỗi hoặc trả về thông báo lỗi
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect");
+            }
+
+            // Kiểm tra mật khẩu mới và mật khẩu xác nhận
+            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+                // Mật khẩu mới và mật khẩu xác nhận không khớp
+                // Xử lý lỗi hoặc trả về thông báo lỗi
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New password and confirm password do not match");
+            }
+
+            // Mã hóa mật khẩu mới trước khi lưu vào DB
+
+            // Lưu mật khẩu mới vào cơ sở dữ liệu
+            agent.setPassword(request.getNewPassword());
+            agentService.save(agent);
+
+            // Xử lý thành công, ví dụ: chuyển hướng đến trang thành công
+            return ResponseEntity.ok("Password reset successfully");
+        } catch (Exception e) {
+            // Trả về response với HTTP status code 500 Internal Server Error nếu có lỗi xảy ra
+            e.printStackTrace();
+            return new ResponseEntity<>("Failed to update booking", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @DeleteMapping("/clients/{id}")
+    public ResponseEntity<String> deleteClientById(@PathVariable Long id) {
+        boolean deleted = clientService.deleteById(id);
+        if (deleted) {
+            return ResponseEntity.ok("Client with ID " + id + " deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to delete client with ID " + id);
         }
     }
 

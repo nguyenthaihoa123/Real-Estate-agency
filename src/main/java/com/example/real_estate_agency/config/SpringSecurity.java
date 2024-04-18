@@ -36,7 +36,7 @@ public class SpringSecurity {
                 .authorizeHttpRequests((authorize) -> {
 //                    authorize.requestMatchers("/checkout").authenticated();
                     authorize.requestMatchers("/").permitAll();
-                    authorize.requestMatchers("/admin").hasAnyRole("ADMIN");
+                    authorize.requestMatchers("/admin/**").hasAnyRole("ADMIN");
 //                    authorize.requestMatchers("/").hasAnyRole("USER");
                     authorize.anyRequest().permitAll();
                 })

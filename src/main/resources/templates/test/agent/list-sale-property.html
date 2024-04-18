@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Rental Properties</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<h2>List of Sale Properties</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>ID</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Area</th>
+        <th>Address</th>
+        <th>IsSale</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Duyệt qua danh sách các property và hiển thị thông tin trong bảng -->
+    <tr th:each="propertyDTO : ${propertiesDTO}">
+        <td th:text="${propertyDTO.properties.title}"></td>
+        <td th:text="${propertyDTO.properties.id}"></td>
+        <td th:text="${propertyDTO.properties.description}"></td>
+        <td th:text="${propertyDTO.properties.price}"></td>
+        <td th:text="${propertyDTO.properties.area}"></td>
+        <td th:text="${propertyDTO.properties.address}"></td>
+        <td>
+            <a th:if="${!propertyDTO.isSale}"
+               th:href="@{/agent/property/saleContract/{id}(id=${propertyDTO.properties.id})}"
+               class="btn btn-primary"
+            >
+                Create Contract
+            </a>
+            <!-- Comment out Edit Contract button -->
+             <a th:if="${propertyDTO.isSale}"
+                th:href="@{/agent/property/show-saleContract/{id}(id=${propertyDTO.properties.id})}"
+                class="btn btn-primary">Show Contract</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<script>
+
+</script>
+</body>
+</html>

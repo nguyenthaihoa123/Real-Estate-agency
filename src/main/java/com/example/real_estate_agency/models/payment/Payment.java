@@ -3,6 +3,8 @@ package com.example.real_estate_agency.models.payment;
 import com.example.real_estate_agency.models.user.Agent;
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "payments")
 public class Payment {
@@ -19,7 +21,9 @@ public class Payment {
     @ManyToOne
     @JoinColumn(name = "agent_id")
     private Agent agent;
-
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    private Date createdAt;
     // Constructors, getters, setters và các phương thức khác
 
     // Constructors
@@ -61,6 +65,14 @@ public class Payment {
 
     public void setAgent(Agent agent) {
         this.agent = agent;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     // Getters và Setters

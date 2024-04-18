@@ -2,6 +2,8 @@ package com.example.real_estate_agency.service;
 
 import com.example.real_estate_agency.models.Image;
 import com.example.real_estate_agency.models.SavePost;
+import com.example.real_estate_agency.models.property.InfoRentProperty;
+import com.example.real_estate_agency.models.property.InfoSaleProperty;
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.user.Agent;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import java.util.List;
 
 public interface PropertyService {
     Properties save(Properties properties);
+    void deletePropetty(Long id);
     Image saveImage(Image image);
 
     List<Properties> getAll();
@@ -29,7 +32,18 @@ public interface PropertyService {
     boolean getInfoSavePost(Long clientID, Long PropertyID);
 
     List<Properties> getAllPropertyRent(Agent agent);
+    List<Properties> getAllPropertySale(Agent agent);
 
     boolean checkInfoRent(Properties properties);
+    boolean checkInfoSale(Properties properties);
+
+    InfoRentProperty saveContractRent(InfoRentProperty infoRentProperty);
+
+    void saveContractSale(InfoSaleProperty infoSaleProperty);
+
+    InfoRentProperty getInforRent(Properties properties);
+    InfoSaleProperty getInforSale(Properties properties);
+
+    boolean deleteRentContract(Long  id);
 
 }

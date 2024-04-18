@@ -4,6 +4,8 @@ import com.example.real_estate_agency.DTO.CategoryDTO;
 import com.example.real_estate_agency.models.Image;
 import com.example.real_estate_agency.models.payment.TransactionType;
 import com.example.real_estate_agency.models.property.Category;
+import com.example.real_estate_agency.models.property.InfoRentProperty;
+import com.example.real_estate_agency.models.property.InfoSaleProperty;
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.service.AgentService;
@@ -40,6 +42,55 @@ public class AgentPropertyController {
         Agent agent = agentService.findByEmail(name);
         model.addAttribute("userName", agent);
         return "agent";
+    }
+
+    @GetMapping("/property/rentContract/{id}")
+    public String Property_rent_contract_Agent(@PathVariable("id") Long id,@AuthenticationPrincipal UserDetails userDetails, Model model){
+        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Properties properties = propertyService.getById(id);
+
+        model.addAttribute("property",properties);
+        model.addAttribute("user", agent);
+
+
+        return "test/property/contractRent";
+    }
+
+    @GetMapping("/property/saleContract/{id}")
+    public String Property_sale_contract_Agent(@PathVariable("id") Long id,@AuthenticationPrincipal UserDetails userDetails, Model model){
+        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Properties properties = propertyService.getById(id);
+
+        model.addAttribute("property",properties);
+        model.addAttribute("user", agent);
+
+
+        return "test/property/contractSale";
+    }
+
+    @GetMapping("/property/update-rentContract/{id}")
+    public String Update_Property_rent_contract_Agent(@PathVariable("id") Long id,@AuthenticationPrincipal UserDetails userDetails, Model model){
+        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Properties properties = propertyService.getById(id);
+        InfoRentProperty infoRentProperty = propertyService.getInforRent(properties);
+        model.addAttribute("property",properties);
+        model.addAttribute("user", agent);
+        model.addAttribute("infoRent",infoRentProperty);
+
+
+        return "test/property/updateContractRent";
+    }
+    @GetMapping("/property/show-saleContract/{id}")
+    public String show_Property_sale_contract_Agent(@PathVariable("id") Long id,@AuthenticationPrincipal UserDetails userDetails, Model model){
+        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Properties properties = propertyService.getById(id);
+        InfoSaleProperty infoSaleProperty = propertyService.getInforSale(properties);
+        model.addAttribute("property",properties);
+        model.addAttribute("user", agent);
+        model.addAttribute("infoSale",infoSaleProperty);
+
+
+        return "test/property/showContractSale";
     }
     @GetMapping("/properties/add")
     public String showAddPropertyForm(Model model) {
@@ -228,5 +279,119 @@ public class AgentPropertyController {
         }
     }
 
+    @PostMapping("/property/rentContract/{id}")
+    public ResponseEntity<String> createContractRent(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetails,
+                                                     @RequestBody InfoRentProperty request){
+        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Properties properties = propertyService.getById(id);
+        InfoRentProperty infoRentProperty = new InfoRentProperty();
 
+        infoRentProperty.setOwnerID(request.getOwnerID());
+        infoRentProperty.setOwnerName(request.getOwnerName());
+        infoRentProperty.setOwnerPhone(request.getOwnerPhone());
+        infoRentProperty.setTenantID(request.getTenantID());
+        infoRentProperty.setTenantName(request.getTenantName());
+        infoRentProperty.setTenantDOB(request.getTenantDOB());
+        infoRentProperty.setTenantPhone(request.getTenantPhone());
+        infoRentProperty.setTenantEmail(request.getTenantEmail());
+        infoRentProperty.setUnitPrice(request.getUnitPrice());
+        infoRentProperty.setCompensationLevel(request.getCompensationLevel());
+        infoRentProperty.setDeposit(request.getDeposit());
+        infoRentProperty.setContractStartDate(request.getContractStartDate());
+        infoRentProperty.setContractEndDate(request.getContractEndDate());
+        infoRentProperty.setProperty(properties);
+
+        try {
+            InfoRentProperty infoRentProperty1 = propertyService.saveContractRent(infoRentProperty);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok("Property updated successfully");
+    }
+
+    @PostMapping("/property/update-rentContract/{id}")
+    public ResponseEntity<String> updateContractRent(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetails,
+                                                     @RequestBody InfoRentProperty request){
+        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Properties properties = propertyService.getById(id);
+        InfoRentProperty infoRentProperty = new InfoRentProperty();
+
+        infoRentProperty.setId(request.getId());
+        infoRentProperty.setOwnerID(request.getOwnerID());
+        infoRentProperty.setOwnerName(request.getOwnerName());
+        infoRentProperty.setOwnerPhone(request.getOwnerPhone());
+        infoRentProperty.setTenantID(request.getTenantID());
+        infoRentProperty.setTenantName(request.getTenantName());
+        infoRentProperty.setTenantDOB(request.getTenantDOB());
+        infoRentProperty.setTenantPhone(request.getTenantPhone());
+        infoRentProperty.setTenantEmail(request.getTenantEmail());
+        infoRentProperty.setUnitPrice(request.getUnitPrice());
+        infoRentProperty.setCompensationLevel(request.getCompensationLevel());
+        infoRentProperty.setDeposit(request.getDeposit());
+        infoRentProperty.setContractStartDate(request.getContractStartDate());
+        infoRentProperty.setContractEndDate(request.getContractEndDate());
+        infoRentProperty.setProperty(properties);
+
+        System.out.println("ID contract: "+infoRentProperty.getId());
+        try {
+            InfoRentProperty updatedContract = propertyService.saveContractRent(infoRentProperty);
+            if (updatedContract != null) {
+                return ResponseEntity.ok("Rent contract updated successfully");
+            } else {
+                return ResponseEntity.badRequest().body("Failed to update rent contract");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating rent contract");
+        }
+    }
+
+
+    @PostMapping("/property/delete-rentContract/{id}")
+    public ResponseEntity<String> deleteContractRent(@PathVariable("id") Long id){
+        Properties properties = propertyService.getById(id);
+        InfoRentProperty infoRentProperty = propertyService.getInforRent(properties);
+        System.out.println("ID contract: "+infoRentProperty.getId());
+        try {
+            if(propertyService.deleteRentContract(infoRentProperty.getId())){
+                System.out.println("complete");
+                return ResponseEntity.ok("successfully!");
+            } else {
+                System.out.println("false");
+                return ResponseEntity.badRequest().body("Failed to delete rent contract");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting rent contract");
+        }
+    }
+
+    @PostMapping("/property/saleContract/{id}")
+    public ResponseEntity<String> createContractSale(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetails,
+                                                     @RequestBody InfoSaleProperty request){
+        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Properties properties = propertyService.getById(id);
+        InfoSaleProperty infoSaleProperty = new InfoSaleProperty();
+
+        infoSaleProperty.setOwnerID(request.getOwnerID());
+        infoSaleProperty.setOwnerName(request.getOwnerName());
+        infoSaleProperty.setOwnerPhone(request.getOwnerPhone());
+
+        infoSaleProperty.setBuyerID(request.getBuyerID());
+        infoSaleProperty.setBuyerName(request.getBuyerName());
+        infoSaleProperty.setBuyerDOB(request.getBuyerDOB());
+        infoSaleProperty.setBuyerPhone(request.getBuyerPhone());
+        infoSaleProperty.setBuyerEmail(request.getBuyerEmail());
+
+        infoSaleProperty.setSellingPrice(request.getSellingPrice());
+        infoSaleProperty.setCommission(request.getCommission());
+        infoSaleProperty.setContractDate(request.getContractDate());
+
+        infoSaleProperty.setProperty(properties);
+
+        propertyService.saveContractSale(infoSaleProperty);
+
+        return ResponseEntity.ok("Property updated successfully");
+    }
 }

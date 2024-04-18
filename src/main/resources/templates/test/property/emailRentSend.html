@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice for Current Month</title>
+</head>
+<body>
+<h1>Invoice for <span th:text="${#dates.format(#dates.createNow(), 'MMMM yyyy')}"></span></h1>
+<!-- Các thông tin khác của invoice -->
+<p>Tenant Name: <span th:text="${tenantName}"></span></p>
+<p>Property Title: <span th:text="${propertyTitle}"></span></p>
+<p>Property Address: <span th:text="${propertyAddress}"></span></p>
+</body>
+</html>

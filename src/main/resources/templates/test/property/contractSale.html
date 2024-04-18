@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Property Management Information</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <input id="propertyId" type="hidden" th:value="${property.id}">
+            <h2 class="text-center">Create Contract Sale of <span th:text="${property.title}"></span></h2>
+
+            <form enctype="multipart/form-data" id="propertyManagementForm">
+                <!-- Thông tin chủ nhà -->
+                <div class="mb-3">
+                    <label for="ownerID" class="form-label">Owner ID (CCCD)</label>
+                    <input type="text" class="form-control" id="ownerID" name="ownerID" required>
+                </div>
+                <div class="mb-3">
+                    <label for="ownerName" class="form-label">Owner Name</label>
+                    <input type="text" class="form-control" id="ownerName" name="ownerName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="ownerPhone" class="form-label">Owner Phone</label>
+                    <input type="text" class="form-control" id="ownerPhone" name="ownerPhone" required>
+                </div>
+
+                <!-- Thông tin người mua -->
+                <div class="mb-3">
+                    <label for="buyerID" class="form-label">Buyer ID (CCCD)</label>
+                    <input type="text" class="form-control" id="buyerID" name="buyerID" required>
+                </div>
+                <div class="mb-3">
+                    <label for="buyerName" class="form-label">Buyer Name</label>
+                    <input type="text" class="form-control" id="buyerName" name="buyerName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="buyerDOB" class="form-label">Buyer Date of Birth</label>
+                    <input type="date" class="form-control" id="buyerDOB" name="buyerDOB" required>
+                </div>
+                <div class="mb-3">
+                    <label for="buyerPhone" class="form-label">Buyer Phone</label>
+                    <input type="text" class="form-control" id="buyerPhone" name="buyerPhone" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="buyerEmail" class="form-label">Buyer Email</label>
+                    <input type="email" class="form-control" id="buyerEmail" name="buyerEmail" required>
+                </div>
+
+                <!-- Thông tin hợp đồng bán -->
+                <div class="mb-3">
+                    <label for="sellingPrice" class="form-label">Selling Price</label>
+                    <input type="number" class="form-control" id="sellingPrice" name="sellingPrice" required>
+                </div>
+                <div class="mb-3">
+                    <label for="commission" class="form-label">Commission</label>
+                    <input type="number" class="form-control" id="commission" name="commission" required>
+                </div>
+                <div class="mb-3">
+                    <label for="contractDate" class="form-label">Contract Date</label>
+                    <input type="date" class="form-control" id="contractDate" name="contractDate" required>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const propertyManagementForm = document.getElementById("propertyManagementForm");
+
+        propertyManagementForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(propertyManagementForm);
+            const jsonData = {};
+
+            formData.forEach(function (value, key) {
+                jsonData[key] = value;
+            });
+
+            console.log(jsonData)
+            const id = document.getElementById("propertyId").value;
+            const url = `/agent/property/saleContract/${id}`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer your_token_here' // Thay thế your_token_here bằng token của bạn
+                },
+                body: JSON.stringify(jsonData)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Contract Sale created successfully");
+                    } else {
+                        alert("Failed to create Contract Sale");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while creating Contract Sale");
+                });
+        });
+    });
+</script>
+</body>
+</html>

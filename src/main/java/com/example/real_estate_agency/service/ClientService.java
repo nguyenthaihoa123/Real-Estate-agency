@@ -32,4 +32,6 @@ public interface ClientService {
     List<BookTour> getAllBookTour(Client client);
 
     BookTour getInfoBooking(Long clientID, Long propertyID);
+
+    List<Client> getAllClient();
 }
