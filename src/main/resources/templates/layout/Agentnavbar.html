@@ -11,36 +11,32 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto">
-                <a th:href="@{/home/}" class="nav-item nav-link" >Home</a>
-                <a th:href="@{/home/about}" class="nav-item nav-link">About</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle"  data-bs-toggle="dropdown">Contact</a>
+                    <div class="dropdown-menu rounded-0 m-0">
+                        <a th:href="@{/agent/profile/list-book}" class="dropdown-item"><i class="fa-solid fa-address-book"></i> My booking</a>
+                    </div>
+                </div>
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" id="propertyDropdown" data-bs-toggle="dropdown">Property</a>
                     <div class="dropdown-menu rounded-0 m-0">
-                        <a th:href="@{/home/propertyList}" class="dropdown-item">Property List</a>
-                        <a th:href="@{/home/propertyType}" class="dropdown-item">Property Type</a>
-                        <a th:href="@{/home/propertyAgent}" class="dropdown-item">Property Agent</a>
+                        <a th:href="@{/agent/properties/add}" class="dropdown-item"><i class="fa-solid fa-house-chimney-medical"></i> Add property</a>
+                        <a th:href="@{/agent/list-property}" class="dropdown-item"><i class="fa-solid fa-house-lock"></i> My properties</a>
+                        <a th:href="@{/agent/list-sale-property}" class="dropdown-item"><i class="fa-solid fa-house-circle-check"></i> My sales</a>
+                        <a th:href="@{/agent/list-rent-property}" class="dropdown-item"><i class="fa-solid fa-house-chimney-window"></i> My rents</a>
                     </div>
                 </div>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                    <div class="dropdown-menu rounded-0 m-0">
-                        <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                        <a href="404.html" class="dropdown-item">404 Error</a>
-                    </div>
-                </div>
-                <a th:href="@{/home/contact}" class="nav-item nav-link">Contact</a>
                 <div class="nav-item dropdown position-relative">
                     <button class="nav-link btn btn-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fas fa-user"></i> <!-- Thêm icon người dùng -->
                     </button>
                     <div class="dropdown-menu dropdown-menu-start rounded-0 m-0 position-absolute start-0">
-                        <a th:href="@{/user/personal-page}" class="dropdown-item">Trang cá nhân</a>
                         <a th:href="@{/agent/profile/detail}" class="dropdown-item">Trang cá nhân</a>
-                        <a th:href="@{/logout}" class="dropdown-item">Logout</a>
+                        <a th:href="@{/logout}" class="dropdown-item"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                     </div>
                 </div>
             </div>
-<!--            <a href="" class="btn btn-primary px-3 d-none d-lg-flex">Add Property</a>-->
+            <!--            <a href="" class="btn btn-primary px-3 d-none d-lg-flex">Add Property</a>-->
         </div>
     </nav>
     <script>

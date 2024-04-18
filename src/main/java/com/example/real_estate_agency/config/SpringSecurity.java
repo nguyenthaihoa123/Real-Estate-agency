@@ -73,7 +73,7 @@ public class SpringSecurity {
                         form -> form
                                 .loginPage("/agent/login_agent")
                                 .loginProcessingUrl("/agent/login_agent")
-                                .defaultSuccessUrl("/agent")
+                                .defaultSuccessUrl("/agent/profile/detail")
                                 .permitAll()
                 )
                 .logout(

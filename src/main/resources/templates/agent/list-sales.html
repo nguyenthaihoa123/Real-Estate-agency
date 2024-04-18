@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/Agentnavbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-0">
+
+
+    <div id="propertyList" class="col-md-12 col-lg-12 wow fadeIn" data-wow-delay="0.3s">
+        <div class=" bg-white rounded p-3" style="border: 1px dashed rgba(0, 185, 142, .3)">
+            <div th:each="propertyDTO : ${propertiesDTO}" class="p-3">
+                <h3 >Building: <span th:text="${propertyDTO.properties.title}" ></span></h3>
+                <p>Description:  <span th:text="${propertyDTO.properties.description}" ></span> </p>
+                <div class="d-flex justify-content-lg-between">
+                    <div>
+                        <p>Price: <span th:text="${propertyDTO.properties.price}" ></span></p>
+                        <p>Area: <span th:text="${propertyDTO.properties.area}" ></span> m3</p>
+                        <p>Address: <span th:text="${propertyDTO.properties.address}" ></span></p>
+                    </div>
+                        <a th:if="${!propertyDTO.isSale}"
+                           th:href="@{/agent/property/saleContract/{id}(id=${propertyDTO.properties.id})}"
+                        >
+                            <button class="btn btn-primary"><i class="fa-solid fa-file-signature"></i> Create Contract</button>
+
+                        </a>
+                        <!-- Comment out Edit Contract button -->
+                        <a th:if="${propertyDTO.isSale}"
+                           th:href="@{/agent/property/show-saleContract/{id}(id=${propertyDTO.properties.id})}"
+                          >
+                            <button class="btn btn-secondary"><i class="fa-solid fa-file-contract"></i> Show Contract</button>
+                        </a>
+                </div>
+                <hr>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+</body>
+
+</html>
