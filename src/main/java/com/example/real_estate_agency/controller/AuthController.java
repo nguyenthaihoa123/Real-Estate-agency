@@ -79,23 +79,24 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/agent/register_agent")
+    @GetMapping("/register_agent")
     public String showRegistrationForm_Agent(Model model) {
         model.addAttribute("agent", new Agent());
         return "register_agent";
     }
 
-    @PostMapping("/agent/register_agent")
+    @PostMapping("/register_agent")
     public String registerAgent(@ModelAttribute("agent") Agent agent, RedirectAttributes redirectAttributes) {
         // Kiểm tra xem đã tồn tại tài khoản với địa chỉ email này chưa
         Agent existing = agentService.findByEmail(agent.getEmail());
+        System.out.println("email: "+agent.getEmail());
         if (existing != null) {
             // Nếu đã tồn tại tài khoản với địa chỉ email này, thêm thông báo lỗi vào RedirectAttributes
             redirectAttributes.addFlashAttribute("error", "emailExists");
             return "redirect:/agent/register_agent";
         }
 
-        agent.setStatus("active");
+        agent.setStatus("unactive");
         agent.setNumOfPost(0);
         // Lưu agent mới vào cơ sở dữ liệu
         if (agentService.save(agent) != null) {

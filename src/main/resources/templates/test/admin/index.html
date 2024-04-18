@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+</head>
+<body>
+<h1>Welcome to the Admin Panel</h1>
+<ul>
+    <li><a th:href="@{/admin/home}">Home</a></li>
+    <li><a th:href="@{/admin/manage-Agent}">Manage Agents</a></li>
+    <li><a th:href="@{/admin/manage-client}">Manage Clients</a></li>
+    <li><a th:href="@{/admin/manage-money}">Manage Money</a></li>
+    <li><a th:href="@{/admin/manage-property}">Manage Properties</a></li>
+</ul>
+</body>
+</html>

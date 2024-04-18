@@ -24,8 +24,16 @@
     <p>Description: <span th:text="${property.description}"></span></p>
     <p>Price: <span th:text="${property.price}"></span></p>
     <p>Area: <span th:text="${property.area}"></span></p>
-    <p>Status: <span th:text="${property.status}"></span></p>
-    <p>Address: <span th:text="${property.address}"></span></p>
+    <p>Address: <span th:text="${property.address}" id="propertyAddress"></span></p>
+    <p>Create At: <span th:text="${property.createdAt}"></span></p>
+    <p>Update At: <span th:text="${property.updatedAt}"></span></p>
+    <p>Transaction type: <span th:text="${property.transactionType.name}"></span></p>
+    <p>
+        Status:
+        <span th:if="${property.transactionType.name == 'Rent'}" th:text="${statusRent ? 'Not Ready' : 'Ready'}"></span>
+        <span th:if="${property.transactionType.name != 'Rent'}">Ready</span>
+    </p>
+
     <div>Thumbnail</div>
     <img th:src="${property.thumbnail}" alt="Thumbnail" class="thumbnail-image">
 
@@ -48,6 +56,7 @@
 
     <!-- Thêm nút booking -->
     <button onclick="bookTour()" style="margin-top: 10px;">Book Tour</button>
+    <a id="googleMapsLink" href="#" target="_blank" style="display: block; margin-top: 10px;">View on Google Maps</a>
 </div>
 <script>
     var saveButton = document.getElementById('saveButton');
@@ -125,6 +134,18 @@
         // Gửi request
         xhr.send();
     }
+    function redirectToGoogleMaps() {
+        var address = document.getElementById("propertyAddress").innerText;
+        return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(address);
+    }
+
+    // Sự kiện click trên liên kết để chuyển đến Google Maps
+    document.getElementById("googleMapsLink").addEventListener("click", function(event) {
+        event.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
+
+        var googleMapsURL = redirectToGoogleMaps();
+        window.open(googleMapsURL, "_blank"); // Mở Google Maps trong tab/window mới
+    });
 </script>
 </body>
 </html>

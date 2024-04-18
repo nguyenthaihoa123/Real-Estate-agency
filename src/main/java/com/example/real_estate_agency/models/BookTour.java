@@ -5,6 +5,8 @@ import com.example.real_estate_agency.models.user.Client;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "book_tour")
 public class BookTour {
@@ -17,6 +19,10 @@ public class BookTour {
 
     @Column
     private boolean isCancel;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    private Date createdAt;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -80,6 +86,14 @@ public class BookTour {
 
     public void setCancel(boolean cancel) {
         isCancel = cancel;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     // Getters và Setters

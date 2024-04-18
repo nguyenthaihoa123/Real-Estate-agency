@@ -88,12 +88,15 @@ public class HomeController {
             Properties property = propertyOptional.get();
             List<CategoryDTO> categories = categoryService.getAll();
             boolean isSave = propertyService.getInfoSavePost(client.getId(),property.getId());
+            boolean statusRent = propertyService.checkInfoRent(property);
 //            List<TransactionType> transactionTypes = transactionTypeService.getAll();
 //            System.out.println("isSave: " + isSave);
             // Truyền thuộc tính và danh sách categories, transactionTypes vào model
             model.addAttribute("property", property);
             model.addAttribute("categories", categories);
             model.addAttribute("isSave", isSave);
+            model.addAttribute("statusRent", statusRent);
+
 //            model.addAttribute("transactionTypes", transactionTypes);
 
             // Trả về tên của template HTML để hiển thị trang cập nhật property

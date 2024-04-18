@@ -47,7 +47,7 @@ public class Properties {
     private Agent agent;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Image> images;
     @JsonIgnore
     @OneToOne(mappedBy = "property")
@@ -65,8 +65,13 @@ public class Properties {
     private Set<BookTour> bookedTours = new HashSet<>();
 
     // Mối quan hệ 1-1 với PropertyRentManagement
-    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToOne(mappedBy = "property", cascade = CascadeType.DETACH)
     private InfoRentProperty infoRentProperty;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "property", cascade = CascadeType.DETACH)
+    private InfoSaleProperty infoSaleProperty;
 
     // Constructors, getters, setters và các phương thức khác
 
