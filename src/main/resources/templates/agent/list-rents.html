@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout/head :: head"></head>
+<style>
+    .d-flex.justify-content-start > * {
+        margin-left: 10px;
+    }
+</style>
 <body>
 <!-- Navbar Start -->
 <div th:replace="layout/Agentnavbar :: navbar"></div>
@@ -11,33 +16,38 @@
     <div id="propertyList" class="col-md-12 col-lg-12 wow fadeIn" data-wow-delay="0.3s">
         <div class=" bg-white rounded p-3" style="border: 1px dashed rgba(0, 185, 142, .3)">
             <div th:each="propertyDTO : ${propertiesDTO}" class="p-3">
-                <h3 >Building: <span th:text="${propertyDTO.properties.title}" ></span></h3>
-                <p>Description:  <span th:text="${propertyDTO.properties.description}" ></span> </p>
-                <div class="d-flex justify-content-lg-between">
-                    <div>
-                        <p>Price: <span th:text="${propertyDTO.properties.price}" ></span></p>
-                        <p>Area: <span th:text="${propertyDTO.properties.area}" ></span> m3</p>
-                        <p>Address: <span th:text="${propertyDTO.properties.address}" ></span></p>
-                    </div>
-                    <a th:if="${!propertyDTO.isRent()}"
-                       class="btn btn-primary"
-                       th:href="@{/agent/property/rentContract/{id}(id=${propertyDTO.getProperties().id})}"
-                    >
-                        <button class="btn btn-primary"><i class="fa-solid fa-file-signature"></i> Create Contract</button>
-                    </a>
-                    <a th:if="${propertyDTO.isRent()}"
-                       class="btn btn-primary"
-                       th:href="@{/agent/property/update-rentContract/{id}(id=${propertyDTO.getProperties().id})}"
-                    >
-                        <button class="btn btn-secondary"><i class="fa-solid fa-file-contract"></i> Edit Contract</button>
-                    </a>
-                    <span th:if="${propertyDTO.isRent()}" style="color: red;">
-                    This property is already rented, only
-                    <span th:text="${propertyDTO.dayLefts}"></span> days left in the contract.
-                      </span>
+                        <span th:if="${propertyDTO.isRent()}" style="color: red;">
+                                <i class="fa-solid fa-triangle-exclamation"></i> This property is already rented, only
+                                <span th:text="${propertyDTO.dayLefts}"></span> days left in the contract.
+                        </span>
+                    <h3 >Building: <span th:text="${propertyDTO.properties.title}" ></span></h3>
+                    <p>Description:  <span th:text="${propertyDTO.properties.description}" ></span> </p>
+<!--                body item-->
+                    <div class="d-flex justify-content-lg-between ">
+                        <div class="d-flex justify-content-start">
+                            <img  th:src="${propertyDTO.properties.thumbnail}" alt="Thumbnail" style="width: 200px; height: 150px; object-fit: cover; border-radius: 20px">
+                            <div>
+                                <p>Price: <span th:text="${propertyDTO.properties.price}" ></span></p>
+                                <p>Area: <span th:text="${propertyDTO.properties.area}" ></span> m3</p>
+                                <p>Address: <span th:text="${propertyDTO.properties.address}" ></span></p>
+                            </div>
+                        </div>
+                        <div>
+                            <a th:if="${!propertyDTO.isRent()}"
+                               th:href="@{/agent/property/rentContract/{id}(id=${propertyDTO.getProperties().id})}"
+                            >
+                                <button class="btn btn-primary" ><i class="fa-solid fa-file-signature"></i> Create Contract</button>
+                            </a>
+                            <a th:if="${propertyDTO.isRent()}"
+                               th:href="@{/agent/property/update-rentContract/{id}(id=${propertyDTO.getProperties().id})}"
+                            >
+                                <button class="btn btn-secondary" ><i class="fa-solid fa-file-contract"></i> Edit Contract</button>
+
+                            </a>
+
+                        </div>
                 </div>
                 <hr>
-
             </div>
         </div>
     </div>

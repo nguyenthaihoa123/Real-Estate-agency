@@ -39,7 +39,7 @@
     <!-- Sử dụng vòng lặp để duyệt qua danh sách các book tour -->
     <tr th:each="bookTour : ${bookTours}">
         <td th:text="${bookTour.id}"></td>
-        <td th:text="${bookTour.getProperty().title}"></td>
+
         <td th:text="${bookTour.getProperty().address}"></td>
         <td th:text="${bookTour.getClient().username}"></td>
         <td th:text="${bookTour.message}"></td>

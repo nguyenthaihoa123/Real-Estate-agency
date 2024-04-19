@@ -96,8 +96,5 @@ public class BookTour {
         this.createdAt = createdAt;
     }
 
-    // Getters và Setters
-// Đảm bảo rằng bạn đã tạo getters và setters cho trường id và message
 
-// Các phương thức khác
 }

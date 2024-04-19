@@ -68,7 +68,7 @@ public class AgentPropertyController {
         model.addAttribute("user", agent);
 
 
-        return "test/property/contractSale";
+        return "agent/contract/sale-contract";
     }
 
     @GetMapping("/property/update-rentContract/{id}")
@@ -79,8 +79,9 @@ public class AgentPropertyController {
         model.addAttribute("property",properties);
         model.addAttribute("user", agent);
         model.addAttribute("infoRent",infoRentProperty);
+        model.addAttribute("isEdit",true);
 
-        return "test/property/updateContractRent";
+        return "property/contract/rent-contract-detail";
     }
     @GetMapping("/property/show-saleContract/{id}")
     public String show_Property_sale_contract_Agent(@PathVariable("id") Long id,@AuthenticationPrincipal UserDetails userDetails, Model model){
@@ -92,20 +93,11 @@ public class AgentPropertyController {
         model.addAttribute("infoSale",infoSaleProperty);
 
 
-        return "test/property/showContractSale";
-    }
-    @GetMapping("/properties/owned")
-    public String showOwnedProperty(Model model) {
-
-        return "property/owned"; // Trả về tên của template HTML để hiển thị trang thêm property
+        return "property/contract/sale-contract-detail";
     }
 
-    //@GetMapping("/properties/add")
-    public String showAddProperty(Model model) {
-        List<CategoryDTO> categories = categoryService.getAll();
-        //model.addAttribute("categories", categories);
-        return "property/add"; // Trả về tên của template HTML để hiển thị trang thêm property
-    }
+
+
    @GetMapping("/properties/add")
     public String showAddPropertyForm(Model model) {
         List<CategoryDTO> categories = categoryService.getAll();
@@ -459,7 +451,6 @@ public class AgentPropertyController {
     }
     @GetMapping("/list-sale-property")
     public String showListSaleProperty( Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        // Đưa ID của đại lý vào model
 
         Agent agent = agentService.findByEmail(userDetails.getUsername());
         List<Properties> properties = propertyService.getAllPropertySale(agent);
@@ -477,7 +468,6 @@ public class AgentPropertyController {
         model.addAttribute("agent",agent);
         model.addAttribute("propertiesDTO", propertySaleAgentDTOS);
 
-        // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
         return "agent/list-sales";
     }
 
@@ -510,7 +500,6 @@ public class AgentPropertyController {
 
     @GetMapping("/list-book")
     public String showListBookTour( Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        // Đưa ID của đại lý vào model
 
         Agent agent = agentService.findByEmail(userDetails.getUsername());
         // Comparator để so sánh các book tour dựa trên trường isCancel
@@ -532,6 +521,8 @@ public class AgentPropertyController {
             }
         };
 
+
+
 // Lấy danh sách các book tour từ service
         List<BookTour> bookTours = agentService.getAllBookTour(agent);
 
@@ -540,9 +531,12 @@ public class AgentPropertyController {
 
 // Đưa danh sách đã sắp xếp vào model
         model.addAttribute("bookTours", bookTours);
+        //Lấy số lượng booking đang đợi
+        model.addAttribute("numOfBookTours", bookTours.stream().filter((m)->!m.isCancel()).toList().size());
+
 
         // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
-        return "test/agent/list-book";
+        return "agent/list-bookings";
     }
 
     private int getDaysBetween(Date startDate, Date endDate) {

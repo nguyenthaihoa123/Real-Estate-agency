@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/Agentnavbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-0">
+    <div class="p-5">
+        <h2 class="text-center">Information of Sale Contract </h2>
+
+        <table class="table">
+            <thead>
+            <tr style="background-color: #33c7a5">
+                <th scope="col">Owner</th>
+                <th scope="col">Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr >
+                <td>Owner Identity Number</td>
+                <td th:text="${infoSale.ownerID}"></td>
+            </tr>
+            <tr>
+                <td>Owner Name</td>
+                <td th:text="${infoSale.ownerName}"></td>
+            </tr>
+            <tr>
+                <td>Owner Phone</td>
+                <td th:text="${infoSale.ownerPhone}"></td>
+            </tr>
+            <tr style="background-color: #00B98E">
+                <th scope="col">Buyer</th>
+                <th scope="col">Value</th>
+
+            </tr>
+            <tr >
+                <td>Buyer Identity Number</td>
+                <td th:text="${infoSale.buyerID}"></td>
+            </tr>
+            <tr>
+                <td>Buyer Name</td>
+                <td id="nameBuyer" th:text="${infoSale.buyerName}"></td>
+            </tr>
+            <tr>
+                <td>Buyer Date of Birth</td>
+                <td th:text="${#dates.format(infoSale.buyerDOB, 'yyyy-MM-dd')}"></td>
+            </tr>
+            <tr>
+                <td>Buyer Phone</td>
+                <td th:text="${infoSale.buyerPhone}"></td>
+            </tr>
+            <tr>
+                <td>Buyer Email</td>
+                <td id="emailBuyer" th:text="${infoSale.buyerEmail}"></td>
+            </tr>
+            <tr style="background-color: #80dcc7">
+                <th scope="col">Details</th>
+                <th scope="col">Value</th>
+            </tr>
+            <tr >
+                <td>Selling Price</td>
+                <td th:text="${infoSale.sellingPrice}"></td>
+            </tr>
+            <tr>
+                <td>Commission</td>
+                <td th:text="${infoSale.commission}"></td>
+            </tr>
+            <tr>
+                <td>Contract Date</td>
+                <td th:text="${#dates.format(infoSale.contractDate, 'yyyy-MM-dd')}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="justify-content-end">
+            <button id="sendEmailButton" class="btn btn-primary"><i class="fa-solid fa-envelope"></i> Send notice to the customer by Email now !</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+<script>
+    document.getElementById("sendEmailButton").addEventListener("click", function() {
+        Toastify({
+            text: `! Waiting to receive email ! `,
+            className: "info",
+            gravity: "bottom", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            style: {
+                background: "gray",
+            }
+        }).showToast();
+        const buyerName = document.getElementById("nameBuyer").innerText;
+        const buyerEmail = document.getElementById("emailBuyer").innerText;
+        // Gửi yêu cầu POST để gửi email
+        fetch("/api/send_email_sale", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: buyerEmail/* Thêm địa chỉ email muốn gửi đến ở đây */,
+                BuyerName: buyerName/* Thêm tên khách hàng muốn chèn vào email ở đây */
+            })
+        })
+            .then(response => {
+                if (response.ok) {
+                    Toastify({
+                        text: `Send to email successfully ! `,
+                        className: "info",
+                        gravity: "bottom", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        style: {
+                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                        }
+                    }).showToast();
+                } else {
+                    Toastify({
+                        text: `Can not to send email. `,
+                        className: "error",
+                        gravity: "bottom", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        style: {
+                            background: "red",
+                        }
+                    }).showToast();
+                    throw new Error('Failed to send email');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Failed to send email");
+            });
+    });
+</script>
+
+</body>
+
+</html>

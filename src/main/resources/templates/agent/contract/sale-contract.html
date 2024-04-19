@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/Agentnavbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-0">
+    <div class="row">
+        <div class="col-md-12 p-5">
+            <input id="propertyId" type="hidden" th:value="${property.id}">
+            <h2 class="text-center">Contract of <span class="text-primary" th:text="${property.title}"></span></h2>
+
+            <form enctype="multipart/form-data" id="propertyManagementForm">
+                <!-- Thông tin chủ nhà -->
+                <div class="row">
+                    <h3>Owner</h3>
+                    <div class="mb-3 col-md-4 form">
+                        <label for="ownerID" class="form-label">Owner ID (CCCD)</label>
+                        <input type="text" class="form-control" id="ownerID" name="ownerID" placeholder="Ex:7212514587" required>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="ownerName" class="form-label">Owner Name</label>
+                        <input type="text" class="form-control" id="ownerName" name="ownerName" placeholder="Ex:Le Hai Tien" required>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="ownerPhone" class="form-label">Owner Phone</label>
+                        <input type="text" class="form-control" id="ownerPhone" name="ownerPhone" placeholder="Ex:097287xxxx" required>
+                    </div>
+                </div>
+
+
+                <!-- Thông tin người mua -->
+                <div class="row">
+                    <h3>Buyer</h3>
+                    <div class="mb-3 col-md-3">
+                        <label for="buyerID" class="form-label">Buyer ID (CCCD)</label>
+                        <input type="text" class="form-control" id="buyerID" name="buyerID" placeholder="Ex:7212514587" required>
+                    </div>
+                    <div class="mb-3 col-md-3">
+                        <label for="buyerName" class="form-label">Buyer Name</label>
+                        <input type="text" class="form-control" id="buyerName" name="buyerName" placeholder="Ex:Nguyen Thai Hoa" required>
+                    </div>
+                    <div class="mb-3 col-md-3">
+                        <label for="buyerPhone" class="form-label">Buyer Phone</label>
+                        <input type="text" class="form-control" id="buyerPhone" name="buyerPhone" placeholder="Ex:0375872xxxx" required>
+                    </div>
+                    <div class="mb-3 col-md-3">
+                        <label for="buyerEmail" class="form-label">Buyer Email</label>
+                        <input type="email" class="form-control" id="buyerEmail" name="buyerEmail" placeholder="Ex:buyer@gmail.com" required>
+                    </div>
+                    <div class="mb-3 col-md-12 ">
+                        <label for="buyerDOB" class="form-label">Buyer Date of Birth</label>
+                        <input type="date" class="form-control" id="buyerDOB" name="buyerDOB" required>
+                    </div>
+                </div>
+
+
+                <!-- Thông tin hợp đồng bán -->
+                <div class="row">
+                    <h3>Information of contract</h3>
+                    <div class="mb-3 col-md-4">
+                        <label for="sellingPrice" class="form-label">Selling Price</label>
+                        <input type="number" class="form-control" id="sellingPrice" name="sellingPrice" placeholder="Ex:2.000.000 VND" required>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="commission" class="form-label">Commission</label>
+                        <input type="number" class="form-control" id="commission" name="commission" placeholder="Ex:100.000 VND" required>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="contractDate" class="form-label">Contract Date</label>
+                        <input type="date" class="form-control" id="contractDate" name="contractDate"  required>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary col-md-12">Submit</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const propertyManagementForm = document.getElementById("propertyManagementForm");
+
+        propertyManagementForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(propertyManagementForm);
+            const jsonData = {};
+
+            formData.forEach(function (value, key) {
+                jsonData[key] = value;
+            });
+
+            console.log(jsonData)
+            const id = document.getElementById("propertyId").value;
+            const url = `/agent/property/saleContract/${id}`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer your_token_here' // Thay thế your_token_here bằng token của bạn
+                },
+                body: JSON.stringify(jsonData)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Contract Sale created successfully");
+                    } else {
+                        alert("Failed to create Contract Sale");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while creating Contract Sale");
+                });
+        });
+    });
+</script>
+
+</body>
+
+</html>

@@ -41,13 +41,11 @@
         <td th:text="${propertyDTO.getProperties().address}"></td>
         <td>
             <a th:if="${!propertyDTO.isRent()}"
-                    class="btn btn-primary"
                     th:href="@{/agent/property/rentContract/{id}(id=${propertyDTO.getProperties().id})}"
                     >
                 Create Contract
             </a>
             <a th:if="${propertyDTO.isRent()}"
-               class="btn btn-primary"
                th:href="@{/agent/property/update-rentContract/{id}(id=${propertyDTO.getProperties().id})}"
             >
                 Edit Contract
