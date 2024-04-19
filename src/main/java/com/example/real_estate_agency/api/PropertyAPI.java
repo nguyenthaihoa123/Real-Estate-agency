@@ -289,4 +289,28 @@ public class PropertyAPI {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing the request");
         }
     }
+
+    @PostMapping("/compare")
+    public ResponseEntity<List<Properties>> compareProperty(@RequestBody Map<String, String> request) {
+        try {
+            // Lấy id của hai bất động sản từ request
+            Long id1 = Long.valueOf(request.get("idProperty1"));
+            Long id2 = Long.valueOf(request.get("idProperty2"));
+
+            // Lấy thông tin của hai bất động sản từ service
+            Properties properties1 = propertyService.getById(id1);
+            Properties properties2 = propertyService.getById(id2);
+
+            // Tạo danh sách chứa hai bất động sản
+            List<Properties> properties = new ArrayList<>();
+            properties.add(properties1);
+            properties.add(properties2);
+
+            // Trả về danh sách bất động sản trong phản hồi JSON
+            return ResponseEntity.ok().body(properties);
+        } catch (Exception e) {
+            // Xử lý ngoại lệ và trả về một phản hồi lỗi
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
