@@ -58,9 +58,13 @@ public class UserController {
 
         model.addAttribute("client", client);
         model.addAttribute("saveList", listPropertySave);
-        model.addAttribute("bookList",bookTours);
+        model.addAttribute("saveListCount", listPropertySave.size());
 
-        return "test/client/personalPage"; // Trả về tên của trang HTML mà bạn muốn hiển thị
+        model.addAttribute("bookList",bookTours);
+        model.addAttribute("bookListCount", bookTours.size());
+
+
+        return "user/personal-page"; // Trả về tên của trang HTML mà bạn muốn hiển thị
     }
     @GetMapping("/feedback")
     public String showUserForm(@AuthenticationPrincipal UserDetails userDetails) {

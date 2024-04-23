@@ -1,33 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <title>Thanh toán</title>
-</head>
-
+<head th:replace="layout/head :: head"></head>
 <body>
-<div class="container p-5">
+<!-- Navbar Start -->
+<div th:replace="layout/Agentnavbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-5">
     <div class="row justify-content-center mt-5">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <img th:src="@{/vnpay-logo.png}" style="width: 200px">
-                    <h2 class="card-title">Thanh Toán Đơn Hàng</h2>
+                    <img src="https://vinadesign.vn/uploads/images/2023/05/vnpay-logo-vinadesign-25-12-57-55.jpg" style="width: 200px">
+                    <h2 class="card-title">Online payment with VNPAY</h2>
                     <form th:action="@{/agent/payPackage/submitOrder}" method="post">
-                        <div class="form-group">
-                            <label for="amount">Số tiền:</label>
+                        <div class="form-group mb-3">
+                            <label for="amount">Amount:</label>
                             <select class="form-select" id="amount" name="amount" required>
                                 <option value="100000">100,000 VND</option>
                                 <option value="200000">200,000 VND</option>
                                 <option value="300000">300,000 VND</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="orderInfo">Details of payment:</label>
-                            <input type="text" class="form-control" id="orderInfo" name="orderInfo"  >
+                            <input type="text" class="form-control" id="orderInfo" name="orderInfo" readonly th:value="${paymentCode}">
                         </div>
                         <button type="submit" class="btn btn-primary">Continue</button>
                     </form>
@@ -35,11 +31,17 @@
             </div>
         </div>
     </div>
+
 </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+
+
 </body>
 
 </html>

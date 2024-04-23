@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/Agentnavbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-5">
+    <div class="w-50 m-auto">
+        <!-- Thêm lớp "my-4" để tạo ra khoảng cách trên và dưới tiêu đề trang -->
+        <h1 class="my-3 text-danger text-center">Fail to attempt for payment !</h1>
+        <!-- Sử dụng lớp "alert" và "alert-danger" để tạo ra thông báo lỗi -->
+        <h2 class="my-2 text-primary">Details of package</h2>
+        <!-- Sử dụng lớp "table" và "table-bordered" để tạo ra bảng hiển thị thông tin chi tiết đơn hàng -->
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <td>ID:</td>
+                <td><span th:text="${orderId}">[order ID]</span></td>
+            </tr>
+            <tr>
+                <td>Amount:</td>
+                <td><span th:text="${totalPrice}">[total price]</span></td>
+            </tr>
+            <tr>
+                <td>Date:</td>
+                <td><span th:text="${paymentTime}">[payment time]</span></td>
+            </tr>
+            <tr>
+                <td>Code:</td>
+                <td><span th:text="${transactionId}">[transaction ID]</span></td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="/agent/payPackage/" class="btn btn-primary">Try it again/a>
+        <a href="/agent/profile/detail" class="btn btn-primary">Return to profile</a>
+    </div>
+
+</div>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+
+
+</body>
+
+</html>

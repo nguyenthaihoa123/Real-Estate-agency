@@ -28,8 +28,12 @@ public class VnPayController {
 
 
     @GetMapping("")
-    public String home(){
-        return "test/vnpay/index";
+    public String home(Model model,@AuthenticationPrincipal UserDetails userDetails){
+        Agent agent = agentService.findByEmail(userDetails.getUsername());
+        Date now = new Date();
+        String code = userDetails.getUsername() + "-payment-" + now.toString();
+        model.addAttribute("paymentCode",code);
+        return "agent/VNpay/index";
     }
 
     @PostMapping("/submitOrder")
@@ -38,7 +42,6 @@ public class VnPayController {
                               HttpServletRequest request){
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         String vnpayUrl = vnPayService.createOrder(orderTotal, orderInfo, baseUrl);
-//        System.out.println(vnpayUrl);
         return "redirect:" + vnpayUrl;
     }
 
@@ -71,12 +74,11 @@ public class VnPayController {
         if(paymentStatus ==1 ){
             int curNum = agent.getNumOfPost() + packagePosting.getQuantity();
             agent.setNumOfPost(curNum);
-            
             agentService.savePaymet(payment);
         }
         else {
             System.out.println("can not save payment");
         }
-        return paymentStatus == 1 ? "test/vnpay/ordersuccess" : "test/vnpay/orderfail";
+        return paymentStatus == 1 ? "agent/VNpay/success" : "agent/VNpay/fail";
     }
 }

@@ -34,10 +34,10 @@ public class SpringSecurity {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> {
-//                    authorize.requestMatchers("/checkout").authenticated();
+                    authorize.requestMatchers("/checkout").authenticated();
                     authorize.requestMatchers("/").permitAll();
-                    authorize.requestMatchers("/admin/**").hasAnyRole("ADMIN");
-//                    authorize.requestMatchers("/").hasAnyRole("USER");
+                    authorize.requestMatchers("/admin").hasAnyRole("ADMIN");
+                    authorize.requestMatchers("/").hasAnyRole("USER");
                     authorize.anyRequest().permitAll();
                 })
                 .formLogin(
@@ -63,11 +63,10 @@ public class SpringSecurity {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> {
                     authorize.requestMatchers("/").permitAll();
-                    authorize.requestMatchers("/home/**").permitAll();
                     authorize.requestMatchers("/agent/**").hasAnyRole("AGENT");
                     authorize.requestMatchers("/agent").authenticated();
 
-//                    authorize.requestMatchers("/user").hasAnyRole("USER");
+                    authorize.requestMatchers("/user").hasAnyRole("USER");
                     authorize.anyRequest().permitAll();
                 })
                 .formLogin(

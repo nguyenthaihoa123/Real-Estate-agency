@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<style>
+    .d-flex.justify-content-start > * {
+        margin-left: 10px;
+    }
+</style>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/navbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-0">
+    <h1 class="p-5">Welcome, <span class="text-secondary" th:text="${client.username}"></span> !</h1>
+    <div class=" mb-5 wow fadeInUp d-flex align-content-center justify-content-around" data-wow-delay="0.1s">
+        <a  href="/user/profile/update" class=""  data-wow-delay="0.1s" >
+            <button class="btn btn-primary  py-3 fadeInDown text-center mx-auto mb-2 shadow-lg"   data-wow-delay="0.1s" type="button" >
+                <i class="fa-solid fa-user-pen"></i>  Update Information
+            </button>
+        </a>
+        <a  href="/user/profile/change-password"  data-wow-delay="0.1s" >
+            <button class="btn btn-primary  py-3 fadeInDown text-center mx-auto mb-2 shadow-lg"   data-wow-delay="0.1s" type="button" >
+                <i class="fa-solid fa-key"></i> Change Password
+            </button>
+        </a>
+    </div>
+    <h2 class="text-center mt-3"><i class="fa-solid fa-heart"></i> Favorite Posts</h2>
+    <h4 style="margin-left: 20px" >You saved <span class="text-secondary" th:text="${saveListCount}"></span> posts !</h4>
+    <div id="propertyList" class="col-md-12 col-lg-12 wow fadeIn" data-wow-delay="0.3s">
+        <div class=" bg-white rounded p-3" style="border: 1px dashed rgba(0, 185, 142, .3)">
+            <div th:each="property : ${saveList}" class="p-3 mb-5 shadow-lg" >
+                <h3>Building: <span th:text="${property.title}" ></span></h3>
+                <p>Description:  <span th:text="${property.description}" ></span> </p>
+                <!--                body item-->
+                <div class="d-flex justify-content-lg-between ">
+                    <div class="d-flex justify-content-start">
+                        <img  th:src="${property.thumbnail}" alt="Thumbnail" style="width: 200px; height: 150px; object-fit: cover; border-radius: 20px">
+                        <div>
+                            <p>Price: <span th:text="${property.price}" ></span></p>
+                            <p>Area: <span th:text="${property.area}" ></span> m3</p>
+                            <p>Address: <span th:text="${property.address}" ></span></p>
+                        </div>
+                    </div>
+                    <div>
+                        <a th:href="@{/home/properties/{id}(id=${property.id})}">
+                            <button class="btn btn-primary"><i class="fa-solid fa-eye"></i> View</button>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+
+
+    <h2 class="text-center mt-3"><i class="fa-solid fa-handshake"></i> Booking Tours</h2>
+    <h4 style="margin-left: 20px">You sent <span class="text-secondary" th:text="${bookListCount}"></span> invitations !</h4>
+    <div id="bookingList" class="col-md-12 col-lg-12 wow fadeIn" data-wow-delay="0.3s">
+        <div class=" bg-white rounded p-3" style="border: 1px dashed rgba(0, 185, 142, .3)">
+            <div th:each="bookTour : ${bookList}" class="p-3 mb-5 shadow-lg" >
+                <h3 >Building: <span th:text="${bookTour.getProperty().title}" ></span></h3>
+                <p class="p-3 bg-info text-white shadow-sm ratio-1x1" style="border-radius: 10px">Message:  <span th:text="${bookTour.message}" ></span> </p>
+                <!--       body item-->
+                <div class="d-flex justify-content-lg-between ">
+                    <div class="d-flex justify-content-start">
+                        <img  th:src="${bookTour.getProperty().thumbnail}" alt="Thumbnail" style="width: 200px; height: 150px; object-fit: cover; border-radius: 20px">
+                        <div>
+                            <p  th:text="${bookTour.getProperty().description}" style="max-width: 850px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></p>
+                            <p>Price: <span th:text="${bookTour.getProperty().price}" ></span></p>
+                            <p>Area: <span th:text="${bookTour.getProperty().area}" ></span> m3</p>
+                            <p>Address: <span th:text="${bookTour.getProperty().address}" ></span></p>
+                        </div>
+                    </div>
+                    <div>
+                        <a th:href="@{/home/properties/{id}(id=${bookTour.getProperty().id})}">
+                            <button class="btn btn-primary"><i class="fa-solid fa-eye"></i> View</button>
+                        </a>
+                        <a th:href="@{/home/properties/{id}(id=${bookTour.getProperty().id})}">
+                            <button class="btn btn-danger"><i class="fa-solid fa-circle-xmark"></i> Cancel</button>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+</body>
+
+</html>

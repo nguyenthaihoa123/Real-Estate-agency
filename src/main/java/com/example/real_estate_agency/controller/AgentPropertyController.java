@@ -8,6 +8,7 @@ import com.example.real_estate_agency.models.property.InfoRentProperty;
 import com.example.real_estate_agency.models.property.InfoSaleProperty;
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.user.Agent;
+import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.service.AgentService;
 import com.example.real_estate_agency.service.CategoryService;
 import com.example.real_estate_agency.service.PropertyService;
@@ -53,7 +54,22 @@ public class AgentPropertyController {
         model.addAttribute("user", agent);
 
 
-        return "test/property/contractRent";
+        return "agent/contract/rent-contract";
+    }
+    @GetMapping("/properties/detail/{id}")
+    public String showPropertyDetail(@PathVariable("id") Long id, Model model,@AuthenticationPrincipal UserDetails userDetails) {
+        Optional<Properties> propertyOptional = Optional.ofNullable(propertyService.getById(id));
+        if (propertyOptional.isPresent()) {
+            Agent agent = agentService.findById(propertyOptional.get().getAgent().getId());
+            Properties property = propertyOptional.get();
+            List<CategoryDTO> categories = categoryService.getAll();
+            model.addAttribute("property", property);
+            model.addAttribute("categories", categories);
+
+            return "/agent/property/detail";
+        } else {
+            return "test/404";
+        }
     }
 
     @GetMapping("/property/saleContract/{id}")
@@ -99,7 +115,7 @@ public class AgentPropertyController {
         model.addAttribute("categories",categories);
         model.addAttribute("transactionTypes",transactionTypes);
         model.addAttribute("property",new Properties());
-        return "test/property/add"; // Trả về tên của template HTML để hiển thị trang thêm property
+        return "agent/property/add"; // Trả về tên của template HTML để hiển thị trang thêm property
     }
 
     @GetMapping("/properties/update/{id}")
