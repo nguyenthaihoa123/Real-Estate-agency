@@ -133,6 +133,10 @@ public class AgentPropertyController {
         }
 
         try {
+//            properties.setImages();
+            for (Image image: properties.getImages()){
+                System.out.println(image.getUrl());
+            }
             properties.setTitle((String) propertyJson.get("title"));
             properties.setDescription((String) propertyJson.get("description"));
             String priceStr = (String) propertyJson.get("price");
@@ -155,7 +159,7 @@ public class AgentPropertyController {
             }
             properties.setCategory(category);
             properties.setTransactionType(transactionType);
-            properties.getImages().clear();
+//            properties.getImages().clear();
             // Lấy danh sách các URL hình ảnh từ propertyJson
             List<String> urlImageStr = (List<String>) propertyJson.get("images");
             System.out.println(urlImageStr.size());
@@ -164,7 +168,7 @@ public class AgentPropertyController {
             List<Image> imageList = new ArrayList<>();
 
             // Kiểm tra xem danh sách hình ảnh hiện tại có rỗng không
-            if (urlImageStr != null && !urlImageStr.isEmpty()) {
+            if (!urlImageStr.isEmpty()) {
                 // Duyệt qua mỗi URL hình ảnh và tạo đối tượng Image tương ứng
                 for (String imageUrl : urlImageStr) {
                     Image image = new Image();
@@ -174,10 +178,15 @@ public class AgentPropertyController {
                 }
             }
 
-            // Nếu danh sách hình ảnh mới không rỗng, thay thế danh sách hình ảnh hiện tại bằng danh sách mới
+//            // Nếu danh sách hình ảnh mới không rỗng, thay thế danh sách hình ảnh hiện tại bằng danh sách mới
             if (!imageList.isEmpty()) {
-                propertyService.imageDeleteByProID(id);
-                properties.setImages(imageList);
+//                System.out.println(imageList.size());
+
+                // Xóa tất cả các hình ảnh liên kết với bất động sản hiện tại
+                properties.getImages().clear();
+
+            // Thêm hình ảnh mới vào danh sách images của Properties
+                properties.getImages().addAll(imageList);
             }
 
             propertyService.save(properties);

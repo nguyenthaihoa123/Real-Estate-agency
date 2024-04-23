@@ -63,8 +63,16 @@ public class UserController {
         return "test/client/personalPage"; // Trả về tên của trang HTML mà bạn muốn hiển thị
     }
     @GetMapping("/feedback")
-    public String showUserForm() {
-        return "test/feedback"; // Trả về tên của trang HTML mà bạn muốn hiển thị
+    public String showUserForm(@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            Client client = clientService.getByEmail(userDetails.getUsername());
+            Long id = client.getId();
+            return "test/feedback"; // Trả về tên của trang HTML mà bạn muốn hiển thị
+        }catch (Exception e){
+            e.printStackTrace();
+            return "test/404";
+        }
+
     }
 
     @PostMapping("/feedback")

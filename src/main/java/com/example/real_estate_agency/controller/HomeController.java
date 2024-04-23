@@ -41,6 +41,7 @@ public class HomeController {
     private AgentService agentService;
 
 
+
     @GetMapping("/")
     public String Home_Client(Model model,@RequestParam(defaultValue = "0") int page) {
         int pageSize = 6; // Số lượng phần tử trên mỗi trang
@@ -84,29 +85,35 @@ public class HomeController {
     @GetMapping("/properties/{id}")
     public String showPropertyDetail(@PathVariable("id") Long id, Model model,@AuthenticationPrincipal UserDetails userDetails) {
         // Tìm kiếm thuộc tính theo ID
-        Optional<Properties> propertyOptional = Optional.ofNullable(propertyService.getById(id));
-        Client client = clientService.getByEmail(userDetails.getUsername());
-        if (propertyOptional.isPresent()) {
-            Properties property = propertyOptional.get();
-            List<CategoryDTO> categories = categoryService.getAll();
-            boolean isSave = propertyService.getInfoSavePost(client.getId(),property.getId());
-            boolean statusRent = propertyService.checkInfoRent(property);
+        try {
+            Optional<Properties> propertyOptional = Optional.ofNullable(propertyService.getById(id));
+            Client client = clientService.getByEmail(userDetails.getUsername());
+            if (propertyOptional.isPresent()) {
+                Properties property = propertyOptional.get();
+                List<CategoryDTO> categories = categoryService.getAll();
+                boolean isSave = propertyService.getInfoSavePost(client.getId(),property.getId());
+                boolean statusRent = propertyService.checkInfoRent(property);
 //            List<TransactionType> transactionTypes = transactionTypeService.getAll();
 //            System.out.println("isSave: " + isSave);
-            // Truyền thuộc tính và danh sách categories, transactionTypes vào model
-            model.addAttribute("property", property);
-            model.addAttribute("categories", categories);
-            model.addAttribute("isSave", isSave);
-            model.addAttribute("statusRent", statusRent);
+                // Truyền thuộc tính và danh sách categories, transactionTypes vào model
+                model.addAttribute("property", property);
+                model.addAttribute("categories", categories);
+                model.addAttribute("isSave", isSave);
+                model.addAttribute("statusRent", statusRent);
 
 //            model.addAttribute("transactionTypes", transactionTypes);
 
-            // Trả về tên của template HTML để hiển thị trang cập nhật property
-            return "test/property/detail";
-        } else {
-            // Trả về trang lỗi hoặc xử lý lỗi khác tùy thuộc vào yêu cầu
-            return "test/404"; // Ví dụ: trang lỗi 404
+                // Trả về tên của template HTML để hiển thị trang cập nhật property
+                return "test/property/detail";
+            } else {
+                // Trả về trang lỗi hoặc xử lý lỗi khác tùy thuộc vào yêu cầu
+                return "test/404"; // Ví dụ: trang lỗi 404
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return "test/404";
         }
+
     }
 
     @GetMapping("/propertyType")
@@ -129,23 +136,29 @@ public class HomeController {
 
     @GetMapping("/agentDetail/{agentId}")
     public String detailAgent(@PathVariable Long agentId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        // Tìm kiếm thuộc tính theo email
-        Agent agent = agentService.findById(agentId);
-        DecimalFormat df = new DecimalFormat("#.##");
-        agent.setRateStar(Double.parseDouble(df.format(agent.getRateStar())));
+        try {
+            // Tìm kiếm thuộc tính theo email
+            Agent agent = agentService.findById(agentId);
+            DecimalFormat df = new DecimalFormat("#.##");
+            agent.setRateStar(Double.parseDouble(df.format(agent.getRateStar())));
 
-        Client client = clientService.getByEmail(userDetails.getUsername());
-        List<Properties> saleList = propertyService.getAllPropertySale(agent);
-        List<Properties> rentList = propertyService.getAllPropertyRent(agent);
-        List<RateReport> rateReportList = agentService.getAllRateByAgent(agent);
-        boolean checkRate = clientService.checkRate(client.getUsername(),agent);
-        model.addAttribute("agent", agent);
-        model.addAttribute("rentList",rentList);
-        model.addAttribute("saleList",saleList);
-        model.addAttribute("rateList",rateReportList);
-        model.addAttribute("checkRate",checkRate);
-        System.out.println(checkRate);
-        return "test/client/infoAgent";
+            Client client = clientService.getByEmail(userDetails.getUsername());
+            List<Properties> saleList = propertyService.getAllPropertySale(agent);
+            List<Properties> rentList = propertyService.getAllPropertyRent(agent);
+            List<RateReport> rateReportList = agentService.getAllRateByAgent(agent);
+            boolean checkRate = clientService.checkRate(client.getUsername(),agent);
+            model.addAttribute("agent", agent);
+            model.addAttribute("rentList",rentList);
+            model.addAttribute("saleList",saleList);
+            model.addAttribute("rateList",rateReportList);
+            model.addAttribute("checkRate",checkRate);
+            System.out.println(checkRate);
+            return "test/client/infoAgent";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "test/404";
+        }
+
     }
 
 

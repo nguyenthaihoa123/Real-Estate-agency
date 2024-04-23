@@ -41,6 +41,10 @@ public class AuthController {
         return "admin";
     }
 
+    @GetMapping("/error")
+    public String Error_Page(){
+        return "test/404";
+    }
 
     @GetMapping("/login")
     public String showLoginForm() {

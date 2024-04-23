@@ -146,7 +146,21 @@
             })).then((urls) => {
                 additionalImageUrls.push(...urls);
                 console.log('Additional Image URLs:', additionalImageUrls);
-
+// Ở đây bạn có thể làm bất cứ điều gì với additionalImageUrls, ví dụ: lưu vào cơ sở dữ liệu, hiển thị trước cho người dùng, v.v.
+                // Ví dụ:
+                // Lặp qua danh sách URL để hiển thị trước cho người dùng
+                const imagesPreview = document.getElementById('imagesPreview');
+                imagesPreview.innerHTML = ''; // Xóa bỏ các hình ảnh trước đó
+                additionalImageUrls.forEach(url => {
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.className = 'img-thumbnail';
+                    img.style.maxWidth = '100%';
+                    const col = document.createElement('div');
+                    col.className = 'col-md-3 mb-2';
+                    col.appendChild(img);
+                    imagesPreview.appendChild(col);
+                });
                 // Sau khi hoàn thành việc upload, gửi yêu cầu cập nhật property
                 // sendUpdateRequest(additionalImageUrls);
             });
