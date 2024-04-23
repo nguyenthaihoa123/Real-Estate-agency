@@ -9,6 +9,7 @@ import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.models.user.FeedBack;
+import com.example.real_estate_agency.models.user.RateReport;
 import com.example.real_estate_agency.service.AgentService;
 import com.example.real_estate_agency.service.ClientService;
 import com.example.real_estate_agency.service.PropertyService;
@@ -352,5 +353,32 @@ public class UserAPI {
                     .body("Failed to delete client with ID " + id);
         }
     }
+
+    @PostMapping("/clients/rate")
+    public ResponseEntity<String> createRate(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Map<String, String> request){
+        try {
+            Client client = clientService.getByEmail(userDetails.getUsername());
+            double rate = Double.parseDouble(request.get("rating"));
+            String content = request.get("content");
+            Long id_Agent = Long.valueOf(request.get("id_Agent"));
+            Agent agent = agentService.findById(id_Agent);
+
+            RateReport rateReport = new RateReport();
+            rateReport.setRating(rate);
+            rateReport.setComment(content);
+            rateReport.setName_Client(client.getUsername());
+            rateReport.setAgent(agent);
+            Date currentTime = new Date();
+            rateReport.setCreatedAt(currentTime);
+            System.out.println(rate);
+
+            clientService.createRate(rateReport);
+            return ResponseEntity.ok().body("Rate report created successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while creating the rate report.");
+        }
+    }
+
 
 }

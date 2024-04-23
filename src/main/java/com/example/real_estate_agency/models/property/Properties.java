@@ -247,4 +247,12 @@ public class Properties {
     public void setInfoRentProperty(InfoRentProperty infoRentProperty) {
         this.infoRentProperty = infoRentProperty;
     }
+
+    public InfoSaleProperty getInfoSaleProperty() {
+        return infoSaleProperty;
+    }
+
+    public void setInfoSaleProperty(InfoSaleProperty infoSaleProperty) {
+        this.infoSaleProperty = infoSaleProperty;
+    }
 }

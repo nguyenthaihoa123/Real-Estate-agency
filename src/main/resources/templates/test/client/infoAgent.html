@@ -3,9 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <title>Agent Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    img {
+        max-width: 100px;
+        height: auto;
+    }
+
+    #popup {
+    }
+
+    .property-info-container {
+        display: flex;
+        flex-direction: row; /* Hiển thị các property-info ngang */
+        justify-content: space-around; /* Canh giữa các property-info */
+        margin: 20px;
+    }
+
+    .property-info {
+        max-width: 400px; /* Đảm bảo rằng mỗi property không quá rộng */
+        min-width: 400px; /* Đảm bảo rằng mỗi property không quá rộng */
+        min-height: 450px; /* Đảm bảo rằng mỗi property không quá rộng */
+    }
+
+    /* Thêm một chút margin giữa các property-info */
+    .property-info:not(:last-child) {
+        margin-right: 20px;
+    }
+
+
+</style>
 <body>
+<div id="overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; display: none;"></div>
+<div id="popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); z-index: 10000; display: none;">
+    <div class="report-container">
+        <h2>Report Agent</h2>
+        <form id="reportForm">
+            <label for="reportForm">Rating:</label><br>
+            <div id="stars">
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1" title="1 star">1 star</label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2" title="2 stars">2 stars</label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3" title="3 stars">3 stars</label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4" title="4 stars">4 stars</label>
+                <input type="radio" id="star5" name="rating" value="5">
+                <label for="star5" title="5 stars">5 stars</label>
+            </div>
+            <label for="content">Content:</label><br>
+            <input type="text" id="content" name="content" required><br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
 <h1>Agent Detail</h1>
+<input type="hidden" th:value="*{agent.id}" id="id_Agent">
 <div th:if="${agent != null}">
     <p>Username: <span th:text="${agent.getUsername()}"></span></p>
     <p>Email: <span th:text="${agent.getEmail()}"></span></p>
@@ -13,10 +87,170 @@
     <p>Address: <span th:text="${agent.getAddress()}"></span></p>
     <p>Company: <span th:text="${agent.getCompany()}"></span></p>
     <p>Avatar: <img th:src="${agent.getAvatar()}" width="100" height="100" alt="Avatar"></p>
+    <p>Rate: <span th:text="${agent.getRateStar()}"></span>/5.0<i class="fa fa-star" aria-hidden="true" style="color: green;"></i></p>
     <p>Number of Properties: <span th:text="${agent.getNumOfProperty()}"></span></p>
+    <button id="reportAgent" th:disabled="${checkRate}">Report</button>
 </div>
 <div th:if="${agent == null}">
     <p>No agent found.</p>
 </div>
+<!-- Thêm bảng hiển thị danh sách bất động sản cho thuê -->
+<div>
+    <h2>Rent Properties</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Image</th>
+            <th>Detail</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Lặp qua danh sách các bất động sản cho thuê và hiển thị thông tin -->
+        <tr th:each="property : ${rentList}">
+            <td th:text="${property.title}"></td>
+            <td th:text="${property.description}"></td>
+            <td th:text="${property.price}"></td>
+            <td th:text="${property.status}"></td>
+            <td>
+                <img th:src="${property.thumbnail}" alt="Thumbnail" style="width: 100px; height: 100px;">
+            </td>
+            <td>
+                <a th:href="@{/home/properties/{id}(id=${property.id})}">Go to Detail</a>
+            </td>
+            <!-- Thêm các cột khác tùy ý -->
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Thêm bảng hiển thị danh sách bất động sản cho bán -->
+<div>
+    <h2>Sale Properties</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Image</th>
+            <th>Detail</th>
+            <!-- Thêm các cột khác tùy ý -->
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Lặp qua danh sách các bất động sản cho bán và hiển thị thông tin -->
+        <tr th:each="property : ${saleList}">
+            <td th:text="${property.title}"></td>
+            <td th:text="${property.description}"></td>
+            <td th:text="${property.price}"></td>
+            <!-- Thêm các cột khác tùy ý -->
+            <td th:text="${property.status}"></td>
+            <td>
+                <img th:src="${property.thumbnail}" alt="Thumbnail" style="width: 100px; height: 100px;">
+            </td>
+            <td>
+                <a th:href="@{/home/properties/{id}(id=${property.id})}">Go to Detail</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!-- Hiển thị danh sách đánh giá -->
+<div>
+    <h2>Rate Reports</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Client</th>
+            <th>Created At</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Lặp qua danh sách các báo cáo đánh giá và hiển thị thông tin -->
+        <tr th:each="report : ${rateList}">
+            <td th:text="${report.rating}"></td>
+            <td th:text="${report.comment}"></td>
+            <td th:text="${report.name_Client}"></td>
+            <td th:text="${#dates.format(report.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('reportAgent').addEventListener('click', function() {
+            // Hiển thị ô trắng (overlay)
+            document.getElementById('overlay').style.display = 'block';
+            const popup = document.getElementById('popup');
+
+
+            popup.style.display = 'block';
+            // popup.innerHTML = `Left Property ID: ${leftPropertyId}<br>Right Property ID: ${rightPropertyId}`;
+            popup.style.display = 'block';
+        });
+
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('popup').style.display = 'none';
+        });
+
+        document.getElementById('reportForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Lấy giá trị của content và rating từ các trường input
+            const content = document.getElementById('content').value;
+            const id_Agent = document.getElementById('id_Agent').value;
+            const rating = document.querySelector('input[name="rating"]:checked');
+
+            // Kiểm tra xem người dùng đã nhập đầy đủ thông tin hay không
+            if (content.trim() === '' || rating === null) {
+                // Nếu không, hiển thị một cảnh báo và không thực hiện hành động tiếp theo
+                alert('Please fill in all fields.');
+            } else {
+                const data = {
+                    content: content,
+                    rating: rating.value,
+                    id_Agent: id_Agent
+                };
+                console.log(data)
+
+                // Gửi request POST đến endpoint "/clients/rate"
+                fetch('/api/clients/rate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        // Xử lý dữ liệu hoặc hiển thị thông báo thành công
+                        alert('Rating submitted successfully!');
+                        console.log('Success:', data);
+                    })
+                    .catch(error => {
+                        // Xử lý lỗi hoặc hiển thị thông báo lỗi
+                        console.error('Error:', error);
+                    });
+
+                // Đóng popup
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('popup').style.display = 'none';
+            }
+        });
+    });
+</script>
 </body>
 </html>

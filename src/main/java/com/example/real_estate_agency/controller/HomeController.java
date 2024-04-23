@@ -6,6 +6,7 @@ import com.example.real_estate_agency.models.payment.TransactionType;
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.models.user.Client;
+import com.example.real_estate_agency.models.user.RateReport;
 import com.example.real_estate_agency.service.AgentService;
 import com.example.real_estate_agency.service.CategoryService;
 import com.example.real_estate_agency.service.ClientService;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -129,7 +131,20 @@ public class HomeController {
     public String detailAgent(@PathVariable Long agentId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         // Tìm kiếm thuộc tính theo email
         Agent agent = agentService.findById(agentId);
+        DecimalFormat df = new DecimalFormat("#.##");
+        agent.setRateStar(Double.parseDouble(df.format(agent.getRateStar())));
+
+        Client client = clientService.getByEmail(userDetails.getUsername());
+        List<Properties> saleList = propertyService.getAllPropertySale(agent);
+        List<Properties> rentList = propertyService.getAllPropertyRent(agent);
+        List<RateReport> rateReportList = agentService.getAllRateByAgent(agent);
+        boolean checkRate = clientService.checkRate(client.getUsername(),agent);
         model.addAttribute("agent", agent);
+        model.addAttribute("rentList",rentList);
+        model.addAttribute("saleList",saleList);
+        model.addAttribute("rateList",rateReportList);
+        model.addAttribute("checkRate",checkRate);
+        System.out.println(checkRate);
         return "test/client/infoAgent";
     }
 

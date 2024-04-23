@@ -4,15 +4,15 @@ import com.example.real_estate_agency.DTO.FeedBackDTO;
 import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.property.Statistical;
-import com.example.real_estate_agency.models.user.Client;
-import com.example.real_estate_agency.models.user.FeedBack;
-import com.example.real_estate_agency.models.user.Role;
+import com.example.real_estate_agency.models.user.*;
 import com.example.real_estate_agency.repository.BookTourRepository;
 import com.example.real_estate_agency.repository.property.PropertyRepository;
 import com.example.real_estate_agency.repository.property.SavePostRepository;
+import com.example.real_estate_agency.repository.user.AgentRepository;
 import com.example.real_estate_agency.repository.user.ClientRepository;
 import com.example.real_estate_agency.repository.RoleRepository;
 import com.example.real_estate_agency.repository.user.FeedBackRepository;
+import com.example.real_estate_agency.repository.user.RateReportRepository;
 import com.example.real_estate_agency.service.ClientService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +43,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private PropertyRepository propertyRepository;
+
+    @Autowired
+    private RateReportRepository rateReportRepository;
+
+    @Autowired
+    private AgentRepository agentRepository;
 
 
     @Override
@@ -185,6 +191,36 @@ public class ClientServiceImpl implements ClientService {
             return null;
         }
     }
+
+    @Override
+    public void createRate(RateReport rateReport) {
+        try {
+            rateReportRepository.save(rateReport);
+            List<RateReport> rateReports = rateReportRepository.findByAgent(rateReport.getAgent());
+            Agent agent = rateReport.getAgent();
+            double sumStar = 0;
+            for(RateReport rateR : rateReports){
+                sumStar = rateR.getRating() + sumStar;
+            }
+            double avg = sumStar / rateReports.size();
+            agent.setRateStar(avg);
+            agentRepository.save(agent);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean checkRate(String name_Client, Agent agent) {
+        try {
+            System.out.println(rateReportRepository.findByAgentAndNameClient(agent, name_Client).size());
+            return !rateReportRepository.findByAgentAndNameClient(agent, name_Client).isEmpty();
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     private Role checkRoleExist() {
         Role role = new Role();

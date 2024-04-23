@@ -41,4 +41,5 @@ public class Post {
     // Đảm bảo rằng bạn đã tạo getters và setters cho tất cả các trường
 
     // Các phương thức khác nếu cần
+
 }
