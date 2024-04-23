@@ -28,6 +28,8 @@ public class Agent {
 
     private int numOfProperty;
 
+    private double rateStar;
+
     @JsonIgnore
     @OneToMany(mappedBy = "agent")
     private List<Payment> payments;
@@ -37,6 +39,9 @@ public class Agent {
 
     @OneToMany(mappedBy = "agent")
     private List<Post> posts;
+
+    @OneToMany(mappedBy = "agent")
+    private List<RateReport> rateReports;
 
     // Constructors, getters, setters và các phương thức khác
 
@@ -170,5 +175,13 @@ public class Agent {
 
     public void setNumOfProperty(int numOfProperty) {
         this.numOfProperty = numOfProperty;
+    }
+
+    public double getRateStar() {
+        return rateStar;
+    }
+
+    public void setRateStar(double rateStar) {
+        this.rateStar = rateStar;
     }
 }

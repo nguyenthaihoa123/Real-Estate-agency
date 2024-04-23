@@ -129,7 +129,9 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public void imageDeleteByProID(Long id) {
         try {
-            imageRepository.deleteByPropertyId(id);
+            if(imageRepository.findById(id).isPresent()){
+                imageRepository.deleteByPropertyId(id);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

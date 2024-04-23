@@ -3,9 +3,11 @@ package com.example.real_estate_agency.service;
 import com.example.real_estate_agency.DTO.FeedBackDTO;
 import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.SavePost;
+import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.models.user.Client;
 import com.example.real_estate_agency.models.user.FeedBack;
 import com.example.real_estate_agency.models.property.Properties;
+import com.example.real_estate_agency.models.user.RateReport;
 
 import java.util.List;
 
@@ -34,4 +36,8 @@ public interface ClientService {
     BookTour getInfoBooking(Long clientID, Long propertyID);
 
     List<Client> getAllClient();
+
+    void createRate(RateReport rateReport);
+
+    boolean checkRate(String name_Client, Agent agent);
 }

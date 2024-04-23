@@ -4,10 +4,12 @@ import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.payment.PackagePosting;
 import com.example.real_estate_agency.models.payment.Payment;
 import com.example.real_estate_agency.models.user.Agent;
+import com.example.real_estate_agency.models.user.RateReport;
 import com.example.real_estate_agency.repository.BookTourRepository;
 import com.example.real_estate_agency.repository.payment.PackagePostingRepository;
 import com.example.real_estate_agency.repository.payment.PaymentRepository;
 import com.example.real_estate_agency.repository.user.AgentRepository;
+import com.example.real_estate_agency.repository.user.RateReportRepository;
 import com.example.real_estate_agency.service.AgentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class AgentServiceImpl implements AgentService {
     private PaymentRepository paymentRepository;
     @Autowired
     private BookTourRepository bookTourRepository;
+    @Autowired
+    private RateReportRepository rateReportRepository;
     @Override
     public Agent save(Agent agent) {
         try {
@@ -109,6 +113,16 @@ public class AgentServiceImpl implements AgentService {
     public List<BookTour> getAllBookTour(Agent agent) {
         try {
             return bookTourRepository.findByProperty_Agent(agent);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<RateReport> getAllRateByAgent(Agent agent) {
+        try {
+            return rateReportRepository.findByAgent(agent);
         }catch (Exception e){
             e.printStackTrace();
             return null;

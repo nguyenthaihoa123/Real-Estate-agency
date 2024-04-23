@@ -3,6 +3,53 @@
 
 <head th:replace="layout/head :: head"></head>
 
+<style>
+    #popup {
+    }
+
+    .property-info-container {
+        display: flex;
+        flex-direction: row; /* Hiển thị các property-info ngang */
+        justify-content: space-around; /* Canh giữa các property-info */
+        margin: 20px;
+    }
+
+    .property-info {
+        max-width: 400px; /* Đảm bảo rằng mỗi property không quá rộng */
+        min-width: 400px; /* Đảm bảo rằng mỗi property không quá rộng */
+        min-height: 450px; /* Đảm bảo rằng mỗi property không quá rộng */
+    }
+
+    /* Thêm một chút margin giữa các property-info */
+    .property-info:not(:last-child) {
+        margin-right: 20px;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    img {
+        max-width: 100px;
+        height: auto;
+    }
+
+</style>
 <body>
 <div class="container-xxl bg-white p-0">
     <!-- Spinner Start -->
@@ -13,9 +60,14 @@
     <!-- Navbar Start -->
     <div th:replace="layout/navbar :: navbar"></div>
     <!-- Navbar End -->
+    <div id="overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; display: none;"></div>
+    <div id="popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); z-index: 10000; display: none;">
+        <div class="property-info-container"></div>
+    </div>
 
 
-        <!-- Header Start -->
+
+    <!-- Header Start -->
         <div class="container-fluid header bg-white p-0">
             <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
                 <div class="col-md-6 p-5 mt-lg-5">
@@ -80,7 +132,7 @@
                             <a id="allBtn" class="btn btn-outline-primary" data-bs-toggle="pill" href="#tab-1" th:href="@{/api/properties(name=null)}">All</a>
                         </li>
                         <li class="nav-item me-2">
-                            <a id="forSellBtn" class="btn btn-outline-primary" data-bs-toggle="pill" href="#tab-2" th:href="@{/api/properties(name='Sale')}">For Sell</a>
+                            <a id="forSellBtn" class="btn btn-outline-primary" data-bs-toggle="pill" href="#tab-2" th:href="@{/api/properties(name='Sale')}">For Sale</a>
                         </li>
                         <li class="nav-item me-0">
                             <a id="forRentBtn" class="btn btn-outline-primary" data-bs-toggle="pill" href="#tab-3" th:href="@{/api/properties(name='Rent')}">For Rent</a>
@@ -198,7 +250,7 @@
                                                 propertyItem.classList.add('col-lg-4', 'col-md-6', 'wow', 'fadeInUp');
                                                 propertyItem.setAttribute('data-wow-delay', '0.1s');
                                                 propertyItem.innerHTML = `
-                                                        <div class="property-item rounded overflow-hidden">
+                                                        <div class="property-item rounded overflow-hidden" data-property-id=${property.id}>
                                                             <div class="position-relative overflow-hidden">
                                                                 <a href="/home/properties/${property.id}">
                                                                     <img class="img-fluid" src="${property.thumbnail}" alt="${property.title}" />
@@ -221,21 +273,174 @@
                                                                 </small>
                                                                 <small class="flex-fill text-center border-end py-2">
                                                                     <i class="fa fa-bed text-primary me-2"></i>
-                                                                    <span>10 Bed</span>
+                                                                    <span>10 Room</span>
                                                                 </small>
                                                                 <small class="flex-fill text-center py-2">
-                                                                    <i class="fa fa-bath text-primary me-2"></i>
-                                                                    <span>10 Bath</span>
+
+                                                                    <button class="btn btn-primary" onclick="selectItemForCompare(this.parentNode.parentNode.parentNode)">
+                                                                    <i class="fa fa-plus text-white me-2"></i>
+                                                                    Compare</button>
                                                                 </small>
                                                             </div>
                                                         </div>
                                                     `;
+
                                                 row.appendChild(propertyItem);
                                             });
 
                                         })
                                         .catch(error => console.error('Error fetching properties:', error));
                                 }
+                                // Xử lý sự kiện khi nhấn vào nút Compare
+                                document.getElementById('compareProperty').addEventListener('click', function() {
+                                    // Kiểm tra xem đã chọn đủ hai property chưa
+                                    if (leftCompareItem && rightCompareItem) {
+                                        // Lấy ID của hai property
+                                        const leftPropertyId = leftCompareItem.getAttribute('data-property-id');
+                                        const rightPropertyId = rightCompareItem.getAttribute('data-property-id');
+
+                                        // Hiển thị ô trắng (overlay)
+                                        document.getElementById('overlay').style.display = 'block';
+
+                                        // Hiển thị thông tin trong ô trắng
+                                        const popup = document.getElementById('popup');
+                                        // popup.innerHTML = `Left Property ID: ${leftPropertyId}<br>Right Property ID: ${rightPropertyId}`;
+                                        popup.style.display = 'block';
+
+                                        // Hiển thị ID của hai property trong console
+                                        console.log('Left Property ID:', leftPropertyId);
+                                        console.log('Right Property ID:', rightPropertyId);
+                                        // Tạo request body từ ID của hai property
+                                        const requestBody = {
+                                            idProperty1: leftPropertyId,
+                                            idProperty2: rightPropertyId
+                                        };
+
+                                        // Gọi API /compare với request body đã tạo
+                                        fetch('/api/compare', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify(requestBody)
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                // Xử lý dữ liệu trả về từ API /compare nếu cần
+                                                console.log('Properties compared:', data);
+                                                // Tạo HTML cho bảng
+                                                const tableHTML = `
+                                                    <div class="property-info">
+                                                            <h2>${data[0].title}</h2>
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th>ID</th>
+                                                                        <td>${data[0].id}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Title</th>
+                                                                        <td>${data[0].title}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Description</th>
+                                                                        <td>${data[0].description}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Price</th>
+                                                                        <td>${data[0].price}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Area</th>
+                                                                        <td>${data[0].area}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Status</th>
+                                                                        <td>${data[0].status}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Address</th>
+                                                                        <td>${data[0].address}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Thumbnail</th>
+                                                                        <td><img src="${data[0].thumbnail}" alt="${data[0].title}" width="100"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="property-info">
+                                                            <h2>${data[1].title}</h2>
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th>ID</th>
+                                                                        <td>${data[1].id}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Title</th>
+                                                                        <td>${data[1].title}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Description</th>
+                                                                        <td>${data[1].description}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Price</th>
+                                                                        <td>${data[1].price}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Area</th>
+                                                                        <td>${data[1].area}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Status</th>
+                                                                        <td>${data[1].status}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Address</th>
+                                                                        <td>${data[1].address}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Thumbnail</th>
+                                                                        <td><img src="${data[1].thumbnail}" alt="${data[1].title}" width="100"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    `;
+
+                                                // Hiển thị thông tin trong popup
+                                                const popupContainer = document.querySelector('.property-info-container');
+                                                popupContainer.innerHTML = tableHTML;
+                                                popup.style.display = 'block';
+                                            })
+                                            .catch(error => {
+                                                console.error('Error comparing properties:', error);
+                                                alert('Failed to compare properties.');
+                                            });
+                                    } else {
+                                        alert('Please select two properties to compare.');
+                                        // Ẩn lớp mờ nếu không đủ hai property
+                                        document.getElementById('overlay').style.display = 'none';
+                                    }
+                                });
+                                document.getElementById('overlay').addEventListener('click', function() {
+                                    document.getElementById('overlay').style.display = 'none';
+                                    document.getElementById('popup').style.display = 'none';
+                                });
+
+                                // Xử lý sự kiện khi nhấn vào nút Delete Left
+                                document.getElementById('deleteLeft').addEventListener('click', function() {
+                                    leftCompareItem = null;
+                                    document.getElementById('leftProperty').innerHTML = '';
+                                });
+
+                                // Xử lý sự kiện khi nhấn vào nút Delete Right
+                                document.getElementById('deleteRight').addEventListener('click', function() {
+                                    rightCompareItem = null;
+                                    document.getElementById('rightProperty').innerHTML = '';
+                                });
                             };
 
                         </script>
@@ -251,7 +456,35 @@
         </div>
     </div>
         <!-- Property List End -->
+    <!-- Call to Action Start -->
+    <h1 class="display-5 animated fadeIn mt-5 text-center">Property Compare</h1>
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="bg-light rounded p-3">
+                <div class="bg-white rounded p-4" style="border: 1px dashed rgba(0, 185, 142, .3)">
+                    <div class="row">
+                        <div class="col-lg-6" >
+                            <div class="col-lg-12 col-md-12 wow fadeInUp" id="leftProperty" data-wow-delay="0.1s">
 
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6" >
+                            <div class="col-lg-12 col-md-12 wow fadeInUp" id="rightProperty" data-wow-delay="0.1s">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 text-center mt-2">
+        <button id="deleteLeft" class="btn btn-primary">Delete Left</button>
+        <button id="compareProperty" class="btn btn-primary">Compare</button>
+        <button id="deleteRight" class="btn btn-primary">Delete Right</button>
+    </div>
+    <!-- Call to Action End -->
 
         <!-- Call to Action Start -->
         <div class="container-xxl py-5">
@@ -276,7 +509,7 @@
             </div>
         </div>
         <!-- Call to Action End -->
-        
+
 
         <!-- Footer Start -->
         <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
@@ -366,5 +599,23 @@
     <!-- JavaScript Libraries -->
     <div th:replace="layout/lib :: lib"></div>
 </body>
-
+<script>
+    // Khởi tạo mảng để lưu các mục so sánh
+    let leftCompareItem = null;
+    let rightCompareItem = null;
+    function selectItemForCompare(item) {
+        // Kiểm tra xem mục nào đang trống và gán mục được chọn vào đó
+        if (!leftCompareItem) {
+            leftCompareItem = item.cloneNode(true);
+            document.getElementById('leftProperty').innerHTML = leftCompareItem.outerHTML; // Hiển thị thông tin của mục trái
+        } else if (!rightCompareItem) {
+            rightCompareItem = item.cloneNode(true);
+            document.getElementById('rightProperty').innerHTML = rightCompareItem.outerHTML; // Hiển thị thông tin của mục phải
+        } else {
+            // Nếu đã chọn đủ 2 mục, không cho chọn thêm mục nào nữa
+            alert('You can only compare two properties at a time.');
+        }
+        // console.log(item)
+    }
+</script>
 </html>

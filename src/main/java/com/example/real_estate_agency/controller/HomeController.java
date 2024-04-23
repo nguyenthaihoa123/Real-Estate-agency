@@ -6,6 +6,7 @@ import com.example.real_estate_agency.models.payment.TransactionType;
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.models.user.Client;
+import com.example.real_estate_agency.models.user.RateReport;
 import com.example.real_estate_agency.service.AgentService;
 import com.example.real_estate_agency.service.CategoryService;
 import com.example.real_estate_agency.service.ClientService;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +39,7 @@ public class HomeController {
     private CategoryService categoryService;
     @Autowired
     private AgentService agentService;
+
 
 
     @GetMapping("/")
@@ -82,29 +85,35 @@ public class HomeController {
     @GetMapping("/properties/{id}")
     public String showPropertyDetail(@PathVariable("id") Long id, Model model,@AuthenticationPrincipal UserDetails userDetails) {
         // Tìm kiếm thuộc tính theo ID
-        Optional<Properties> propertyOptional = Optional.ofNullable(propertyService.getById(id));
-        Client client = clientService.getByEmail(userDetails.getUsername());
-        if (propertyOptional.isPresent()) {
-            Properties property = propertyOptional.get();
-            List<CategoryDTO> categories = categoryService.getAll();
-            boolean isSave = propertyService.getInfoSavePost(client.getId(),property.getId());
-            boolean statusRent = propertyService.checkInfoRent(property);
+        try {
+            Optional<Properties> propertyOptional = Optional.ofNullable(propertyService.getById(id));
+            Client client = clientService.getByEmail(userDetails.getUsername());
+            if (propertyOptional.isPresent()) {
+                Properties property = propertyOptional.get();
+                List<CategoryDTO> categories = categoryService.getAll();
+                boolean isSave = propertyService.getInfoSavePost(client.getId(),property.getId());
+                boolean statusRent = propertyService.checkInfoRent(property);
 //            List<TransactionType> transactionTypes = transactionTypeService.getAll();
 //            System.out.println("isSave: " + isSave);
-            // Truyền thuộc tính và danh sách categories, transactionTypes vào model
-            model.addAttribute("property", property);
-            model.addAttribute("categories", categories);
-            model.addAttribute("isSave", isSave);
-            model.addAttribute("statusRent", statusRent);
+                // Truyền thuộc tính và danh sách categories, transactionTypes vào model
+                model.addAttribute("property", property);
+                model.addAttribute("categories", categories);
+                model.addAttribute("isSave", isSave);
+                model.addAttribute("statusRent", statusRent);
 
 //            model.addAttribute("transactionTypes", transactionTypes);
 
-            // Trả về tên của template HTML để hiển thị trang cập nhật property
-            return "test/property/detail";
-        } else {
-            // Trả về trang lỗi hoặc xử lý lỗi khác tùy thuộc vào yêu cầu
-            return "test/404"; // Ví dụ: trang lỗi 404
+                // Trả về tên của template HTML để hiển thị trang cập nhật property
+                return "test/property/detail";
+            } else {
+                // Trả về trang lỗi hoặc xử lý lỗi khác tùy thuộc vào yêu cầu
+                return "test/404"; // Ví dụ: trang lỗi 404
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return "test/404";
         }
+
     }
 
     @GetMapping("/propertyType")
@@ -127,10 +136,29 @@ public class HomeController {
 
     @GetMapping("/agentDetail/{agentId}")
     public String detailAgent(@PathVariable Long agentId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        // Tìm kiếm thuộc tính theo email
-        Agent agent = agentService.findById(agentId);
-        model.addAttribute("agent", agent);
-        return "test/client/infoAgent";
+        try {
+            // Tìm kiếm thuộc tính theo email
+            Agent agent = agentService.findById(agentId);
+            DecimalFormat df = new DecimalFormat("#.##");
+            agent.setRateStar(Double.parseDouble(df.format(agent.getRateStar())));
+
+            Client client = clientService.getByEmail(userDetails.getUsername());
+            List<Properties> saleList = propertyService.getAllPropertySale(agent);
+            List<Properties> rentList = propertyService.getAllPropertyRent(agent);
+            List<RateReport> rateReportList = agentService.getAllRateByAgent(agent);
+            boolean checkRate = clientService.checkRate(client.getUsername(),agent);
+            model.addAttribute("agent", agent);
+            model.addAttribute("rentList",rentList);
+            model.addAttribute("saleList",saleList);
+            model.addAttribute("rateList",rateReportList);
+            model.addAttribute("checkRate",checkRate);
+            System.out.println(checkRate);
+            return "test/client/infoAgent";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "test/404";
+        }
+
     }
 
 

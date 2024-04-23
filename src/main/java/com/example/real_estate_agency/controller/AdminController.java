@@ -16,11 +16,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.context.Context;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
@@ -111,6 +119,83 @@ public class AdminController {
         return "test/admin/updatePassAgent";
     }
     // Thống kê theo ngày trong tháng
+
+    @GetMapping("/manage-money/chart/export")
+    public ResponseEntity<byte[]> exportChartToExcel(@AuthenticationPrincipal UserDetails userDetails) {
+        // Lấy dữ liệu từ cơ sở dữ liệu
+        List<Payment> payments = agentService.getAllPayment();
+
+        // Tạo workbook Excel
+        try (Workbook workbook = new XSSFWorkbook()) {
+            // Tạo một sheet Excel mới
+            Sheet sheet = workbook.createSheet("Chart Data");
+
+            // Tạo dòng header cho dữ liệu theo ngày
+            Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("Day");
+            headerRow.createCell(1).setCellValue("Total Amount");
+
+            // Thêm dữ liệu theo ngày
+            int rowNum = 1;
+            Map<String, Double> listByDay = getTotalAmountByDay(payments);
+            for (Map.Entry<String, Double> entry : listByDay.entrySet()) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(entry.getKey());
+                row.createCell(1).setCellValue(entry.getValue());
+            }
+
+            // Thêm dòng trống
+            rowNum++;
+
+            // Tạo dòng header cho dữ liệu theo quý
+            headerRow = sheet.createRow(rowNum++);
+            headerRow.createCell(0).setCellValue("Quarter");
+            headerRow.createCell(1).setCellValue("Total Amount");
+
+            // Thêm dữ liệu theo quý
+            Map<String, Double> listByQuarter = getTotalAmountByQuarter(payments);
+            for (Map.Entry<String, Double> entry : listByQuarter.entrySet()) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(entry.getKey());
+                row.createCell(1).setCellValue(entry.getValue());
+            }
+
+            // Thêm dòng trống
+            rowNum++;
+
+            // Tạo dòng header cho dữ liệu theo năm
+            headerRow = sheet.createRow(rowNum++);
+            headerRow.createCell(0).setCellValue("Year");
+            headerRow.createCell(1).setCellValue("Total Amount");
+
+            // Thêm dữ liệu theo năm
+            Map<Integer, Double> listByYear = getTotalAmountByYear(payments);
+            for (Map.Entry<Integer, Double> entry : listByYear.entrySet()) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(entry.getKey());
+                row.createCell(1).setCellValue(entry.getValue());
+            }
+
+            // Tạo ByteArrayOutputStream để lưu workbook vào bộ nhớ
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+
+            // Chuyển đổi workbook thành mảng byte
+            byte[] excelBytes = outputStream.toByteArray();
+
+            // Thiết lập HTTP header cho tệp Excel
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "chart_statistics.xlsx");
+
+            // Trả về tệp Excel
+            return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Trả về lỗi nếu có vấn đề xảy ra trong quá trình tạo Excel
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
     public Map<String, Double> getTotalAmountByDay(List<Payment> payments) {

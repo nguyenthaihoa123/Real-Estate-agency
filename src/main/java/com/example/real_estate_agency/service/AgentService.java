@@ -4,6 +4,7 @@ import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.payment.PackagePosting;
 import com.example.real_estate_agency.models.payment.Payment;
 import com.example.real_estate_agency.models.user.Agent;
+import com.example.real_estate_agency.models.user.RateReport;
 
 import java.util.List;
 
@@ -24,4 +25,5 @@ public interface AgentService {
     void deleteById(Long id);
 
     List<BookTour> getAllBookTour(Agent agent);
+    List<RateReport> getAllRateByAgent(Agent agent);
 }
