@@ -1,6 +1,9 @@
 package com.example.real_estate_agency.controller;
 
 import com.example.real_estate_agency.DTO.CategoryDTO;
+import com.example.real_estate_agency.DTO.PropertyRentAgentDTO;
+import com.example.real_estate_agency.DTO.PropertySaleAgentDTO;
+import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.Image;
 import com.example.real_estate_agency.models.payment.TransactionType;
 import com.example.real_estate_agency.models.property.Category;
