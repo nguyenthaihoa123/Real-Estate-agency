@@ -9,8 +9,7 @@
 <input type="hidden" id="clientId" name="id" th:value="*{client.id}">
 
 <form id="resetPasswordForm" method="post" >
-    <label>Current Password: </label>
-    <input type="password" id="currentPassword" /><br/>
+<!--    <input type="hidden" id="currentPassword" /><br/>-->
 
     <label>New Password: </label>
     <input type="password" id="newPassword" /><br/>
@@ -27,7 +26,7 @@
         event.preventDefault(); // Prevent default form submission
 
         // Collect form data
-        var currentPassword = document.getElementById("currentPassword").value;
+        var currentPassword = "";
         var newPassword = document.getElementById("newPassword").value;
         var confirmPassword = document.getElementById("confirmPassword").value;
         var idClient = document.getElementById("clientId").value;

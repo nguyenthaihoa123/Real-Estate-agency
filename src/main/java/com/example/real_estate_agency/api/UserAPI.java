@@ -276,11 +276,11 @@ public class UserAPI {
             }
 
             // So sánh mật khẩu hiện tại
-            if (!passwordEncoder.matches(request.getCurrentPassword(), client.getPassword())) {
-                // Mật khẩu hiện tại không khớp
-                // Xử lý lỗi hoặc trả về thông báo lỗi
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect");
-            }
+//            if (!passwordEncoder.matches(request.getCurrentPassword(), client.getPassword())) {
+//                // Mật khẩu hiện tại không khớp
+//                // Xử lý lỗi hoặc trả về thông báo lỗi
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect");
+//            }
 
             // Kiểm tra mật khẩu mới và mật khẩu xác nhận
             if (!request.getNewPassword().equals(request.getConfirmPassword())) {
@@ -316,11 +316,11 @@ public class UserAPI {
 
             // So sánh mật khẩu hiện tại
 //            if (!passwordEncoder.matches(request.getCurrentPassword(), agent.getPassword())) {
-            if (request.getNewPassword().equals(agent.getPassword())) {
-                // Mật khẩu hiện tại không khớp
-                // Xử lý lỗi hoặc trả về thông báo lỗi
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect");
-            }
+//            if (request.getNewPassword().equals(agent.getPassword())) {
+//                // Mật khẩu hiện tại không khớp
+//                // Xử lý lỗi hoặc trả về thông báo lỗi
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect");
+//            }
 
             // Kiểm tra mật khẩu mới và mật khẩu xác nhận
             if (!request.getNewPassword().equals(request.getConfirmPassword())) {
@@ -379,6 +379,85 @@ public class UserAPI {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while creating the rate report.");
         }
     }
+    @PostMapping("/updatePass_Client/{email}")
+    public ResponseEntity<String> updatePassClient(@PathVariable String email, @RequestBody UpdatePasswordRequest request) {
+        try {
+            // Sử dụng email để lấy thông tin của client từ service hoặc repository
+            Client client = clientService.getByEmail(email);
 
+            // Kiểm tra xem client có tồn tại không
+            if (client == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found");
+            }
+
+            // So sánh mật khẩu hiện tại
+            if (!passwordEncoder.matches(request.getCurrentPassword(), client.getPassword())) {
+                // Mật khẩu hiện tại không khớp
+                // Xử lý lỗi hoặc trả về thông báo lỗi
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect");
+            }
+
+            // Kiểm tra mật khẩu mới và mật khẩu xác nhận
+            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+                // Mật khẩu mới và mật khẩu xác nhận không khớp
+                // Xử lý lỗi hoặc trả về thông báo lỗi
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New password and confirm password do not match");
+            }
+
+            // Mã hóa mật khẩu mới trước khi lưu vào DB
+
+            // Lưu mật khẩu mới vào cơ sở dữ liệu
+            client.setPassword(request.getNewPassword());
+            clientService.save(client);
+
+            // Xử lý thành công, ví dụ: chuyển hướng đến trang thành công
+            return ResponseEntity.ok("Password reset successfully");
+        } catch (Exception e) {
+            // Trả về response với HTTP status code 500 Internal Server Error nếu có lỗi xảy ra
+            e.printStackTrace();
+            return new ResponseEntity<>("Failed to update booking", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/updatePassword-agent/{email}")
+    public ResponseEntity<String> updatePassAgent(@PathVariable String email, @RequestBody UpdatePasswordRequest request) {
+        try {
+            // Sử dụng id để lấy thông tin của client từ service hoặc repository
+            Agent agent = agentService.findByEmail(email);
+
+            // Kiểm tra xem client có tồn tại không
+            if (agent == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found");
+            }
+
+            // So sánh mật khẩu hiện tại
+//            if (!passwordEncoder.matches(request.getCurrentPassword(), agent.getPassword())) {
+            if (request.getNewPassword().equals(agent.getPassword())) {
+                // Mật khẩu hiện tại không khớp
+                // Xử lý lỗi hoặc trả về thông báo lỗi
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect");
+            }
+
+            // Kiểm tra mật khẩu mới và mật khẩu xác nhận
+            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+                // Mật khẩu mới và mật khẩu xác nhận không khớp
+                // Xử lý lỗi hoặc trả về thông báo lỗi
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New password and confirm password do not match");
+            }
+
+            // Mã hóa mật khẩu mới trước khi lưu vào DB
+
+            // Lưu mật khẩu mới vào cơ sở dữ liệu
+            agent.setPassword(request.getNewPassword());
+            agentService.save(agent);
+
+            // Xử lý thành công, ví dụ: chuyển hướng đến trang thành công
+            return ResponseEntity.ok("Password reset successfully");
+        } catch (Exception e) {
+            // Trả về response với HTTP status code 500 Internal Server Error nếu có lỗi xảy ra
+            e.printStackTrace();
+            return new ResponseEntity<>("Failed to update booking", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
