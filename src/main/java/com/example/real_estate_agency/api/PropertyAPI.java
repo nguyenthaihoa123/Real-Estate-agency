@@ -280,7 +280,7 @@ public class PropertyAPI {
         try {
             // Xử lý yêu cầu tại đây với id và body được nhận từ client
             System.out.println("Received ID: " + id);
-            propertyService.deletePropetty(id);
+            propertyService.deleteProperty(id);
             // Trả về phản hồi thành công nếu quá trình xử lý thành công
             return ResponseEntity.ok("Request processed successfully");
         } catch (Exception e) {

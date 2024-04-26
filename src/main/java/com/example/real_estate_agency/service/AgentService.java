@@ -18,7 +18,7 @@ public interface AgentService {
 
     PackagePosting findPackageByPrice(double price);
 
-    void savePaymet(Payment payment);
+    void savePayment(Payment payment);
 
     List<Payment> getAllPayment();
 

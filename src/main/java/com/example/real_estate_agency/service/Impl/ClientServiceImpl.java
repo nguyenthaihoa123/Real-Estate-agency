@@ -131,6 +131,10 @@ public class ClientServiceImpl implements ClientService {
     public BookTour createBookTour(BookTour bookTour, Properties properties) {
         try{
             Statistical statistical = properties.getStatistical();
+            if (statistical == null) {
+                statistical = new Statistical(); // Khởi tạo đối tượng statistical nếu null
+                properties.setStatistical(statistical);
+            }
             statistical.upBook();
             properties.setStatistical(statistical);
             return bookTourRepository.save(bookTour);

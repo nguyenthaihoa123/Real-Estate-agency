@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface PropertyService {
     Properties save(Properties properties);
-    void deletePropetty(Long id);
+    void deleteProperty(Long id);
     Image saveImage(Image image);
 
     List<Properties> getAll();

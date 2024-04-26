@@ -80,6 +80,15 @@ public class Properties {
         // Constructor mặc định
     }
 
+    public Properties(Long id) {
+        this.id = id;
+    }
+
+    public Properties(String title, Agent agent) {
+        this.title = title;
+        this.agent = agent;
+    }
+
     public Properties(String title, String description, double price, double area, String status, Date createdAt, Date updatedAt) {
         this.title = title;
         this.description = description;

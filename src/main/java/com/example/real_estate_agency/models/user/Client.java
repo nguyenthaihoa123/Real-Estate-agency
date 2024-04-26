@@ -50,6 +50,10 @@ public class Client {
         // Constructor mặc định
     }
 
+    public Client(Long id) {
+        this.id = id;
+    }
+
     public Client(Long id, String username, String password, String email, List<Role> roles, Set<SavePost> savedPosts, Set<BookTour> bookedTours) {
         this.id = id;
         this.username = username;
@@ -58,6 +62,12 @@ public class Client {
         this.roles = roles;
         this.savedPosts = savedPosts;
         this.bookedTours = bookedTours;
+    }
+
+    public Client(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
     }
 
     public Long getId() {

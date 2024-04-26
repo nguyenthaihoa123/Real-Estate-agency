@@ -81,7 +81,7 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    public void savePaymet(Payment payment) {
+    public void savePayment(Payment payment) {
         try {
             paymentRepository.save(payment);
         }

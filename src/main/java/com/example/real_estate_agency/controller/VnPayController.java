@@ -72,7 +72,7 @@ public class VnPayController {
             int curNum = agent.getNumOfPost() + packagePosting.getQuantity();
             agent.setNumOfPost(curNum);
             
-            agentService.savePaymet(payment);
+            agentService.savePayment(payment);
         }
         else {
             System.out.println("can not save payment");
