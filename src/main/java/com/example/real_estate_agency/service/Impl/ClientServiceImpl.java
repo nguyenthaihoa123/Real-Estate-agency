@@ -50,6 +50,10 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     private AgentRepository agentRepository;
 
+    @Override
+    public boolean isAdmin(String email){
+        return clientRepository.findByEmail(email).getRoles().get(0).getName().equals("ROLE_ADMIN");
+    }
 
     @Override
     public boolean save(Client user) {

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/admin/navbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-0">
+    <!-- Spinner Start -->
+    <div th:replace="layout/spinner :: #spinner"></div>
+    <!-- Spinner End -->
+    <h1 class="p-5">Packages</h1>
+    <div class="p-5 shadow-sm"  style="overflow: scroll; height: 500px;white-space: nowrap;">
+        <div class="shadow-lg p-3 d-flex justify-content-between" style="border-radius: 20px; margin-bottom: 10px" th:each="payment : ${payments}">
+            <div class="d-flex">
+                <div class="d-flex">
+                    <div class="p-2">
+                        <p><i class="fa-solid fa-barcode"></i> Id: <span th:text="${payment.id}"></span></p>
+                        <p><i class="fa-solid fa-cubes"></i> Pack:   <span  th:text="${payment.getPackagePosting().getName()}"></span></p>
+                    </div>
+                    <div class="p-2">
+                        <p><i class="fa-solid fa-user"></i> Agent: <span th:text="${payment.getAgent().getEmail()}"></span></p>
+                        <p><i class="fa-solid fa-money-check-dollar"></i> Price:   <span  th:text="${payment.getPackagePosting().getPrice()}"></span> VND</p>
+                    </div>
+                    <div class="p-2">
+                        <p><i class="fa-solid fa-building"></i> Company: <span th:text="${payment.getAgent().getCompany()}"></span></p>
+                        <p><i class="fa-solid fa-envelope"></i> Time:   <span  th:text="${#dates.format(payment.createdAt, 'dd-MM-yyyy HH:mm:ss')}"></span></p>
+                    </div>
+                </div>
+            </div>
+            <!--            button-->
+            <div class="">
+                <button th:class="${payment.status == 'accept' ? 'btn btn-primary' : 'btn btn-secondary'}" th:text="${payment.status}"><i class="fa-regular fa-circle-check"></i> Status</button>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+</body>
+
+</html>

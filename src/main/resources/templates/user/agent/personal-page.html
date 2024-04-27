@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<style>
+    #popup {
+    }
+</style>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/navbar :: navbar"></div>
+<!-- Navbar End -->
+
+<div class="container-xxl bg-white p-5">
+
+    <div id="overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; display: none;"></div>
+    <div id="popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); z-index: 10000; display: none;">
+    <div class="report-container ">
+            <h2>Rating Agent</h2>
+            <form id="reportForm">
+                <label for="reportForm">Rating:</label><br>
+                <div id="stars " style="margin-bottom: 20px">
+                    <input type="radio" id="star1" name="rating" value="1">
+                    <label for="star1" title="1 star">1 star</label>
+                    <input type="radio" id="star2" name="rating" value="2">
+                    <label for="star2" title="2 stars">2 stars</label>
+                    <input type="radio" id="star3" name="rating" value="3">
+                    <label for="star3" title="3 stars">3 stars</label>
+                    <input type="radio" id="star4" name="rating" value="4">
+                    <label for="star4" title="4 stars">4 stars</label>
+                    <input type="radio" id="star5" name="rating" value="5">
+                    <label for="star5" title="5 stars">5 stars</label>
+                </div>
+                <label for="content">Content:</label><br>
+                <input type="text" id="content" name="content" class="form-control" required><br>
+                <button class="btn-primary btn w-100" type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+    <h1>Information of agent</h1>
+    <input type="hidden" th:value="*{agent.id}" id="id_Agent">\
+    <div class="row wow fadeIn"  data-wow-delay="0.2s">
+        <div class="card shadow-lg col-md-4 p-3" th:if="${agent != null}" style="max-height: 420px">
+            <div class="d-flex">
+                <div class="m-3" style="border-radius: 20px;  max-width: 100px;height: auto;">
+                    <img th:src="${agent.getAvatar()}"  alt="Avatar" width="100" height="100">
+                </div>
+                <div class="m-3">
+                    <p>Rate: <span th:text="${agent.getRateStar()}"></span>/5.0 <i class="fa fa-star" aria-hidden="true" style="color: green;"></i></p>
+                    <p>Number of Properties: <span th:text="${agent.getNumOfProperty()}"></span> <i class="fa-solid fa-building-shield"></i></p>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <p><i class="fa-solid fa-address-book"></i> <span th:text="${agent.getUsername()}"></span></p>
+                <p><i class="fa-solid fa-building"></i> <span th:text="${agent.getCompany()}"></span></p>
+            </div>
+            <div class="d-flex justify-content-between">
+                <p><i class="fa-solid fa-envelope"></i> <span th:text="${agent.getPhone()}"></span></p>
+                <p><i class="fa-solid fa-location-dot"></i> <span th:text="${agent.getAddress()}"></span></p>
+            </div>
+            <p><i class="fa-solid fa-envelope"></i> <span th:text="${agent.getEmail()}"></span></p>
+
+            <button id="reportAgent" th:disabled="${checkRate}" class="btn-primary btn"><i class="fa-solid fa-comment"></i> Give the review on me</button>
+        </div>
+        <!-- Hiển thị danh sách đánh giá -->
+        <div class=" col-md-7 shadow-sm p-3" style="margin-left: 20px;overflow:scroll ;max-height: 420px" >
+            <h6 class="text-secondary">Rate Reports</h6>
+            <div th:each="report : ${rateList}" class="row p-3">
+                <div class="bg-secondary p-2 text-white col-2 text-center" style="border-radius: 10px"><span th:text="${report.rating}"></span> <i class="fa fa-star" aria-hidden="true" style="color: white;"></i>
+                </div>
+                <div class="bg-info align-content-center col-9 text-white" style="margin-left: 10px; border-radius: 10px">
+                  <span th:text="${report.name_Client}"></span>:  <span th:text="${report.comment}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${agent == null}">
+        <p>No agent found.</p>
+    </div>
+
+
+    <!-- Thêm bảng hiển thị danh sách bất động sản cho thuê -->
+        <div class="mt-5 col-md-12 col-lg-12 wow fadeIn" data-wow-delay="0.3s">
+            <h2>For Rent </h2>
+            <div class=" bg-white rounded p-3 " style="border: 1px dashed rgba(0, 185, 142, .3); overflow: scroll;height: 420px">
+                <div th:each="property : ${rentList}" class="p-3 mb-5 shadow-lg" >
+                    <h3>Building: <span th:text="${property.title}" ></span></h3>
+                    <p>Description:  <span th:text="${property.description}" ></span> </p>
+                    <!--                body item-->
+                    <div class="d-flex justify-content-lg-between ">
+                        <div class="d-flex justify-content-start">
+                            <img  th:src="${property.thumbnail}" alt="Thumbnail" style="width: 200px; height: 150px; object-fit: cover; border-radius: 20px">
+                            <div class="p-3">
+                                <p>Price: <span th:text="${property.price}" ></span></p>
+                                <p>Area: <span th:text="${property.area}" ></span> m3</p>
+                                <p>Address: <span th:text="${property.address}" ></span></p>
+                            </div>
+                        </div>
+                        <div>
+                            <a th:href="@{/home/properties/{id}(id=${property.id})}">
+                                <button class="btn btn-primary"><i class="fa-solid fa-eye"></i> View</button>
+                            </a>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+
+    <!-- Thêm bảng hiển thị danh sách bất động sản cho bán -->
+    <div class="mt-5 col-md-12 col-lg-12 wow fadeIn" data-wow-delay="0.4s">
+        <h2>For Sale </h2>
+        <div class=" bg-white rounded p-3" style="border: 1px dashed rgba(0, 185, 142, .3) ; overflow: scroll;height: 420px">
+            <div th:each="property : ${saleList}" class="p-3 mb-5 shadow-lg" >
+                <h3>Building: <span th:text="${property.title}" ></span></h3>
+                <p>Description:  <span th:text="${property.description}" ></span> </p>
+                <!--                body item-->
+                <div class="d-flex justify-content-lg-between ">
+                    <div class="d-flex justify-content-start">
+                        <img  th:src="${property.thumbnail}" alt="Thumbnail" style="width: 200px; height: 150px; object-fit: cover; border-radius: 20px">
+                        <div class="p-3">
+                            <p>Price: <span th:text="${property.price}" ></span></p>
+                            <p>Area: <span th:text="${property.area}" ></span> m3</p>
+                            <p>Address: <span th:text="${property.address}" ></span></p>
+                        </div>
+                    </div>
+                    <div>
+                        <a th:href="@{/home/properties/{id}(id=${property.id})}">
+                            <button class="btn btn-primary"><i class="fa-solid fa-eye"></i> View</button>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('reportAgent').addEventListener('click', function() {
+            // Hiển thị ô trắng (overlay)
+            document.getElementById('overlay').style.display = 'block';
+            const popup = document.getElementById('popup');
+
+
+            popup.style.display = 'block';
+            // popup.innerHTML = `Left Property ID: ${leftPropertyId}<br>Right Property ID: ${rightPropertyId}`;
+            popup.style.display = 'block';
+        });
+
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('popup').style.display = 'none';
+        });
+
+        document.getElementById('reportForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Lấy giá trị của content và rating từ các trường input
+            const content = document.getElementById('content').value;
+            const id_Agent = document.getElementById('id_Agent').value;
+            const rating = document.querySelector('input[name="rating"]:checked');
+
+            // Kiểm tra xem người dùng đã nhập đầy đủ thông tin hay không
+            if (content.trim() === '' || rating === null) {
+                // Nếu không, hiển thị một cảnh báo và không thực hiện hành động tiếp theo
+                Toastify({
+                    text: `Please fill in all fields !`,
+                    className: "info",
+                    gravity: "bottom", // `top` or `bottom`
+                    position: "right", // `left`, `center` or `right`
+                    style: {
+                        background: "red",
+                    }
+                }).showToast();
+            } else {
+                const data = {
+                    content: content,
+                    rating: rating.value,
+                    id_Agent: id_Agent
+                };
+                console.log(data)
+
+                // Gửi request POST đến endpoint "/clients/rate"
+                fetch('/api/clients/rate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        // Xử lý dữ liệu hoặc hiển thị thông báo thành công
+                        Toastify({
+                            text: `Rating submitted successfully !`,
+                            className: "info",
+                            gravity: "bottom", // `top` or `bottom`
+                            position: "right", // `left`, `center` or `right`
+                            style: {
+                                background: "orange",
+                            }
+                        }).showToast();
+                        console.log('Success:', data);
+                    })
+                    .catch(error => {
+                        // Xử lý lỗi hoặc hiển thị thông báo lỗi
+                        Toastify({
+                            text: `Rating submitted fail !`,
+                            className: "info",
+                            gravity: "bottom", // `top` or `bottom`
+                            position: "right", // `left`, `center` or `right`
+                            style: {
+                                background: "red",
+                            }
+                        }).showToast();
+                        console.error('Error:', error);
+                    });
+
+                // Đóng popup
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('popup').style.display = 'none';
+            }
+        });
+    });
+</script>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+</body>
+</html>

@@ -44,15 +44,15 @@ public class AdminController {
     @GetMapping("/home")
     public String showHome_Admin(@AuthenticationPrincipal UserDetails userDetails, Model model) {
 
-        return "test/admin/index";
+        return "admin/index";
     }
 
-    @GetMapping("/manage-Agent")
+    @GetMapping("/manage-agent")
     public String showManageAgent(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         List<Agent> agents = agentService.getAll();
         agents.sort(Comparator.comparing(Agent::getUsername));
         model.addAttribute("agents",agents);
-        return "test/admin/manageAgent";
+        return "admin/agents";
     }
 
     @GetMapping("/manage-client")
@@ -60,7 +60,7 @@ public class AdminController {
         List<Client> clients = clientService.getAllClient();
         clients.sort(Comparator.comparing(Client::getUsername));
         model.addAttribute("clients",clients);
-        return "test/admin/manageClient";
+        return "admin/clients";
     }
 
     @GetMapping("/manage-money")
@@ -68,7 +68,7 @@ public class AdminController {
         List<Payment> payments = agentService.getAllPayment();
         reverseList(payments);
         model.addAttribute("payments",payments);
-        return "test/admin/manageMoney";
+        return "admin/moneys";
     }
 
     @GetMapping("/manage-money/chart")
@@ -79,11 +79,20 @@ public class AdminController {
         Map<String,Double> listByQuarter = getTotalAmountByQuarter(payments);
         Map<Integer,Double> listByYear = getTotalAmountByYear(payments);
 
+        //summary
         model.addAttribute("byDay", listByDay);
         model.addAttribute("byQuarter",listByQuarter);
         model.addAttribute("byYear",listByYear);
 
-        return "test/admin/chart-money";
+        //chart
+        model.addAttribute("chartYear", listByYear);
+        model.addAttribute("chartQuarter", listByQuarter);
+        model.addAttribute("chartDay", listByDay);
+
+
+
+
+        return "admin/charts";
     }
 
     @GetMapping("/manage-property")
@@ -100,7 +109,7 @@ public class AdminController {
         // Thêm các property có status là "UnAvailable" vào đầu danh sách
         propertiesList.addAll(0, unavailableProperties);
         model.addAttribute("properties",propertiesList);
-        return "test/admin/manageProperty";
+        return "admin/properties";
     }
 
     @GetMapping("/manage-client/update/{id}")

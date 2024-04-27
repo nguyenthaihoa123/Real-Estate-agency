@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/admin/navbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-1">
+    <!-- Spinner Start -->
+    <div th:replace="layout/spinner :: #spinner"></div>
+    <!-- Spinner End -->
+    <h1 class="p-5">Agents</h1>
+    <div class="p-5 shadow-sm"  style="overflow: scroll; height: 500px;white-space: nowrap;">
+        <div class="shadow-lg p-3 d-flex justify-content-between" style="border-radius: 20px; margin-bottom: 10px" th:each="agent : ${agents}" th:id="'agent-' + ${agent.id}">
+            <div class="d-flex">
+                <img th:src="${agent.avatar}" alt="Avatar" class="p-2" style="width: 100px; height: 100px;border-radius: 10px;">
+                <div class="d-flex">
+                    <div class="p-2">
+                        <p><i class="fa-solid fa-user"></i> Username: <span th:text="${agent.username}"></span></p>
+                        <p><i class="fa-solid fa-envelope"></i> Email:   <span  th:text="${agent.email}"></span></p>
+                    </div>
+                    <div class="p-2">
+                        <p><i class="fa-solid fa-envelope"></i> Address:   <span  th:text="${agent.address}"></span></p>
+                        <p><i class="fa-solid fa-paper-plane"></i> Company:   <span  th:text="${agent.company}"></span></p>
+                    </div>
+                    <div class="p-2">
+                        <p ><i class="fa-solid fa-check-to-slot"></i> Turns: <span th:text="${agent.numOfPost}"></span></p>
+                        <p ><i class="fa-solid fa-clipboard"></i> Posts: <span th:text="${agent.numOfProperty}"></span></p>
+                    </div>
+                </div>
+            </div>
+<!--            button-->
+                <div class="">
+                    <div class="p-1">
+                        Evaluation:
+                        <span th:text="${agent.rateStar}"></span>
+                        <i class="fa fa-star" aria-hidden="true" style="color: green;"></i>
+                    </div>
+                    <button th:onclick="'updateStatus(' + ${agent.id} + ')'" class="btn btn-primary" th:text="${agent.status}">Update Status</button>
+                    <a th:href="'/admin/manage-agent/update/' + ${agent.id}" class="btn-secondary btn"><i class="fa-solid fa-pen-to-square"></i> Update</a>
+                    <button class="btn btn-danger" th:onclick="'deleteAgent(' + ${agent.id} + ')'"><i class="fa-solid fa-delete-left"></i> Delete</button>
+                </div>
+
+
+        </div>
+    </div>
+
+
+
+</div>
+
+<script>
+    function updateStatus(id) {
+        // Xác nhận với người dùng trước khi thực hiện cập nhật
+        var result = confirm("Are you sure you want to update the status?");
+
+        // Nếu người dùng xác nhận, gửi yêu cầu API
+        if (result) {
+            fetch('/api/agents/update-admin', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    status: 'active' // Thay 'new_status' bằng giá trị status mới
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Nếu cập nhật thành công, làm mới trang để cập nhật dữ liệu mới
+                        location.reload();
+                    } else {
+                        console.error('Failed to update status');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    }
+    function deleteAgent(agentId) {
+        // Xác nhận với người dùng trước khi xóa
+        var result = confirm("Are you sure you want to delete this agent?");
+        if (result) {
+            fetch('/api/agents/' + agentId, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Xóa hàng trong bảng nếu xóa thành công
+                        document.getElementById('agent-' + agentId).remove();
+                        alert("Agent deleted successfully.");
+                    } else {
+                        alert("Failed to delete agent.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    }
+</script>
+
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+</body>
+
+</html>

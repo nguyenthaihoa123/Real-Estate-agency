@@ -41,9 +41,8 @@ public class HomeController {
     private AgentService agentService;
 
 
-
     @GetMapping("/")
-    public String Home_Client(Model model,@RequestParam(defaultValue = "0") int page) {
+    public String Home_Client(Model model,@RequestParam(defaultValue = "0") int page,@AuthenticationPrincipal UserDetails userDetails) {
         int pageSize = 6; // Số lượng phần tử trên mỗi trang
         Pageable pageable = PageRequest.of(page, pageSize);
 
@@ -58,6 +57,11 @@ public class HomeController {
 
         List<FeedBackDTO> feedbackList = clientService.getAllFeedBack();
         model.addAttribute("feedBackList", feedbackList);
+
+        if(clientService.isAdmin(userDetails.getUsername())){
+            model.addAttribute("isAdmin", true);
+        }
+
 
         return "test/index"; // Trả về tên của file HTML (ở đây là "index.html")
     }
@@ -86,32 +90,34 @@ public class HomeController {
     public String showPropertyDetail(@PathVariable("id") Long id, Model model,@AuthenticationPrincipal UserDetails userDetails) {
         // Tìm kiếm thuộc tính theo ID
         try {
+
             Optional<Properties> propertyOptional = Optional.ofNullable(propertyService.getById(id));
             Client client = clientService.getByEmail(userDetails.getUsername());
             if (propertyOptional.isPresent()) {
                 Properties property = propertyOptional.get();
                 List<CategoryDTO> categories = categoryService.getAll();
+                Agent  agent = property.getAgent();
                 boolean isSave = propertyService.getInfoSavePost(client.getId(),property.getId());
                 boolean statusRent = propertyService.checkInfoRent(property);
-//            List<TransactionType> transactionTypes = transactionTypeService.getAll();
-//            System.out.println("isSave: " + isSave);
-                // Truyền thuộc tính và danh sách categories, transactionTypes vào model
+
+
+
                 model.addAttribute("property", property);
                 model.addAttribute("categories", categories);
                 model.addAttribute("isSave", isSave);
                 model.addAttribute("statusRent", statusRent);
+                model.addAttribute("agent", agent);
 
-//            model.addAttribute("transactionTypes", transactionTypes);
 
-                // Trả về tên của template HTML để hiển thị trang cập nhật property
-                return "test/property/detail";
+                 return "property/detail";
             } else {
                 // Trả về trang lỗi hoặc xử lý lỗi khác tùy thuộc vào yêu cầu
                 return "test/404"; // Ví dụ: trang lỗi 404
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
             return "test/404";
+
         }
 
     }
@@ -153,12 +159,17 @@ public class HomeController {
             model.addAttribute("rateList",rateReportList);
             model.addAttribute("checkRate",checkRate);
             System.out.println(checkRate);
-            return "test/client/infoAgent";
+            model.addAttribute("isEdit",false);
+            return "user/agent/personal-page";
+            // return "agent/detail";
+
         }catch (Exception e){
             e.printStackTrace();
             return "test/404";
         }
 
+
+        //return "test/client/infoAgent";
     }
 
 

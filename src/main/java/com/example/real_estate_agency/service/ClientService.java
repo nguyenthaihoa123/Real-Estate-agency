@@ -12,7 +12,10 @@ import com.example.real_estate_agency.models.user.RateReport;
 import java.util.List;
 
 public interface ClientService {
+    boolean isAdmin(String email);
+
     boolean save(Client user);
+
     Client getById(Long id);
 
     boolean deleteById(Long id);

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head">
+</head>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/admin/navbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-5 ">
+    <!-- Spinner Start -->
+    <div th:replace="layout/spinner :: #spinner"></div>
+    <!-- Spinner End -->
+
+    <div class="d-flex justify-content-between">
+        <h1 class="">Revenue</h1>
+        <button class="btn-primary btn " id="exportButton"><i class="fa-solid fa-file-csv"></i> Export to Excel</button>
+    </div>
+    <div class="mb-3 p-5">
+        <h3>4 recent years</h3>
+            <div class="d-flex" >
+            <div id="chart_year" style="width: 1000px; border-radius: 10px; margin-right: 20px" class="p-3 shadow-lg"></div>
+            <div class="p-3 shadow-lg" style="border-radius: 20px;overflow: scroll;max-height: 300px">
+                <h5 class="text-secondary"><i class="fa-regular fa-calendar-days"></i> Summary</h5>
+                <div  id="yearTable">
+                    <div th:each="entry : ${byYear}">
+                        <p>In <span class="text-info" th:text="${entry.key}"></span> was  <span class="text-secondary" th:text="${entry.value}"></span> VND</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-5 mb-3">
+        <h3>Quarters of recent years</h3>
+        <div class="d-flex" >
+            <div id="chart_quarter" style="width: 1000px; border-radius: 10px; margin-right: 20px" class="p-3 shadow-lg"></div>
+            <div class="p-3 shadow-lg" style="border-radius: 20px;overflow: scroll;max-height: 300px ">
+                <h5 class="text-secondary"><i class="fa-regular fa-calendar-days"></i> Summary</h5>
+                <div  id="quarterTable">
+                    <div th:each="entry : ${byQuarter}">
+                        <p>In <span class="text-info" th:text="${entry.key}"></span> was  <span class="text-secondary" th:text="${entry.value}"></span> VND</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-5 mb-3">
+        <h3>Days of recent years</h3>
+        <div class="d-flex" >
+            <div id="chart_day" style="width: 1000px; border-radius: 10px; margin-right: 20px" class="p-3 shadow-lg"></div>
+            <div class="p-3 shadow-lg" style="border-radius: 20px">
+                <h5 class="text-secondary"><i class="fa-regular fa-calendar-days"></i> Summary</h5>
+                <div  id="dayTable" style="overflow: scroll;max-height: 300px">
+                    <div th:each="entry : ${byDay}">
+                        <p>On <span class="text-info" th:text="${entry.key}"></span> was  <span class="text-secondary" th:text="${entry.value}"></span> VND</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!--    chart -->
+<script th:inline="javascript">
+    var data_year = [[${chartYear}]];
+    var data_quarter = [[${chartQuarter}]]
+    var data_days = [[${chartDay}]]
+
+    $(document).ready(function() {
+        google.charts.load('current', {
+            packages : [ 'corechart', 'bar' ]
+        });
+        google.charts.setOnLoadCallback(drawColumnYearChart);
+        google.charts.setOnLoadCallback(drawColumnQuarterChart);
+        google.charts.setOnLoadCallback(drawColumnDayChart);
+        google.charts.setOnLoadCallback(drawPieChart);
+    });
+    function drawColumnDayChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Days');
+        data.addColumn('number', 'VND');
+        Object.keys(data_days).forEach(function(key) {
+            data.addRow([ key, data_days[key] ]);
+        });
+        var options = {
+            title : 'Revenue by days',
+            hAxis : {
+                title : 'Days',
+            },
+            vAxis : {
+                title : 'Amount of moneys'
+            },
+            colors: ['#5b87d7'] // Set the color to yellow
+        };
+        var chart = new google.visualization.ColumnChart(document
+            .getElementById('chart_day'));
+        chart.draw(data, options);
+    }
+    function drawColumnYearChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Year');
+        data.addColumn('number', 'VND');
+        Object.keys(data_year).forEach(function(key) {
+            data.addRow([ key, data_year[key] ]);
+        });
+        var options = {
+            title : 'Revenue by years',
+            hAxis : {
+                title : 'Years',
+            },
+            vAxis : {
+                title : 'Amount of moneys'
+            }
+        };
+        var chart = new google.visualization.ColumnChart(document
+            .getElementById('chart_year'));
+        chart.draw(data, options);
+    }
+    function drawColumnQuarterChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Quarter');
+        data.addColumn('number', 'VND');
+        Object.keys(data_quarter).forEach(function(key) {
+            data.addRow([ key, data_quarter[key] ]);
+        });
+        var options = {
+            title : 'Revenue by quarter',
+            hAxis : {
+                title : 'Quarter',
+            },
+            vAxis : {
+                title : 'Amount of moneys'
+            },
+            colors: ['#FFA500'] // Set the color to orange
+        };
+        var chart = new google.visualization.ColumnChart(document
+            .getElementById('chart_quarter'));
+        chart.draw(data, options);
+    }
+    function drawPieChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Year');
+        data.addColumn('number', 'Views');
+        Object.keys(data_year).forEach(function(key) {
+            data.addRow([ key, data_year[key] ]);
+        });
+        var options = {
+            title : 'Blog stats'
+        };
+        var chart = new google.visualization.PieChart(document
+            .getElementById('piechart'));
+        chart.draw(data, options);
+    }
+</script>
+<!--export pdf-->
+<script>
+    document.getElementById('exportButton').addEventListener('click', function() {
+        // Gửi yêu cầu xuất Excel đến API
+        fetch('/admin/manage-money/chart/export')
+            .then(response => {
+                // Kiểm tra nếu response không thành công
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Trả về dữ liệu dưới dạng blob
+                return response.blob();
+            })
+            .then(blob => {
+                // Tạo một URL cho blob dưới dạng tệp Excel
+                const url = window.URL.createObjectURL(new Blob([blob]));
+                // Tạo một thẻ a để tải xuống tệp Excel
+                const a = document.createElement('a');
+                a.href = url;
+                // Tạo một đối tượng Date để lấy ngày hiện tại
+                var today = new Date();
+
+                // Tạo một chuỗi để lưu trữ ngày hiện tại dưới dạng dd-mm-yyyy
+                var dateString = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
+
+                // Tạo một chuỗi để đặt tên tệp dựa trên ngày hiện tại
+                var filename = 'statistics_' + dateString + '.xlsx';
+
+                // Thiết lập thuộc tính download và tên tệp của phần tử <a>
+                a.download = filename;// Tên của tệp Excel khi được tải xuống
+                document.body.appendChild(a);
+                a.click(); // Kích hoạt sự kiện click trên thẻ a
+                window.URL.revokeObjectURL(url); // Giải phóng URL
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+</script>
+
+<div th:replace="layout/lib :: lib"></div>
+
+</body>
+
+</html>
