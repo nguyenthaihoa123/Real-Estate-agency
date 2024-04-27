@@ -1,8 +1,10 @@
 package com.example.real_estate_agency.controller;
 
 import com.example.real_estate_agency.DTO.CategoryDTO;
+import com.example.real_estate_agency.DTO.PropertyDTO;
 import com.example.real_estate_agency.DTO.PropertyRentAgentDTO;
 import com.example.real_estate_agency.DTO.PropertySaleAgentDTO;
+import com.example.real_estate_agency.mapper.PropertyMapper;
 import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.Image;
 import com.example.real_estate_agency.models.payment.TransactionType;
@@ -53,7 +55,7 @@ public class AgentPropertyController {
         Agent agent = agentService.findByEmail(userDetails.getUsername());
         Properties properties = propertyService.getById(id);
 
-        model.addAttribute("property",properties);
+        model.addAttribute("property", PropertyMapper.modelToDTO(properties));
         model.addAttribute("user", agent);
 
 
@@ -66,7 +68,7 @@ public class AgentPropertyController {
             Agent agent = agentService.findById(propertyOptional.get().getAgent().getId());
             Properties property = propertyOptional.get();
             List<CategoryDTO> categories = categoryService.getAll();
-            model.addAttribute("property", property);
+            model.addAttribute("property", PropertyMapper.modelToDTO(property));
             model.addAttribute("categories", categories);
 
             return "/agent/property/detail";
@@ -80,7 +82,7 @@ public class AgentPropertyController {
         Agent agent = agentService.findByEmail(userDetails.getUsername());
         Properties properties = propertyService.getById(id);
 
-        model.addAttribute("property",properties);
+        model.addAttribute("property", PropertyMapper.modelToDTO(properties));
         model.addAttribute("user", agent);
 
 
@@ -92,7 +94,7 @@ public class AgentPropertyController {
         Agent agent = agentService.findByEmail(userDetails.getUsername());
         Properties properties = propertyService.getById(id);
         InfoRentProperty infoRentProperty = propertyService.getInforRent(properties);
-        model.addAttribute("property",properties);
+        model.addAttribute("property",PropertyMapper.modelToDTO(properties));
         model.addAttribute("user", agent);
         model.addAttribute("infoRent",infoRentProperty);
 
@@ -104,7 +106,7 @@ public class AgentPropertyController {
         Agent agent = agentService.findByEmail(userDetails.getUsername());
         Properties properties = propertyService.getById(id);
         InfoSaleProperty infoSaleProperty = propertyService.getInforSale(properties);
-        model.addAttribute("property",properties);
+        model.addAttribute("property",PropertyMapper.modelToDTO(properties));
         model.addAttribute("user", agent);
         model.addAttribute("infoSale",infoSaleProperty);
 
@@ -132,7 +134,7 @@ public class AgentPropertyController {
             List<TransactionType> transactionTypes = transactionTypeService.getAll();
 
             // Truyền thuộc tính và danh sách categories, transactionTypes vào model
-            model.addAttribute("property", property);
+            model.addAttribute("property", PropertyMapper.modelToDTO(property));
             model.addAttribute("categories", categories);
             model.addAttribute("transactionTypes", transactionTypes);
 

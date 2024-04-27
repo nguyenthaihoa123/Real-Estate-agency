@@ -62,7 +62,7 @@
 </div>
 <script>
     function cancelBooking(propertyId) {
-        // var propertyId = document.getElementById('propertyID').value;
+         var propertyId = document.getElementById('propertyID').value;
         var clientId = document.getElementById('clientID').value;
 
         fetch('/api/updateBooking?clientId=' + clientId + '&propertyId=' + propertyId, {

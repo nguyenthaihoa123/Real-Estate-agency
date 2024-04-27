@@ -1,6 +1,8 @@
 package com.example.real_estate_agency.controller;
 
+import com.example.real_estate_agency.DTO.PropertyDTO;
 import com.example.real_estate_agency.DTO.PropertySavePostClientDTO;
+import com.example.real_estate_agency.mapper.PropertyMapper;
 import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.property.Properties;
@@ -51,13 +53,13 @@ public class UserController {
             listPropertySave.add(savePost.getProperty());
         }
 //        lay tat ca property trong book
-        List<Properties> listPropertyBook = new ArrayList<>();
+        List<PropertyDTO> listPropertyBook = new ArrayList<>();
         for(BookTour bookTour : bookTours){
-            listPropertyBook.add(bookTour.getProperty());
+            listPropertyBook.add(PropertyMapper.modelToDTO(bookTour.getProperty()));
         }
 
         model.addAttribute("client", client);
-        model.addAttribute("saveList", listPropertySave);
+        model.addAttribute("saveList", listPropertySave.stream().map(PropertyMapper::modelToDTO));
         model.addAttribute("saveListCount", listPropertySave.size());
 
         model.addAttribute("bookList",bookTours);

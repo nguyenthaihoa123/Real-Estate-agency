@@ -58,6 +58,7 @@
     <div id="bookingList" class="col-md-12 col-lg-12 wow fadeIn" data-wow-delay="0.3s">
         <div class=" bg-white rounded p-3" style="border: 1px dashed rgba(0, 185, 142, .3)">
             <div th:each="bookTour : ${bookList}" class="p-3 mb-5 shadow-lg" >
+                <button class="btn btn-danger m-2" th:if="${bookTour.isCancel}" disabled> <i class="fa-solid fa-circle-xmark"></i> Meeting was finished</button>
                 <h3 >Building: <span th:text="${bookTour.getProperty().title}" ></span></h3>
                 <p class="p-3 bg-info text-white shadow-sm ratio-1x1" style="border-radius: 10px">Message:  <span th:text="${bookTour.message}" ></span> </p>
                 <!--       body item-->
@@ -71,13 +72,14 @@
                             <p>Address: <span th:text="${bookTour.getProperty().address}" ></span></p>
                         </div>
                     </div>
-                    <div>
-                        <a th:href="@{/home/properties/{id}(id=${bookTour.getProperty().id})}">
+                    <div class="">
+                        <a th:href="@{/home/properties/{id}(id=${bookTour.getProperty().id})}" class="">
                             <button class="btn btn-primary"><i class="fa-solid fa-eye"></i> View</button>
                         </a>
-                        <a th:href="@{/home/properties/{id}(id=${bookTour.getProperty().id})}">
-                            <button class="btn btn-danger"><i class="fa-solid fa-circle-xmark"></i> Cancel</button>
-                        </a>
+                        <div class="mt-3">
+                            <input type="hidden" id="propertyID" th:value="${bookTour.getProperty().id}">
+                            <button class="btn btn-danger" th:if="${not bookTour.isCancel}" th:onclick="'cancelBooking('+${bookTour.getProperty().id}+')'"><i class="fa-solid fa-circle-xmark"></i> Cancel</button>
+                        </div>
                     </div>
                 </div>
                 <hr>
@@ -88,7 +90,45 @@
 
 
 </div>
+<script>
+    function cancelBooking(propertyId) {
+        // var propertyId = document.getElementById('propertyID').value;
+        var clientId = document.getElementById('clientID').value;
 
+        fetch('/api/updateBooking?clientId=' + clientId + '&propertyId=' + propertyId, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        }).then(function(response) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        }).then(function(data) {
+            console.log(data); // Log the response
+            Toastify({
+                text: `Booking cancelled successfully !`,
+                className: "info",
+                gravity: "bottom", // `top` or `bottom`
+                position: "right", // `left`, `center` or `right`
+                style: {
+                    background: "orange",
+                }
+            }).showToast();
+            // Change button to "Cancelled"
+            var cancelButton = document.querySelector('button[onclick="cancelBooking(' + propertyId + ')"]');
+            cancelButton.setAttribute('disabled', true);
+            var cancelledButton = document.createElement('button');
+            cancelledButton.setAttribute('disabled', true);
+            cancelledButton.textContent = 'Cancelled';
+            cancelButton.parentNode.replaceChild(cancelledButton, cancelButton);
+        }).catch(function(error) {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+    }
+</script>
 <!-- Footer Start -->
 <div th:replace="layout/footer :: footer"></div>
 <!-- Footer End -->

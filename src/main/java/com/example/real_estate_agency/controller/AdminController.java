@@ -117,7 +117,7 @@ public class AdminController {
         System.out.println(id);
         Client client = clientService.getById(id);
         model.addAttribute("client",client);
-        return "test/admin/updatePassClient";
+        return "admin/client/change-password";
     }
 
     @GetMapping("/manage-agent/update/{id}")
@@ -125,7 +125,7 @@ public class AdminController {
         System.out.println(id);
         Agent agent = agentService.findById(id);
         model.addAttribute("agent",agent);
-        return "test/admin/updatePassAgent";
+        return "admin/agent/change-password";
     }
     // Thống kê theo ngày trong tháng
 

@@ -4,6 +4,7 @@ import com.example.real_estate_agency.DTO.CategoryDTO;
 import com.example.real_estate_agency.DTO.PropertiesApiDTO;
 import com.example.real_estate_agency.DTO.PropertiesHomeDTO;
 import com.example.real_estate_agency.config.email.EmailSenderService;
+import com.example.real_estate_agency.mapper.PropertyMapper;
 import com.example.real_estate_agency.models.Image;
 import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.payment.TransactionType;
@@ -186,7 +187,7 @@ public class PropertyAPI {
 
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("agent", agent);
-            responseData.put("properties", filteredProperties);
+            responseData.put("properties", filteredProperties.stream().map(PropertyMapper::modelToDTO));
             responseData.put("categories", categories);
 
 

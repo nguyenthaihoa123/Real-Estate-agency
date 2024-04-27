@@ -1,5 +1,6 @@
 package com.example.real_estate_agency.service.Impl;
 
+import com.example.real_estate_agency.DTO.PropertiesApiDTO;
 import com.example.real_estate_agency.models.Image;
 import com.example.real_estate_agency.models.SavePost;
 import com.example.real_estate_agency.models.payment.TransactionType;
@@ -96,7 +97,7 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public Page<Properties> getAllForPage(Pageable pageable,String name) {
+    public Page<Properties> getAllForPage(Pageable pageable, String name) {
         if (name == null || name.isEmpty()) {
             return propertyRepository.findAll(pageable);
         } else {

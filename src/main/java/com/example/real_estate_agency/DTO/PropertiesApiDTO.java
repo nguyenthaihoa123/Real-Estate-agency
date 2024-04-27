@@ -7,6 +7,7 @@ import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.property.Statistical;
 import com.example.real_estate_agency.models.user.Agent;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -98,16 +99,18 @@ public class PropertiesApiDTO {
         this.description = description;
     }
 
-    public double getPrice() {
-        return price;
+    public String getPrice() {
+        int intValue = (int) price;
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        return decimalFormat.format(intValue);
     }
 
     public void setPrice(double price) {
         this.price = price;
     }
 
-    public double getArea() {
-        return area;
+    public String getArea() {
+        return String.valueOf(area+" m³");
     }
 
     public void setArea(double area) {

@@ -2,6 +2,9 @@ package com.example.real_estate_agency.controller;
 
 import com.example.real_estate_agency.DTO.CategoryDTO;
 import com.example.real_estate_agency.DTO.FeedBackDTO;
+import com.example.real_estate_agency.DTO.PropertiesHomeDTO;
+import com.example.real_estate_agency.DTO.PropertyDTO;
+import com.example.real_estate_agency.mapper.PropertyMapper;
 import com.example.real_estate_agency.models.payment.TransactionType;
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.user.Agent;
@@ -77,7 +80,7 @@ public class HomeController {
         Pageable pageable = PageRequest.of(page, pageSize);
 
         Page<Properties> propertiesPage = propertyService.getAllForPage(pageable,"");
-        List<Properties> propertiesList = propertiesPage.getContent();
+        List<PropertyDTO> propertiesList = propertiesPage.getContent().stream().map(PropertyMapper::modelToDTO).toList();
         List<CategoryDTO> categories = categoryService.getAll();
 
         model.addAttribute("categories", categories);
@@ -94,11 +97,11 @@ public class HomeController {
             Optional<Properties> propertyOptional = Optional.ofNullable(propertyService.getById(id));
             Client client = clientService.getByEmail(userDetails.getUsername());
             if (propertyOptional.isPresent()) {
-                Properties property = propertyOptional.get();
+                PropertyDTO property = PropertyMapper.modelToDTO(propertyOptional.get());
                 List<CategoryDTO> categories = categoryService.getAll();
                 Agent  agent = property.getAgent();
                 boolean isSave = propertyService.getInfoSavePost(client.getId(),property.getId());
-                boolean statusRent = propertyService.checkInfoRent(property);
+                boolean statusRent = propertyService.checkInfoRent(PropertyMapper.DtoToModel(property));
 
 
 
@@ -117,7 +120,6 @@ public class HomeController {
         }catch (Exception e) {
             e.printStackTrace();
             return "test/404";
-
         }
 
     }
@@ -149,8 +151,8 @@ public class HomeController {
             agent.setRateStar(Double.parseDouble(df.format(agent.getRateStar())));
 
             Client client = clientService.getByEmail(userDetails.getUsername());
-            List<Properties> saleList = propertyService.getAllPropertySale(agent);
-            List<Properties> rentList = propertyService.getAllPropertyRent(agent);
+            List<PropertyDTO> saleList = propertyService.getAllPropertySale(agent).stream().map(PropertyMapper::modelToDTO).toList();
+            List<PropertyDTO> rentList = propertyService.getAllPropertyRent(agent).stream().map(PropertyMapper::modelToDTO).toList();
             List<RateReport> rateReportList = agentService.getAllRateByAgent(agent);
             boolean checkRate = clientService.checkRate(client.getUsername(),agent);
             model.addAttribute("agent", agent);

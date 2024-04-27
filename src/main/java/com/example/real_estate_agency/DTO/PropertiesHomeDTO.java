@@ -1,5 +1,7 @@
 package com.example.real_estate_agency.DTO;
 
+import java.text.DecimalFormat;
+
 public class PropertiesHomeDTO {
     private String id;
     private String title;
@@ -57,16 +59,18 @@ public class PropertiesHomeDTO {
         this.description = description;
     }
 
-    public double getPrice() {
-        return price;
+    public String getPrice() {
+        int intValue = (int) price;
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        return decimalFormat.format(intValue)+" VND";
     }
 
     public void setPrice(double price) {
         this.price = price;
     }
 
-    public double getArea() {
-        return area;
+    public String getArea() {
+        return String.valueOf(area+" m³");
     }
 
     public void setArea(double area) {
