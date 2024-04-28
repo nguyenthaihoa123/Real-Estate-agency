@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,13 +48,17 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String showLoginForm() {
-        return "login";
+    public String showLoginForm(Model model) {
+        String isClient = "isClient";
+        model.addAttribute("role",isClient);
+        return "authen/client-login";
     }
 
     @GetMapping("/agent/login_agent")
-    public String showLoginForm_agent() {
-        return "login_agent";
+    public String showLoginForm_agent(Model model) {
+        String isAgent = "isAgent";
+        model.addAttribute("role",isAgent);
+        return "authen/agent-login";
     }
 
     @GetMapping("/register")
@@ -61,7 +66,7 @@ public class AuthController {
         List<Role> roles = roleRepository.findAll();
         model.addAttribute("roles", roles);
         model.addAttribute("user", new Client());
-        return "register";
+        return "authen/client-register";
     }
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") Client user, RedirectAttributes redirectAttributes) {
@@ -69,10 +74,13 @@ public class AuthController {
         Client existing = clientService.getByEmail(user.getEmail());
         if (existing != null) {
             // Nếu đã tồn tại tài khoản với địa chỉ email này, thêm thông báo lỗi vào RedirectAttributes
-            redirectAttributes.addFlashAttribute("error", "emailExists");
+            redirectAttributes.addFlashAttribute("error", "email is exists");
             return "redirect:/register";
         }
-
+        Role role = roleRepository.findByName("ROLE_USER");
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
         // Lưu người dùng mới vào cơ sở dữ liệu
         if (clientService.save(user)) {
             // Nếu đăng ký thành công, chuyển hướng đến trang đăng nhập với thông báo đăng ký thành công
@@ -86,7 +94,7 @@ public class AuthController {
     @GetMapping("/register_agent")
     public String showRegistrationForm_Agent(Model model) {
         model.addAttribute("agent", new Agent());
-        return "register_agent";
+        return "authen/agent-register";
     }
 
     @PostMapping("/register_agent")
@@ -96,7 +104,7 @@ public class AuthController {
         System.out.println("email: "+agent.getEmail());
         if (existing != null) {
             // Nếu đã tồn tại tài khoản với địa chỉ email này, thêm thông báo lỗi vào RedirectAttributes
-            redirectAttributes.addFlashAttribute("error", "emailExists");
+            redirectAttributes.addFlashAttribute("error", "email is exists");
             return "redirect:/agent/register_agent";
         }
 

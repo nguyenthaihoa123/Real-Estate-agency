@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<style>
+    #popup {
+    }
+</style>
+<body>
+<!-- Navbar Start -->
+<div th:fragment="navbar" class="container-fluid nav-bar bg-transparent" >
+    <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+        <a th:href="@{#}" class="navbar-brand d-flex align-items-center text-center">
+            <div class="icon p-2 me-2">
+                <img class="img-fluid" src="/img/icon-deal.png" alt="Icon" style="width: 30px; height: 30px;">
+            </div>
+            <h1 class="m-0 text-primary">Houses</h1>
+        </a>
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto">
+                <a th:href="@{/agent/login_agent}" class="nav-item nav-link"  > Come to agent site</a>
+            </div>
+        </div>
+
+    </nav>
+    <script>
+        // Lấy đường dẫn URL hiện tại
+        const currentUrl = window.location.pathname;
+
+        // Lặp qua tất cả các liên kết trong navbar
+        document.querySelectorAll('.nav-item.nav-link').forEach(link => {
+            // So sánh đường dẫn URL của liên kết với đường dẫn URL hiện tại
+            if (link.getAttribute('href') === currentUrl) {
+                // Nếu trùng khớp, thêm lớp active vào liên kết
+                link.classList.add('active');
+            }
+        });
+
+    </script>
+</div>
+<!-- Navbar End -->
+
+<div class="container-xxl bg-white p-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div th:if="${param.error}">
+                    <div class="alert alert-danger">Invalid Email and Password.</div>
+                </div>
+                <div th:if="${param.logout}">
+                    <div class="alert alert-success">You have been logged out.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Login for client</h3>
+                    </div>
+                    <div class="card-body">
+                        <form
+                                method="post"
+                                th:action="@{/login}"
+                                class="form-horizontal"
+                                role="form"
+                        >
+                            <div class="mb-3">
+                                <label for="username" class="control-label">Email *</label>
+                                <input type="email"
+                                       id="username"
+                                       name="username"
+                                       class="form-control"
+                                       placeholder="Email"
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="control-label">Password *</label>
+                                <input type="password"
+                                       id="password"
+                                       name="password"
+                                       class="form-control"
+                                       placeholder="Password"
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                                <span> Not registered?
+                            <a th:href="@{/register}"> Register Here</a>
+                        </span>
+                            </div>
+                            <div class="mb-3">
+                                <span> Login as Agent? <a th:href="@{/agent/login_agent}"> Agent Login</a></span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+</body>
+</html>

@@ -65,7 +65,6 @@ public class SpringSecurity {
                     authorize.requestMatchers("/").permitAll();
                     authorize.requestMatchers("/agent/**").hasAnyRole("AGENT");
                     authorize.requestMatchers("/agent").authenticated();
-
                     authorize.requestMatchers("/user").hasAnyRole("USER");
                     authorize.anyRequest().permitAll();
                 })
