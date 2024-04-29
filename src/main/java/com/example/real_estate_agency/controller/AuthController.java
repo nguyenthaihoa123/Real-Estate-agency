@@ -120,6 +120,15 @@ public class AuthController {
             return "redirect:/agent/register_agent?error";
         }
     }
+    @GetMapping("/resetPass_Client")
+    public String showForm_ResetPass_Client(Model model) {
+        return "resetP_Client";
+    }
+
+    @GetMapping("/resetPass_Agent")
+    public String showForm_ResetPass_Agent(Model model) {
+        return "resetP_Agent";
+    }
 
 
 }
