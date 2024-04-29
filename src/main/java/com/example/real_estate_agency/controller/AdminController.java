@@ -90,8 +90,6 @@ public class AdminController {
         model.addAttribute("chartDay", listByDay);
 
 
-
-
         return "admin/charts";
     }
 

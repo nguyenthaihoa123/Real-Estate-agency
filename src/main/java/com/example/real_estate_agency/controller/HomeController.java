@@ -1,11 +1,11 @@
 package com.example.real_estate_agency.controller;
 
-import com.example.real_estate_agency.DTO.CategoryDTO;
-import com.example.real_estate_agency.DTO.FeedBackDTO;
-import com.example.real_estate_agency.DTO.PropertiesHomeDTO;
-import com.example.real_estate_agency.DTO.PropertyDTO;
+import com.example.real_estate_agency.DTO.*;
 import com.example.real_estate_agency.mapper.PropertyMapper;
+import com.example.real_estate_agency.models.BookTour;
 import com.example.real_estate_agency.models.payment.TransactionType;
+import com.example.real_estate_agency.models.property.InfoRentProperty;
+import com.example.real_estate_agency.models.property.InfoSaleProperty;
 import com.example.real_estate_agency.models.property.Properties;
 import com.example.real_estate_agency.models.user.Agent;
 import com.example.real_estate_agency.models.user.Client;
@@ -28,8 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/home")
@@ -173,6 +172,7 @@ public class HomeController {
 
         //return "test/client/infoAgent";
     }
+
 
 
 }

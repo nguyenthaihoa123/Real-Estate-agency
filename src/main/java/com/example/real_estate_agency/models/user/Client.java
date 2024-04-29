@@ -48,6 +48,13 @@ public class Client {
     // Constructors
     public Client() {
         // Constructor mặc định
+
+    }
+
+    public Client(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
     }
 
     public Client(Long id, String username, String password, String email, List<Role> roles, Set<SavePost> savedPosts, Set<BookTour> bookedTours) {

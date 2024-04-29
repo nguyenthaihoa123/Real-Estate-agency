@@ -90,6 +90,11 @@ public class Properties {
         this.updatedAt = updatedAt;
     }
 
+    public Properties(String title, Agent agent) {
+        this.title = title;
+        this.agent = agent;
+    }
+
     // Getters và Setters
     // Đảm bảo rằng bạn đã tạo getters và setters cho tất cả các trường
 
