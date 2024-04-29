@@ -27,6 +27,7 @@ public class PropertyMapper {
         tmp.setAgent(properties.getAgent());
         tmp.setTransactionType(properties.getTransactionType());
         tmp.setStatistical(properties.getStatistical());
+        tmp.setImages(properties.getImages());
         return tmp;
     }
     public static Properties DtoToModel(PropertyDTO model) {
@@ -46,6 +47,7 @@ public class PropertyMapper {
         dto.setAgent(model.getAgent());
         dto.setTransactionType(model.getTransactionType());
         dto.setStatistical(model.getStatistical());
+        dto.setImages(model.getImages());
         return dto;
     }
 }
