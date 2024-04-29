@@ -1,0 +1,66 @@
+<div th:fragment="navbar" class="container-fluid nav-bar bg-transparent">
+    <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+        <a th:href="@{/home/}" class="navbar-brand d-flex align-items-center text-center">
+            <div class="icon p-2 me-2">
+                <img class="img-fluid" src="/img/icon-deal.png" alt="Icon" style="width: 30px; height: 30px;">
+            </div>
+            <h1 class="m-0 text-primary">AGENT</h1>
+        </a>
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle"  data-bs-toggle="dropdown">Contact</a>
+                    <div class="dropdown-menu rounded-0 m-0">
+                        <a th:href="@{/agent/list-book}" class="dropdown-item"><i class="fa-solid fa-address-book"></i> My booking</a>
+                    </div>
+                </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="propertyDropdown" data-bs-toggle="dropdown">Property</a>
+                    <div class="dropdown-menu rounded-0 m-0">
+                        <a th:href="@{/agent/properties/add}" class="dropdown-item"><i class="fa-solid fa-house-chimney-medical"></i> Add property</a>
+                        <a th:href="@{/agent/list-property}" class="dropdown-item"><i class="fa-solid fa-house-lock"></i> My properties</a>
+                        <a th:href="@{/agent/list-sale-property}" class="dropdown-item"><i class="fa-solid fa-house-circle-check"></i> My sales</a>
+                        <a th:href="@{/agent/list-rent-property}" class="dropdown-item"><i class="fa-solid fa-house-chimney-window"></i> My rents</a>
+                    </div>
+                </div>
+                <div class="nav-item dropdown position-relative">
+                    <button class="nav-link btn btn-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-user"></i> <!-- Thêm icon người dùng -->
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-start rounded-0 m-0 position-absolute start-0">
+                        <a th:href="@{/agent/profile/detail}" class="dropdown-item">Trang cá nhân</a>
+                        <a th:href="@{/agent/profile/update}" class="dropdown-item">Chỉnh sửa thông tin</a>
+                        <a th:href="@{/agent/payPackage}" class="dropdown-item">Mua lượt đăng tin</a>
+                        <a th:href="@{/logout}" class="dropdown-item"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+            <!--            <a href="" class="btn btn-primary px-3 d-none d-lg-flex">Add Property</a>-->
+        </div>
+    </nav>
+    <script>
+        // Lấy đường dẫn URL hiện tại
+        const currentUrl = window.location.pathname;
+
+        // Lặp qua tất cả các liên kết trong navbar
+        document.querySelectorAll('.nav-item.nav-link').forEach(link => {
+            // So sánh đường dẫn URL của liên kết với đường dẫn URL hiện tại
+            if (link.getAttribute('href') === currentUrl) {
+                // Nếu trùng khớp, thêm lớp active vào liên kết
+                link.classList.add('active');
+            }
+        });
+        const propertyMenu = document.getElementById('propertyDropdown');
+
+        // Nếu đường dẫn URL hiện tại là một trong các đường dẫn của dropdown
+        if (currentUrl.includes('/propertyList') ||
+            currentUrl.includes('/propertyType') ||
+            currentUrl.includes('/propertyAgent')) {
+            // Thêm lớp active vào mục "Property"
+            propertyMenu.classList.add('active');
+        }
+    </script>
+</div>

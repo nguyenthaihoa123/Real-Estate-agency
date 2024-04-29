@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/Agentnavbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-0">
+    <div class="row">
+        <div class="col-md-12 p-5">
+            <input id="propertyId" type="hidden" th:value="${property.id}">
+            <h2 class="text-center">Contract of <span class="text-alert" th:text="${property.title}"></span></h2>
+            <!--            Progress-->
+            <form enctype="multipart/form-data" id="propertyManagementForm">
+                <!-- Thông tin chủ nhà -->
+                <div class="row">
+                    <h3>Owner</h3>
+                    <!-- Thông tin chủ nhà -->
+                    <div class="mb-3 col-md-4">
+                        <label for="ownerID" class="form-label">Owner ID (CCCD)</label>
+                        <input type="text" class="form-control" id="ownerID" name="ownerID"   required>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="ownerName" class="form-label">Owner Name</label>
+                        <input type="text" class="form-control" id="ownerName" name="ownerName"   required>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="ownerPhone" class="form-label">Owner Phone</label>
+                        <input type="text" class="form-control" id="ownerPhone" name="ownerPhone"  required>
+                    </div>
+                </div>
+
+
+                <!-- Thông tin người mua -->
+                <div class="row">
+                    <h3>Buyer</h3>
+                    <div class="mb-3 col-md-3">
+                        <label for="tenantID" class="form-label">Tenant ID (CCCD)</label>
+                        <input type="text" class="form-control" id="tenantID" name="tenantID"  required>
+                    </div>
+                    <div class="mb-3 col-md-3">
+                        <label for="tenantName" class="form-label">Tenant Name</label>
+                        <input type="text" class="form-control" id="tenantName" name="tenantName"  required>
+                    </div>
+                    <div class="mb-3 col-md-3">
+                        <label for="tenantDOB" class="form-label">Tenant Date of Birth</label>
+                        <input type="date" class="form-control" id="tenantDOB" name="tenantDOB"  required>
+                    </div>
+                    <div class="mb-3 col-md-3">
+                        <label for="tenantPhone" class="form-label">Tenant Phone</label>
+                        <input type="text" class="form-control" id="tenantPhone" name="tenantPhone"  required>
+                    </div>
+
+                    <div class="mb-3 col-md-3">
+                        <label for="tenantEmail" class="form-label">Tenant Email</label>
+                        <input type="text" class="form-control" id="tenantEmail" name="tenantEmail"  required>
+                    </div>
+                </div>
+
+
+                <!-- Thông tin hợp đồng bán -->
+                <div class="row">
+                    <h3>Cost</h3>
+                    <div class="mb-3 col-md-4">
+                        <label for="unitPrice" class="form-label">Unit Price</label>
+                        <input type="number" class="form-control" id="unitPrice" name="unitPrice"  required>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="compensationLevel" class="form-label">Compensation Level</label>
+                        <input type="number" class="form-control" id="compensationLevel" name="compensationLevel"  required>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="deposit" class="form-label">Deposit</label>
+                        <input type="number" class="form-control" id="deposit" name="deposit"  required>
+                    </div>
+                    <h3>Time</h3>
+                    <div class="mb-3 col-md-6">
+                        <label for="contractStartDate" class="form-label">Contract Start Date</label>
+                        <input type="date" class="form-control" id="contractStartDate" name="contractStartDate"    required>
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label for="contractEndDate" class="form-label">Contract End Date</label>
+                        <input type="date" class="form-control" id="contractEndDate" name="contractEndDate"  required>
+                    </div>
+                </div>
+                <hr/>
+                <div class="d-flex  justify-content-evenly ">
+                    <!-- Submit Button -->
+                    <div class="mb-3  ">
+                        <!-- Button to trigger contract deletion -->
+                        <button type="submit" class="btn btn-primary "><i class="fa-solid fa-pen-to-square"></i>Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+<script>
+    document.getElementById("propertyManagementForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Ngăn chặn form submit mặc định
+
+        // Lấy giá trị từ các trường input
+        const ownerID = document.getElementById("ownerID").value;
+        const ownerName = document.getElementById("ownerName").value;
+        const ownerPhone = document.getElementById("ownerPhone").value;
+        const tenantID = document.getElementById("tenantID").value;
+        const tenantName = document.getElementById("tenantName").value;
+        const tenantDOB = document.getElementById("tenantDOB").value;
+        const tenantPhone = document.getElementById("tenantPhone").value;
+        const tenantEmail = document.getElementById("tenantEmail").value;
+        const unitPrice = document.getElementById("unitPrice").value;
+        const compensationLevel = document.getElementById("compensationLevel").value;
+        const deposit = document.getElementById("deposit").value;
+        const contractStartDate = document.getElementById("contractStartDate").value;
+        const contractEndDate = document.getElementById("contractEndDate").value;
+
+        const propertyId = document.getElementById("propertyId").value;
+
+        // Tạo object chứa thông tin
+        const propertyManagementInfo = {
+            ownerID: ownerID,
+            ownerName: ownerName,
+            ownerPhone: ownerPhone,
+            tenantID: tenantID,
+            tenantName: tenantName,
+            tenantDOB: tenantDOB,
+            tenantPhone: tenantPhone,
+            tenantEmail: tenantEmail,
+            unitPrice: unitPrice,
+            compensationLevel: compensationLevel,
+            deposit: deposit,
+            contractStartDate: contractStartDate,
+            contractEndDate: contractEndDate,
+            property: null
+        };
+
+        // Log thông tin ra console dưới dạng JSON
+        console.log(JSON.stringify(propertyManagementInfo));
+
+        fetch(`/agent/property/rentContract/${propertyId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(propertyManagementInfo)
+        })
+            .then(response => {
+                if (response.ok) {
+                    Toastify({
+                        text: `Contract created successfully" !`,
+                        className: "info",
+                        gravity: "bottom", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        style: {
+                            background: "orange",
+                        }
+                    }).showToast();
+                    location.replace("/agent/list-rent-property")
+                } else {
+                    Toastify({
+                        text: `Contract is not created " !`,
+                        className: "info",
+                        gravity: "bottom", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        style: {
+                            background: "red",
+                        }
+                    }).showToast();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Failed to create contract");
+            });
+    });
+</script>
+
+
+
+</body>
+
+</html>

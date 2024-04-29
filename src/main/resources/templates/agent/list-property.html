@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/Agentnavbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-0">
+    <form id="searchForm">
+            <div class="col-md-12 col-lg-12 wow fadeIn" data-wow-delay="0.3s">
+                <div class="bg-light rounded p-3">
+                    <div class="d-flex align-items-center bg-white rounded p-3" style="border: 1px dashed rgba(0, 185, 142, .3)">
+                        <h4 class="mr-2">Transaction Type</h4>
+                        <select id="transactionTypeSelect" name="transactionType" class="form-control">
+                            <option value="">-- Select Transaction Type --</option>
+                            <option th:each="transaction : ${transactionTypes}" th:value="${transaction.id}" th:text="${transaction.name}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-lg-12 wow fadeIn" data-wow-delay="0.3s">
+                <div class="bg-light rounded p-3">
+                    <div class="d-flex align-items-center bg-white rounded p-3" style="border: 1px dashed rgba(0, 185, 142, .3)">
+                        <h4 class="mr-2">Categories  </h4>
+                        <select id="categorySelect" name="category" class="form-control">
+                            <option value="">-- Select Category --</option>
+                            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        <div class="col-md-12 col-lg-12 wow fadeIn rounded p-3" data-wow-delay="0.3s">
+            <div class="bg-light rounded p-3">
+                <div class="d-flex align-items-center bg-white rounded p-3" style="border: 1px dashed rgba(0, 185, 142, .3)">
+                    <button type="submit" class="btn btn-primary w-100 py-3 fadeInDown text-center mx-auto mb-2 "   data-wow-delay="0.1s" >
+                        <i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+    <div id="propertyList" class="col-md-12 col-lg-12 wow fadeIn" data-wow-delay="0.3s">
+        <!-- Dữ liệu sẽ được hiển thị ở đây -->
+    </div>
+
+</div>
+
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+<script>
+    window.addEventListener('load', (event) => {
+        // Lấy giá trị của transactionType và category từ các select box
+        const transactionType = document.getElementById("transactionTypeSelect").value;
+        const category = document.getElementById("categorySelect").value;
+        fetchData(transactionType, category);
+    });
+    document.getElementById("searchForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Ngăn chặn form submit mặc định
+        let transactionType = "";
+        let category = "";
+        // Lấy giá trị của transactionType và category từ các select box
+        transactionType = document.getElementById("transactionTypeSelect").value;
+        category = document.getElementById("categorySelect").value;
+        fetchData(transactionType, category);
+    });
+    // Fetch API để lấy dữ liệu từ endpoint
+
+    function fetchData(transactionType, category) {
+        // Tạo query string từ các giá trị truyền vào
+        console.log(transactionType +" "+category)
+        const queryString = `?categoryId=${category}&transactionId=${transactionType}`;
+
+        fetch(`/api/agent/list-property${queryString}`)
+            .then(response => response.json()) // Chuyển đổi dữ liệu nhận được thành JSON
+            .then(data => {
+                // Xử lý dữ liệu nhận được
+                const properties = data.properties;
+
+                // Hiển thị dữ liệu lên giao diện
+                const propertyListDiv = document.getElementById("propertyList");
+                propertyListDiv.innerHTML = ""; // Xóa nội dung cũ
+
+                // Tạo danh sách các property
+                const ul = document.createElement("ul");
+                properties.forEach(property => {
+                    const li = document.createElement("li");
+                    li.style.listStyleType="none"
+                    li.innerHTML = `
+                <div class=" bg-white rounded p-3" style="border: 1px dashed rgba(0, 185, 142, .3)">
+                   <a href="/agent/properties/detail/${property.id}" class="p-3">
+                        <h3>${property.title}</h3>
+                        <p>${property.description}</p>
+                       <div class="d-flex justify-content-lg-between">
+                            <div>
+                                    <p>Price: <span>${property.price}</span></p>
+                                    <p>Area: <span>${property.area}</span> m3</p>
+                                    <p>Status: <span>${property.status}</span></p>
+                                    <p>Address: <span>${property.address}</span></p>
+                            </div>
+                            <img src="${property.thumbnail}" alt="Thumbnail" style="width: 200px; height: 150px; object-fit: cover;">
+                        </div>
+                    </a>
+
+                </div>
+
+                `;
+                    ul.appendChild(li);
+                });
+
+                propertyListDiv.appendChild(ul);
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+                // Xử lý lỗi nếu cần
+            });
+    }
+
+</script>
+
+</body>
+
+</html>
