@@ -41,6 +41,8 @@ public class AgentController {
 //        model.addAttribute("agentId", id);
         Agent agent = agentService.findByEmail(userDetails.getUsername());
         model.addAttribute("agent",agent);
+        model.addAttribute("isEdit",true);
+
         // Trả về tên của template HTML để hiển thị trang chi tiết đại lý
         return "agent/detail";
     }

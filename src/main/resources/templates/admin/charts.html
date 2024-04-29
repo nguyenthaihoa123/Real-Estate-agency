@@ -11,10 +11,11 @@
     <div th:replace="layout/spinner :: #spinner"></div>
     <!-- Spinner End -->
 
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between" style="margin-bottom: 10px">
         <h1 class="">Revenue</h1>
         <button class="btn-primary btn " id="exportButton"><i class="fa-solid fa-file-csv"></i> Export to Excel</button>
     </div>
+    <div th:replace="layout/search :: search"></div>
     <div class="mb-3 p-5">
         <h3>4 recent years</h3>
             <div class="d-flex" >
