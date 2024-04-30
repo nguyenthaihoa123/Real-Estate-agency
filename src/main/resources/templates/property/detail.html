@@ -17,6 +17,10 @@
                 <h3 class="col-md-12">Area: <span th:text="${property.area}">  </span> m³</h3>
                 <h4 class="col-md-12">Address: <span id="propertyAddress" th:text="${property.address}"></span></h4>
                 <p>Status: <span th:text="${property.status}"></span></p>
+                <p>Create At: <span th:text="${property.createdAt}"></span></p>
+                <p>Update At: <span th:text="${property.updatedAt}"></span></p>
+                <p>Total Booking: <span th:text="${property.getStatistical().getTotalBooking()}"></span></p>
+                <p>Total Save: <span th:text="${property.getStatistical().getTotalSave()}"></span></p>
                 <input type="hidden" id="propertyId" th:value="${property.id}">
                 <input type="hidden" id="savePost" th:value="${isSave}">
                 <button onclick="saveProperty()" class="btn btn-primary py-3 px-5 me-3 animated fadeIn" id="saveButton"><i class="fa-solid fa-heart-circle-plus"></i> Save Property</button>

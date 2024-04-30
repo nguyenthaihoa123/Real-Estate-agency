@@ -28,6 +28,8 @@ public class PropertyMapper {
         tmp.setTransactionType(properties.getTransactionType());
         tmp.setStatistical(properties.getStatistical());
         tmp.setImages(properties.getImages());
+        tmp.setCreatedAt(properties.getCreatedAt());
+        tmp.setUpdatedAt(properties.getUpdatedAt());
         return tmp;
     }
     public static Properties DtoToModel(PropertyDTO model) {
