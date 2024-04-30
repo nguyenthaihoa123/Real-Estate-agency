@@ -252,8 +252,9 @@
                                                 propertyItem.innerHTML = `
                                                         <div class="property-item rounded overflow-hidden" data-property-id=${property.id} >
                                                             <div class="position-relative overflow-hidden">
-                                                                 <a href="/home/properties/${property.id}">
-                                                                    <img class="img-fluid img-thumbnail" src="${property.thumbnail}" alt="${property.title}" style="width: auto; height: 290px;" />
+                                                                 <a href="/home/properties/${property.id}" >
+                                                                 <div style="width: auto; height: 290px; "><img class="img-fluid img-thumbnail" src="${property.thumbnail}" alt="${property.title}" style="object-fit: fill" /></div>
+
                                                                 </a>
                                                                 <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">${property.transactionType}</div>
                                                                 <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">${property.category}</div>
@@ -269,7 +270,7 @@
                                                             <div class="d-flex border-top">
                                                                 <small class="flex-fill text-center border-end py-2">
                                                                     <i class="fa fa-ruler-combined text-primary me-2"></i>
-                                                                    <span>${property.area} Sqft</span>
+                                                                    <span>${property.area} </span>
                                                                 </small>
                                                                 <small class="flex-fill text-center border-end py-2">
                                                                     <i class="fa fa-bed text-primary me-2"></i>
@@ -331,7 +332,6 @@
                                                 // Tạo HTML cho bảng
                                                 const tableHTML = `
                                                     <div class="property-info">
-                                                            <h2>${data[0].title}</h2>
                                                             <table>
                                                                 <tbody>
                                                                     <tr>
@@ -370,7 +370,6 @@
                                                             </table>
                                                         </div>
                                                         <div class="property-info">
-                                                            <h2>${data[1].title}</h2>
                                                             <table>
                                                                 <tbody>
                                                                     <tr>
@@ -417,10 +416,26 @@
                                             })
                                             .catch(error => {
                                                 console.error('Error comparing properties:', error);
-                                                alert('Failed to compare properties.');
+                                                Toastify({
+                                                    text: `Failed to compare properties. !`,
+                                                    className: "info",
+                                                    gravity: "bottom", // `top` or `bottom`
+                                                    position: "right", // `left`, `center` or `right`
+                                                    style: {
+                                                        background: "red",
+                                                    }
+                                                }).showToast();
                                             });
                                     } else {
-                                        alert('Please select two properties to compare.');
+                                        Toastify({
+                                            text: `Please select two properties to compare. !`,
+                                            className: "info",
+                                            gravity: "bottom", // `top` or `bottom`
+                                            position: "right", // `left`, `center` or `right`
+                                            style: {
+                                                background: "grey",
+                                            }
+                                        }).showToast();
                                         // Ẩn lớp mờ nếu không đủ hai property
                                         document.getElementById('overlay').style.display = 'none';
                                     }

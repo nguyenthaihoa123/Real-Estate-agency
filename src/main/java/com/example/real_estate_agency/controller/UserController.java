@@ -124,12 +124,12 @@ public class UserController {
 
         return "test/client/bookingDetail"; // Trả về tên của trang HTML mà bạn muốn hiển thị
     }
-    @GetMapping("/updatePass")
+    @GetMapping("/change-password")
     public String updateProfile(Model model,@AuthenticationPrincipal UserDetails userDetails) {
         // Tìm kiếm thuộc tính theo email
         Client client = clientService.getByEmail(userDetails.getUsername());
         model.addAttribute("client",client);
-        return "test/client/updateProfile";
+        return "user/change-passwod";
     }
 
 

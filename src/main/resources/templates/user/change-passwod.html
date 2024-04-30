@@ -1,10 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
 <body>
+<!-- Navbar Start -->
+<div th:replace="layout/navbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-0 align-items-center">
+    <!-- Spinner Start -->
+    <div th:replace="layout/spinner :: #spinner"></div>
+    <h1 class="p-5">Reset Password</h1>
+    <form id="resetPasswordForm" method="post" action="/api/updatePass"  class="row p-5">
+        <div class="mb-3 col-md-12">
+            <label>Current Password: </label>
+            <input class="form-control" type="password" id="currentPassword" /><br/>
+        </div>
+        <div class="mb-3 col-md-12">
+            <label>New Password: </label>
+            <input  class="form-control" type="password" id="newPassword" /><br/>
+        </div>
+        <div class="mb-3 col-md-12">
+            <label>Confirm New Password: </label>
+            <input  class="form-control" type="password" id="confirmPassword" /><br/>
+        </div>
+
+        <button  class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+
+<div th:replace="layout/lib :: lib"></div>
+<script>
+    document.getElementById("resetPasswordForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Collect form data
+        var currentPassword = document.getElementById("currentPassword").value;
+        var newPassword = document.getElementById("newPassword").value;
+        var confirmPassword = document.getElementById("confirmPassword").value;
+
+        var requestData = {
+            currentPassword: currentPassword,
+            newPassword: newPassword,
+            confirmPassword: confirmPassword
+        };
+        console.log(requestData)
+        // Send form data to API endpoint
+        fetch('/api/updatePass', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData) // Chuyển đổi dữ liệu thành chuỗi JSON
+        }).then(function(response) {
+            // Check response status
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        }).then(function(data) {
+            // Handle different types of responses
+            if (data === "Password reset successfully") {
+                Toastify({
+                    text: `Password reset successfully !`,
+                    className: "info",
+                    gravity: "bottom", // `top` or `bottom`
+                    position: "right", // `left`, `center` or `right`
+                    style: {
+                        background: "orange",
+                    }
+                }).showToast();
+                // Redirect or do something else upon successful password reset
+            } else if (data === "Current password is incorrect") {
+                Toastify({
+                    text: `Current password is incorrect !`,
+                    className: "info",
+                    gravity: "bottom", // `top` or `bottom`
+                    position: "right", // `left`, `center` or `right`
+                    style: {
+                        background: "grey",
+                    }
+                }).showToast();
+            } else if (data === "New password and confirm password do not match") {
+                Toastify({
+                    text: `New password and confirm password do not match !`,
+                    className: "info",
+                    gravity: "bottom", // `top` or `bottom`
+                    position: "right", // `left`, `center` or `right`
+                    style: {
+                        background: "grey",
+                    }
+                }).showToast();
+            } else {
+                Toastify({
+                    text: `Failed to change password !`,
+                    className: "info",
+                    gravity: "bottom", // `top` or `bottom`
+                    position: "right", // `left`, `center` or `right`
+                    style: {
+                        background: "red",
+                    }
+                }).showToast();
+            }
+        }).catch(function(error) {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+    });
+</script>
 
 </body>
+
 </html>
