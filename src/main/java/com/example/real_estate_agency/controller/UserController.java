@@ -73,7 +73,7 @@ public class UserController {
         try {
             Client client = clientService.getByEmail(userDetails.getUsername());
             Long id = client.getId();
-            return "test/feedback"; // Trả về tên của trang HTML mà bạn muốn hiển thị
+            return "user/feedback"; // Trả về tên của trang HTML mà bạn muốn hiển thị
         }catch (Exception e){
             e.printStackTrace();
             return "test/404";

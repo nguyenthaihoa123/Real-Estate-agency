@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head :: head"></head>
+<style>
+    .d-flex.justify-content-start > * {
+        margin-left: 10px;
+    }
+</style>
+<body>
+<!-- Navbar Start -->
+<div th:replace="layout/navbar :: navbar"></div>
+<!-- Navbar End -->
+<div class="container-xxl bg-white p-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h2 class="text-center">FEED-BACK</h2>
+                <h5 class="text-secondary text-center">Give us everything you want to us know !</h5>
+                <form id="feedbackForm" class="needs-validation" novalidate action="/user/feedback" method="post">
+                    <!-- Các trường nhập liệu đã cho -->
+                    <div class="mb-3">
+                        <label for="title" class="form-label hide"></label>
+                        <input type="text" class="form-control" id="title" name="content" required>
+                        <div class="invalid-feedback">Please enter feedback content.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary col-md-12  ">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Lắng nghe sự kiện submit của form
+        document.getElementById('feedbackForm').addEventListener('submit', function(event) {
+            // Lấy trường input
+            var input = document.getElementById('title');
+            Toastify({
+                text: `send feedback successfully !`,
+                className: "info",
+                gravity: "bottom", // `top` or `bottom`
+                position: "right", // `left`, `center` or `right`
+                style: {
+                    background: "orange",
+                }
+            }).showToast();
+            // Nếu trường input không hợp lệ và không có giá trị
+            if (!input.value.trim()) {
+                // Hiển thị cảnh báo cho trường input
+                input.classList.add('is-invalid');
+                event.preventDefault(); // Ngăn chặn sự kiện submit mặc định
+            } else {
+                // Xóa cảnh báo nếu trường input đã được điền thông tin
+                input.classList.remove('is-invalid');
+            }
+
+        });
+    </script>
+
+</div>
+<!-- Footer Start -->
+<div th:replace="layout/footer :: footer"></div>
+<!-- Footer End -->
+
+<div th:replace="layout/lib :: lib"></div>
+
+</body>
+
+</html>
