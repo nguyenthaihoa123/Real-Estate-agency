@@ -28,6 +28,8 @@
     <p>Create At: <span th:text="${property.createdAt}"></span></p>
     <p>Update At: <span th:text="${property.updatedAt}"></span></p>
     <p>Transaction type: <span th:text="${property.transactionType.name}"></span></p>
+    <p>Total booking: <span th:text="${property.getStatistical().getTotalBooking()}"></span></p>
+    <p>Total Save: <span th:text="${property.getStatistical().getTotalSave()}"></span></p>
     <p>
         Status:
         <span th:if="${property.transactionType.name == 'Rent'}" th:text="${statusRent ? 'Not Ready' : 'Ready'}"></span>
