@@ -41,7 +41,7 @@ Nhìn chung, hệ thống mạng lại nhiều lợi ích cho doanh nghiệp và
 ## Giao diện
 ### Agent
 ![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/fc40ffe7-8adb-4bab-bcc8-d368c3fd6c5a)  
-Trang cá nhân
+Trang cá nhân  
 ![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/83b7e28b-0d87-454d-bedf-b322de59e317)  
 Thêm tài sản
 ![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/a9fd216c-411e-4974-ad65-373be518d7ce)  
