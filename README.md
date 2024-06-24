@@ -40,25 +40,25 @@ Nhìn chung, hệ thống mạng lại nhiều lợi ích cho doanh nghiệp và
 ![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/f77048fb-2caf-494c-9ab3-c3e9494f86a1)
 ## Giao diện
 ### Agent
-![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/fc40ffe7-8adb-4bab-bcc8-d368c3fd6c5a)
+![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/fc40ffe7-8adb-4bab-bcc8-d368c3fd6c5a)  
 Trang cá nhân
-![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/83b7e28b-0d87-454d-bedf-b322de59e317)
+![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/83b7e28b-0d87-454d-bedf-b322de59e317)  
 Thêm tài sản
-![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/a9fd216c-411e-4974-ad65-373be518d7ce)
+![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/a9fd216c-411e-4974-ad65-373be518d7ce)  
 Danh sách tài sản
-![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/2be3bb9f-ed26-4cc3-8686-ab82c4871424)
+![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/2be3bb9f-ed26-4cc3-8686-ab82c4871424)  
 Quản lý hợp đồng
-![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/5c86ad37-4953-410c-8c30-2f579e2c3e48)
+![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/5c86ad37-4953-410c-8c30-2f579e2c3e48)  
 Lịch hẹn
-![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/7c83682a-525b-40cb-bc64-0766146f7805)
+![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/7c83682a-525b-40cb-bc64-0766146f7805)  
 Mua gói đăng tin
 ### Client
-![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/c327c4f3-6c74-4f75-b6ac-994a24a2aaf6)
+![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/c327c4f3-6c74-4f75-b6ac-994a24a2aaf6)  
 So sánh sản phẩm
 ### Admin
-![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/7600f897-e726-4c2b-8409-5ea40a068c87)
+![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/7600f897-e726-4c2b-8409-5ea40a068c87)  
 Quản lý thông tin
-![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/45dd9041-de89-414c-affd-856debcd7766)
+![image](https://github.com/nguyenthaihoa123/Real-Estate-agency/assets/94378718/45dd9041-de89-414c-affd-856debcd7766)  
 Thống kê doanh thu từ trang web
 
 
